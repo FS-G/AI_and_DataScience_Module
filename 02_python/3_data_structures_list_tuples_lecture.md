@@ -7,6 +7,18 @@
 # Python Data Structures: Lists and Tuples
 *From Single Items to Powerful Collections*
 
+## Overview
+
+This lecture introduces fundamental data structures in Python, covering:
+- **Introduction to Data Structures**: Understanding why collections are needed over individual variables
+- **Lists**: Mutable, ordered collections for storing and manipulating changeable data
+- **Tuples**: Immutable, ordered collections for storing fixed data that shouldn't change
+- **List Operations**: Creating, accessing, modifying, and iterating through lists using indexing, slicing, and methods
+- **Tuple Operations**: Creating, accessing, and unpacking tuples, understanding immutability
+- **List Comprehension**: Elegant Pythonic shortcuts for creating and transforming lists efficiently
+- **Lists vs Tuples**: When to use each data structure based on mutability requirements
+- **Practical Applications**: Real-world examples including grade management, data processing, and text manipulation
+
 ---
 
 ## Introduction to Data Structures
