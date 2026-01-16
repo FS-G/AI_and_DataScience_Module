@@ -6,6 +6,20 @@
 
 # Python Introduction Lecture
 
+## Overview
+
+This lecture covers the fundamentals of Python programming, including:
+- **Introduction to Python**: What Python is, why it's popular, and companies using it
+- **Environment Setup**: Installing Python, setting up VS Code and Google Colab, virtual environments, and requirements.txt
+- **First Programs**: Hello World, comments, and basic syntax
+- **Variables and Data Types**: Working with strings, integers, floats, and booleans
+- **Operators**: Arithmetic, comparison, and logical operators
+- **User Input**: Getting input from users and type conversion
+- **Practical Exercises**: Hands-on coding examples including calculators and data collection programs
+- **Assignments**: Practice problems to reinforce learning
+
+---
+
 ## Welcome and The "Why" of Python
 
 ### What is Python?
