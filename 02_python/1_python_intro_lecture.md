@@ -35,10 +35,7 @@ This lecture covers the fundamentals of Python programming, including:
 - **Cross-platform**: Works on Windows, macOS, and Linux
 - **Open source**: Free to use and distribute
 
-### Companies Using Python
-- Google, Netflix, Instagram, Spotify
-- NASA, Reddit, YouTube, Dropbox
-- Scientific research institutions worldwide
+
 
 ---
 
@@ -56,68 +53,139 @@ This lecture covers the fundamentals of Python programming, including:
 - **Jupyter Notebook**: Interactive computing environment
 - **IDLE**: Comes built-in with Python
 
-### VS Code Setup (Windows)
+### VS Code Setup
+
+#### For Windows Users
+
+**Step 1: Install Prerequisites**
+1. Install Python from [python.org](https://www.python.org/downloads/)
+2. Install VS Code from [code.visualstudio.com](https://code.visualstudio.com/)
+3. Install Python extension in VS Code (search for "Python" in Extensions)
+
+**Step 2: Create Virtual Environment**
 ```bash
-# Step 1: Install Python from python.org
-# Step 2: Install VS Code
-# Step 3: Install Python extension in VS Code
-
-# Creating virtual environment
+# Open terminal in VS Code (Ctrl + `)
+# Navigate to your project folder
 python -m venv myenv
+```
 
-# Activating virtual environment
-# On Windows Command Prompt:
-myenv\Scripts\activate
+**Step 3: Activate Virtual Environment**
 
-# On Windows PowerShell:
+*In PowerShell:*
+```bash
 myenv\Scripts\Activate.ps1
-
-# On Git Bash or Linux/Mac:
-source myenv/Scripts/activate
 ```
 
-### Common Permission Issues & Solutions
+*If you get execution policy error in PowerShell:*
 ```bash
-# If you get execution policy error in PowerShell:
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
 
-# Alternative: Use Command Prompt instead of PowerShell
-# Or activate using Python directly:
-python -m venv myenv
-python myenv/Scripts/activate
+*In Command Prompt:*
+```bash
+myenv\Scripts\activate
+```
 
-# For Git Bash users:
+*In Git Bash:*
+```bash
 source myenv/Scripts/activate
 ```
 
-### Creating and Using requirements.txt
+**Step 4: Install Packages**
 ```bash
-# Step 1: Create a requirements.txt file manually
-# Example requirements.txt content:
-requests
-pandas
-numpy
-matplotlib
-
-# Step 2: Install packages from requirements.txt
 pip install -r requirements.txt
-
-# Step 3: Verify installation
-pip list
 ```
 
-### Sample requirements.txt file
+#### For Linux/Mac Users
+
+**Step 1: Install Prerequisites**
+1. Python usually comes pre-installed. Check with: `python3 --version`
+2. Install VS Code from [code.visualstudio.com](https://code.visualstudio.com/)
+3. Install Python extension in VS Code
+
+**Step 2: Create Virtual Environment**
+```bash
+# Open terminal in VS Code
+# Navigate to your project folder
+python3 -m venv myenv
 ```
+
+**Step 3: Activate Virtual Environment**
+```bash
+source myenv/bin/activate
+```
+
+**Step 4: Install Packages**
+```bash
+pip install -r requirements.txt
+```
+
+### Sample Project Files
+
+**requirements.txt**
+```txt
 # Basic data science packages
-pandas
-numpy
-matplotlib
-requests
-jupyter
+pandas>=2.0.0
+numpy>=1.24.0
+matplotlib>=3.7.0
+requests>=2.31.0
+```
 
-# You can also specify versions if needed
-# requests==2.28.1
-# pandas==1.5.2
+**app.py** - A simple data analysis example
+```python
+"""
+Simple Data Analysis App
+Demonstrates basic Python concepts with real-world data manipulation
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def create_sample_data():
+    """Create sample student data"""
+    data = {
+        'name': ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'],
+        'age': [20, 21, 19, 22, 20],
+        'score': [85, 92, 78, 95, 88],
+        'grade': ['B', 'A', 'C', 'A', 'B']
+    }
+    return pd.DataFrame(data)
+
+def analyze_students(df):
+    """Analyze student data and display statistics"""
+    print("=== Student Data Analysis ===\n")
+    print("Student Information:")
+    print(df)
+    print("\n" + "="*50)
+    print(f"\nTotal Students: {len(df)}")
+    print(f"Average Age: {df['age'].mean():.1f} years")
+    print(f"Average Score: {df['score'].mean():.1f}")
+    print(f"Highest Score: {df['score'].max()}")
+    print(f"Lowest Score: {df['score'].min()}")
+    print("\nGrade Distribution:")
+    print(df['grade'].value_counts())
+
+def main():
+    """Main function to run the application"""
+    print("Welcome to the Student Data Analysis App! 📊\n")
+    
+    # Create sample data
+    students_df = create_sample_data()
+    
+    # Analyze the data
+    analyze_students(students_df)
+    
+    print("\n✅ Analysis complete!")
+
+if __name__ == "__main__":
+    main()
+```
+
+**To run the app:**
+```bash
+# Make sure virtual environment is activated
+python app.py
 ```
 
 ### Google Colab Setup

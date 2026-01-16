@@ -6,6 +6,17 @@
 
 # Python Control Flow Lecture
 
+## Overview
+
+This lecture introduces control flow in Python, covering:
+- **Introduction to Control Flow**: Understanding decision-making and repetition in programs
+- **Conditional Statements**: Using `if`, `elif`, and `else` to make decisions based on conditions
+- **Loops**: Implementing `for` and `while` loops for repetition, including `break` and `continue` statements
+- **Functions**: Creating reusable code blocks with `def`, parameters, return values, and understanding variable scope
+- **Error Handling**: Using `try...except` blocks to handle errors gracefully and prevent program crashes
+- **Common Error Types**: Learning about ValueError, ZeroDivisionError, IndexError, and other common Python errors
+- **Practical Examples**: Building interactive programs like guessing games, calculators, and validators
+
 ---
 
 ## Introduction to Control Flow
