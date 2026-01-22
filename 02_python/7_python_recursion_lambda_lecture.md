@@ -37,6 +37,22 @@ countdown(5)
 Blast off! 🚀
 ```
 
+
+### Another Example: Adding Numbers
+
+```python
+def add_numbers(n):
+    if n == 1:  # Stop when we reach 1
+        return 1
+    else:
+        return n + add_numbers(n - 1)  # Add current number + sum of smaller numbers
+
+# Calculate 1+2+3+4+5
+result = add_numbers(5)
+print(f"1+2+3+4+5 = {result}")  # Output: 15
+```
+
+
 **Logic**
 ```
 graph TD
@@ -68,20 +84,6 @@ graph TD
     style Unwind2 fill:#d4edda
     style Unwind3 fill:#d4edda
     style Unwind4 fill:#d4edda
-```
-
-### Another Example: Adding Numbers
-
-```python
-def add_numbers(n):
-    if n == 1:  # Stop when we reach 1
-        return 1
-    else:
-        return n + add_numbers(n - 1)  # Add current number + sum of smaller numbers
-
-# Calculate 1+2+3+4+5
-result = add_numbers(5)
-print(f"1+2+3+4+5 = {result}")  # Output: 15
 ```
 
 ---
