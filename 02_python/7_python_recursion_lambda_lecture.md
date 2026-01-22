@@ -129,21 +129,6 @@ bigger = lambda a, b: a if a > b else b
 print(bigger(10, 5))  # Output: 10
 ```
 
-### Using Lambda with Lists
-
-**Double all numbers in a list:**
-```python
-numbers = [1, 2, 3, 4, 5]
-doubled = list(map(lambda x: x * 2, numbers))
-print(doubled)  # Output: [2, 4, 6, 8, 10]
-```
-
-**Filter even numbers:**
-```python
-numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-even_numbers = list(filter(lambda x: x % 2 == 0, numbers))
-print(even_numbers)  # Output: [2, 4, 6, 8, 10]
-```
 
 ---
 
