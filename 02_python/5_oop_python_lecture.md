@@ -1331,3 +1331,420 @@ Create a simple **School Management System** with:
 This will test everything you've learned! Start with the basic structure and gradually add features.
 
 **Happy Coding!** 🐍✨
+
+---
+
+### 💡 Complete Solution
+
+Here's a comprehensive solution that demonstrates all the OOP concepts covered in this lecture:
+
+```python
+# school_management_system.py
+
+# ============================================
+# 1. Person Base Class (Encapsulation)
+# ============================================
+class Person:
+    """Base class representing a person with encapsulation"""
+    
+    def __init__(self, name, age, email):
+        self.name = name
+        self.age = age
+        self.email = email
+        self.id = self.__generate_id()  # Private method generates public attribute
+    
+    # Private method to generate ID
+    def __generate_id(self):
+        """Generate a unique ID - internal use only"""
+        import random
+        return f"P{random.randint(1000, 9999)}"
+    
+    def get_info(self):
+        """Get person's information"""
+        return f"ID: {self.id}, Name: {self.name}, Age: {self.age}, Email: {self.email}"
+    
+    def introduce(self):
+        """Introduce the person"""
+        return f"Hello, I'm {self.name} and I'm {self.age} years old."
+
+
+# ============================================
+# 2. Student Class (Single Inheritance)
+# ============================================
+class Student(Person):
+    """Child class inheriting from Person"""
+    
+    def __init__(self, name, age, email, student_id, major):
+        # Call parent constructor using super()
+        super().__init__(name, age, email)
+        self.student_id = student_id
+        self.major = major
+        self.__grades = {}  # Private: dictionary of course_name: grade
+        self.__enrolled_courses = []  # Private: list of course names
+    
+    def get_grades(self):
+        """Get student's grades"""
+        return self.__grades.copy()  # Return copy to prevent external modification
+    
+    def get_enrolled_courses(self):
+        """Get student's enrolled courses"""
+        return self.__enrolled_courses.copy()
+    
+    def enroll_in_course(self, course_name):
+        """Enroll student in a course"""
+        if course_name not in self.__enrolled_courses:
+            self.__enrolled_courses.append(course_name)
+            return f"{self.name} enrolled in {course_name}"
+        return f"{self.name} is already enrolled in {course_name}"
+    
+    def add_grade(self, course_name, grade):
+        """Add a grade for a course"""
+        if course_name in self.__enrolled_courses:
+            if 0 <= grade <= 100:
+                self.__grades[course_name] = grade
+                return f"Grade {grade} added for {course_name}"
+            return "Grade must be between 0 and 100"
+        return f"{self.name} is not enrolled in {course_name}"
+    
+    def calculate_gpa(self):
+        """Calculate student's GPA"""
+        if not self.__grades:
+            return 0.0
+        total = sum(self.__grades.values())
+        return total / len(self.__grades) / 25  # Convert to 4.0 scale
+    
+    # Override parent method (Polymorphism)
+    def get_info(self):
+        """Get student's information - overridden from Person"""
+        parent_info = super().get_info()
+        return f"{parent_info}, Student ID: {self.student_id}, Major: {self.major}, GPA: {self.calculate_gpa():.2f}"
+    
+    def study(self):
+        """Student-specific method"""
+        return f"{self.name} is studying {self.major}"
+
+
+# ============================================
+# 3. Teacher Class (Single Inheritance)
+# ============================================
+class Teacher(Person):
+    """Child class inheriting from Person"""
+    
+    def __init__(self, name, age, email, employee_id, department, salary):
+        # Call parent constructor using super()
+        super().__init__(name, age, email)
+        self.employee_id = employee_id
+        self.department = department
+        self.salary = salary
+        self.__teaching_courses = []  # Private: list of course names
+    
+    def get_teaching_courses(self):
+        """Get courses taught by teacher"""
+        return self.__teaching_courses.copy()
+    
+    def assign_course(self, course_name):
+        """Assign a course to the teacher"""
+        if course_name not in self.__teaching_courses:
+            self.__teaching_courses.append(course_name)
+            return f"{self.name} assigned to teach {course_name}"
+        return f"{self.name} is already teaching {course_name}"
+    
+    # Override parent method (Polymorphism)
+    def get_info(self):
+        """Get teacher's information - overridden from Person"""
+        parent_info = super().get_info()
+        return f"{parent_info}, Employee ID: {self.employee_id}, Department: {self.department}, Salary: ${self.salary:,.2f}"
+    
+    def teach(self):
+        """Teacher-specific method"""
+        return f"{self.name} is teaching in the {self.department} department"
+
+
+# ============================================
+# 4. Course Class
+# ============================================
+class Course:
+    """Class representing a course"""
+    
+    def __init__(self, course_code, course_name, credits, teacher=None):
+        self.course_code = course_code
+        self.course_name = course_name
+        self.credits = credits
+        self.teacher = teacher  # Teacher object
+        self.__students = []  # Private: list of Student objects
+        self.__max_students = 30  # Private: maximum enrollment
+    
+    def set_teacher(self, teacher_obj):
+        """Set the course teacher"""
+        if isinstance(teacher_obj, Teacher):
+            self.teacher = teacher_obj
+            teacher_obj.assign_course(self.course_name)
+        else:
+            raise ValueError("Teacher must be a Teacher object")
+    
+    def get_students(self):
+        """Get enrolled students"""
+        return self.__students.copy()
+    
+    def get_enrollment_count(self):
+        """Get current enrollment count"""
+        return len(self.__students)
+    
+    def add_student(self, student):
+        """Add a student to the course"""
+        if not isinstance(student, Student):
+            return "Error: Must be a Student object"
+        
+        if len(self.__students) >= self.__max_students:
+            return f"Course {self.course_name} is full (max {self.__max_students} students)"
+        
+        if student not in self.__students:
+            self.__students.append(student)
+            student.enroll_in_course(self.course_name)
+            return f"{student.name} added to {self.course_name}"
+        return f"{student.name} is already enrolled in {self.course_name}"
+    
+    def remove_student(self, student):
+        """Remove a student from the course"""
+        if student in self.__students:
+            self.__students.remove(student)
+            return f"{student.name} removed from {self.course_name}"
+        return f"{student.name} is not enrolled in {self.course_name}"
+    
+    def get_info(self):
+        """Get course information"""
+        teacher_name = self.teacher.name if self.teacher else "Not assigned"
+        return f"Course: {self.course_code} - {self.course_name} ({self.credits} credits), Teacher: {teacher_name}, Students: {len(self.__students)}/{self.__max_students}"
+
+
+# ============================================
+# 5. School Class (Manages Everything)
+# ============================================
+class School:
+    """School class that manages all students, teachers, and courses"""
+    
+    def __init__(self, school_name):
+        self.school_name = school_name
+        self.__students = []  # Private: list of Student objects
+        self.__teachers = []  # Private: list of Teacher objects
+        self.__courses = []  # Private: list of Course objects
+    
+    def get_students(self):
+        """Get all students"""
+        return self.__students.copy()
+    
+    def get_teachers(self):
+        """Get all teachers"""
+        return self.__teachers.copy()
+    
+    def get_courses(self):
+        """Get all courses"""
+        return self.__courses.copy()
+    
+    def add_student(self, student):
+        """Add a student to the school"""
+        if isinstance(student, Student):
+            if student not in self.__students:
+                self.__students.append(student)
+                return f"Student {student.name} added to {self.school_name}"
+            return f"Student {student.name} is already in the school"
+        return "Error: Must be a Student object"
+    
+    def add_teacher(self, teacher):
+        """Add a teacher to the school"""
+        if isinstance(teacher, Teacher):
+            if teacher not in self.__teachers:
+                self.__teachers.append(teacher)
+                return f"Teacher {teacher.name} added to {self.school_name}"
+            return f"Teacher {teacher.name} is already in the school"
+        return "Error: Must be a Teacher object"
+    
+    def add_course(self, course):
+        """Add a course to the school"""
+        if isinstance(course, Course):
+            if course not in self.__courses:
+                self.__courses.append(course)
+                return f"Course {course.course_name} added to {self.school_name}"
+            return f"Course {course.course_name} is already in the school"
+        return "Error: Must be a Course object"
+    
+    def enroll_student_in_course(self, student_name, course_name):
+        """Enroll a student in a course"""
+        student = self.__find_student(student_name)
+        course = self.__find_course(course_name)
+        
+        if not student:
+            return f"Student {student_name} not found"
+        if not course:
+            return f"Course {course_name} not found"
+        
+        return course.add_student(student)
+    
+    def assign_teacher_to_course(self, teacher_name, course_name):
+        """Assign a teacher to a course"""
+        teacher = self.__find_teacher(teacher_name)
+        course = self.__find_course(course_name)
+        
+        if not teacher:
+            return f"Teacher {teacher_name} not found"
+        if not course:
+            return f"Course {course_name} not found"
+        
+        course.set_teacher(teacher)
+        return f"Teacher {teacher_name} assigned to {course_name}"
+    
+    # Private helper methods
+    def __find_student(self, name):
+        """Find a student by name - internal use only"""
+        for student in self.__students:
+            if student.name == name:
+                return student
+        return None
+    
+    def __find_teacher(self, name):
+        """Find a teacher by name - internal use only"""
+        for teacher in self.__teachers:
+            if teacher.name == name:
+                return teacher
+        return None
+    
+    def __find_course(self, name):
+        """Find a course by name - internal use only"""
+        for course in self.__courses:
+            if course.course_name == name:
+                return course
+        return None
+    
+    def get_school_report(self):
+        """Generate a comprehensive school report"""
+        report = f"\n{'='*60}\n"
+        report += f"  {self.school_name} - School Report\n"
+        report += f"{'='*60}\n\n"
+        
+        report += f"Total Students: {len(self.__students)}\n"
+        report += f"Total Teachers: {len(self.__teachers)}\n"
+        report += f"Total Courses: {len(self.__courses)}\n\n"
+        
+        report += f"{'-'*60}\n"
+        report += "STUDENTS:\n"
+        report += f"{'-'*60}\n"
+        for student in self.__students:
+            report += f"  {student.get_info()}\n"
+        
+        report += f"\n{'-'*60}\n"
+        report += "TEACHERS:\n"
+        report += f"{'-'*60}\n"
+        for teacher in self.__teachers:
+            report += f"  {teacher.get_info()}\n"
+        
+        report += f"\n{'-'*60}\n"
+        report += "COURSES:\n"
+        report += f"{'-'*60}\n"
+        for course in self.__courses:
+            report += f"  {course.get_info()}\n"
+        
+        report += f"\n{'='*60}\n"
+        return report
+
+
+# ============================================
+# 6. Main Program - Demonstration
+# ============================================
+def main():
+    """Main function to demonstrate the School Management System"""
+    
+    print("🏫 School Management System Demo\n")
+    
+    # Create a school
+    my_school = School("Python Academy")
+    
+    # Create students
+    student1 = Student("Alice Johnson", 20, "alice@email.com", "S001", "Computer Science")
+    student2 = Student("Bob Smith", 21, "bob@email.com", "S002", "Mathematics")
+    student3 = Student("Charlie Brown", 19, "charlie@email.com", "S003", "Computer Science")
+    
+    # Create teachers
+    teacher1 = Teacher("Dr. Sarah Williams", 35, "sarah@email.com", "T001", "Computer Science", 75000)
+    teacher2 = Teacher("Prof. John Davis", 42, "john@email.com", "T002", "Mathematics", 80000)
+    
+    # Create courses
+    course1 = Course("CS101", "Introduction to Python", 3)
+    course2 = Course("CS201", "Data Structures", 4)
+    course3 = Course("MATH101", "Calculus I", 3)
+    
+    # Add students, teachers, and courses to school
+    print("Adding students, teachers, and courses...")
+    print(my_school.add_student(student1))
+    print(my_school.add_student(student2))
+    print(my_school.add_student(student3))
+    print(my_school.add_teacher(teacher1))
+    print(my_school.add_teacher(teacher2))
+    print(my_school.add_course(course1))
+    print(my_school.add_course(course2))
+    print(my_school.add_course(course3))
+    print()
+    
+    # Assign teachers to courses
+    print("Assigning teachers to courses...")
+    print(my_school.assign_teacher_to_course("Dr. Sarah Williams", "Introduction to Python"))
+    print(my_school.assign_teacher_to_course("Dr. Sarah Williams", "Data Structures"))
+    print(my_school.assign_teacher_to_course("Prof. John Davis", "Calculus I"))
+    print()
+    
+    # Enroll students in courses
+    print("Enrolling students in courses...")
+    print(my_school.enroll_student_in_course("Alice Johnson", "Introduction to Python"))
+    print(my_school.enroll_student_in_course("Alice Johnson", "Data Structures"))
+    print(my_school.enroll_student_in_course("Bob Smith", "Calculus I"))
+    print(my_school.enroll_student_in_course("Charlie Brown", "Introduction to Python"))
+    print()
+    
+    # Add grades for students
+    print("Adding grades...")
+    print(student1.add_grade("Introduction to Python", 95))
+    print(student1.add_grade("Data Structures", 88))
+    print(student2.add_grade("Calculus I", 92))
+    print(student3.add_grade("Introduction to Python", 85))
+    print()
+    
+    # Demonstrate polymorphism - same method name, different behavior
+    print("Demonstrating Polymorphism:")
+    print(f"Student: {student1.introduce()}")
+    print(f"Teacher: {teacher1.introduce()}")
+    print()
+    
+    # Demonstrate encapsulation - accessing attributes
+    print("Demonstrating Encapsulation:")
+    print(f"Student age: {student1.age}")
+    student1.age = 21  # Direct attribute access
+    print(f"Updated age: {student1.age}")
+    print(f"Teacher salary: ${teacher1.salary:,.2f}")
+    teacher1.salary = 80000  # Direct attribute access
+    print(f"Updated salary: ${teacher1.salary:,.2f}")
+    print()
+    
+    # Display school report
+    print(my_school.get_school_report())
+    
+    # Demonstrate student-specific and teacher-specific methods
+    print("Student-specific method:")
+    print(student1.study())
+    print("\nTeacher-specific method:")
+    print(teacher1.teach())
+
+
+if __name__ == "__main__":
+    main()
+```
+
+**Key OOP Concepts Demonstrated:**
+
+1. **Encapsulation**: Private attributes (`__grades`, `__enrolled_courses`, `__students`) with controlled access through methods
+2. **Inheritance**: `Student` and `Teacher` inherit from `Person` base class
+3. **Polymorphism**: Overridden `get_info()` and `introduce()` methods in child classes
+4. **Abstraction**: Private helper methods (`__find_student`, `__generate_id`) hide implementation details
+5. **Class Organization**: Separate classes for different responsibilities
+6. **Method Overriding**: Child classes override parent methods while using `super()` to call parent methods
+7. **Direct Attribute Access**: Public attributes for simple data access without getters/setters
+
+This solution demonstrates all the OOP principles covered in this lecture! 🎓✨
