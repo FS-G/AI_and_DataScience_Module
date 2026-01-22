@@ -692,33 +692,173 @@ if __name__ == "__main__":
     main()
 ```
 
-## Multilevel Inheritance Example
-
-```python
-class Animal:
-    def breathe(self):
-        return "Breathing..."
-
-class Mammal(Animal):
-    def feed_milk(self):
-        return "Feeding milk to babies"
-
-class Dog(Mammal):
-    def bark(self):
-        return "Woof!"
-
-# Dog inherits from both Mammal and Animal
-my_dog = Dog()
-print(my_dog.breathe())     # From Animal
-print(my_dog.feed_milk())   # From Mammal
-print(my_dog.bark())        # From Dog
-```
-
 ## Types of Inheritance
 
-1. **Single Inheritance** - One parent, one child
-2. **Multiple Inheritance** - One child, multiple parents
-3. **Multilevel Inheritance** - Grandparent → Parent → Child
+Python supports three main types of inheritance:
+
+1. **Single Inheritance** - One parent, one child (simplest form)
+2. **Multiple Inheritance** - One child, multiple parents (inherits from multiple classes)
+3. **Multilevel Inheritance** - Grandparent → Parent → Child (chain of inheritance)
+
+### 1. Single Inheritance
+
+**Definition:** A child class inherits from only one parent class. This is the simplest and most common form of inheritance.
+
+**Example:**
+```python
+class Person:
+    """Parent class representing a person"""
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    
+    def introduce(self):
+        return f"Hi, I'm {self.name} and I'm {self.age} years old."
+    
+    def celebrate_birthday(self):
+        self.age += 1
+        return f"Happy Birthday! Now I'm {self.age} years old."
+
+class Student(Person):
+    """Child class inheriting from Person"""
+    def __init__(self, name, age, student_id, major):
+        # Call parent constructor using super()
+        super().__init__(name, age)
+        self.student_id = student_id
+        self.major = major
+    
+    def study(self):
+        return f"{self.name} is studying {self.major}."
+    
+    def get_info(self):
+        # Use parent method and extend it
+        parent_info = super().introduce()
+        return f"{parent_info} My student ID is {self.student_id} and I'm majoring in {self.major}."
+
+# Using Single Inheritance
+student = Student("Alice", 20, "S12345", "Computer Science")
+print(student.introduce())        # Inherited from Person
+print(student.study())            # Student's own method
+print(student.get_info())         # Overridden method using super()
+print(student.celebrate_birthday()) # Inherited from Person
+```
+
+### 2. Multiple Inheritance
+
+**Definition:** A child class inherits from multiple parent classes. The child class can access methods and attributes from all parent classes.
+
+**Example:**
+```python
+class Employee:
+    """First parent class"""
+    def __init__(self, name, employee_id, salary):
+        self.name = name
+        self.employee_id = employee_id
+        self.salary = salary
+    
+    def work(self):
+        return f"{self.name} is working."
+    
+    def get_salary(self):
+        return f"{self.name}'s salary is ${self.salary}"
+
+class Developer:
+    """Second parent class"""
+    def __init__(self, programming_language):
+        self.programming_language = programming_language
+    
+    def code(self):
+        return f"Writing code in {self.programming_language}"
+    
+    def debug(self):
+        return f"Debugging {self.programming_language} code"
+
+class DeveloperEmployee(Employee, Developer):
+    """Child class inheriting from both Employee and Developer"""
+    def __init__(self, name, employee_id, salary, programming_language):
+        # Note: We use explicit parent class calls instead of super() in multiple inheritance
+        # because super() follows Method Resolution Order (MRO) which can be complex.
+        # Explicit calls make it clear which parent's constructor is being called and
+        # ensure both parents are initialized correctly.
+        # Initialize Employee parent
+        Employee.__init__(self, name, employee_id, salary)
+        # Initialize Developer parent
+        Developer.__init__(self, programming_language)
+    
+    def get_info(self):
+        return f"{self.name} (ID: {self.employee_id}) is a developer earning ${self.salary} and coding in {self.programming_language}"
+
+# Using Multiple Inheritance
+dev_emp = DeveloperEmployee("Bob", "E001", 75000, "Python")
+print(dev_emp.work())           # From Employee class
+print(dev_emp.code())           # From Developer class
+print(dev_emp.debug())          # From Developer class
+print(dev_emp.get_salary())     # From Employee class
+print(dev_emp.get_info())       # From DeveloperEmployee class
+```
+
+### 3. Multilevel Inheritance
+
+**Definition:** A child class inherits from a parent class, which itself inherits from another class. This creates a chain of inheritance: Grandparent → Parent → Child.
+
+**Example:**
+```python
+class Animal:
+    """Grandparent class"""
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+    
+    def breathe(self):
+        return f"{self.name} is breathing..."
+    
+    def get_info(self):
+        return f"Name: {self.name}, Species: {self.species}"
+
+class Mammal(Animal):
+    """Parent class inheriting from Animal"""
+    def __init__(self, name, species, has_fur):
+        # Call grandparent constructor using super()
+        super().__init__(name, species)
+        self.has_fur = has_fur
+    
+    def feed_milk(self):
+        return f"{self.name} is feeding milk to babies"
+    
+    def get_info(self):
+        # Call grandparent method and extend it
+        parent_info = super().get_info()
+        fur_status = "has fur" if self.has_fur else "no fur"
+        return f"{parent_info}, {fur_status}"
+
+class Dog(Mammal):
+    """Child class inheriting from Mammal (which inherits from Animal)"""
+    def __init__(self, name, breed):
+        # Call parent (Mammal) constructor using super()
+        # Mammal will then call Animal constructor
+        super().__init__(name, "Canine", has_fur=True)
+        self.breed = breed
+    
+    def bark(self):
+        return f"{self.name} says: Woof! Woof!"
+    
+    def get_info(self):
+        # Call parent (Mammal) method, which calls Animal method
+        parent_info = super().get_info()
+        return f"{parent_info}, Breed: {self.breed}"
+
+# Using Multilevel Inheritance
+my_dog = Dog("Buddy", "Golden Retriever")
+print(my_dog.breathe())         # From Animal (grandparent)
+print(my_dog.feed_milk())       # From Mammal (parent)
+print(my_dog.bark())            # From Dog (child)
+print(my_dog.get_info())        # Overridden method using super() chain
+```
+
+**Key Points:**
+- In multilevel inheritance, `super()` calls the immediate parent, which can then call its parent
+- The constructor chain flows: Dog → Mammal → Animal
+- Methods can be overridden at any level, and `super()` allows calling the parent's version
 
 ---
 
