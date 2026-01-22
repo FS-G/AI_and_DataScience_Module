@@ -617,7 +617,7 @@ print(f"Monthly payment: ${payment:.2f}")
 
 **Inheritance** lets you create a new class (child) that automatically gets the features (attributes and methods) of another class (parent). This helps you reuse code and model real-world relationships (e.g., a Car is a type of Vehicle).
 
-## Basic Inheritance Example
+### Basic Inheritance Example
 
 ```python
 # vehicles.py
@@ -665,7 +665,7 @@ class Motorcycle(Vehicle):
         return f"{parent_info} - {self.engine_size}cc engine"
 ```
 
-## Using Inherited Classes
+### Using Inherited Classes
 
 ```python
 # vehicle_demo.py
@@ -692,7 +692,7 @@ if __name__ == "__main__":
     main()
 ```
 
-## Types of Inheritance
+### Types of Inheritance
 
 Python supports three main types of inheritance:
 
@@ -700,7 +700,7 @@ Python supports three main types of inheritance:
 2. **Multiple Inheritance** - One child, multiple parents (inherits from multiple classes)
 3. **Multilevel Inheritance** - Grandparent → Parent → Child (chain of inheritance)
 
-### 1. Single Inheritance
+#### 1. Single Inheritance
 
 **Definition:** A child class inherits from only one parent class. This is the simplest and most common form of inheritance.
 
@@ -743,7 +743,7 @@ print(student.get_info())         # Overridden method using super()
 print(student.celebrate_birthday()) # Inherited from Person
 ```
 
-### 2. Multiple Inheritance
+#### 2. Multiple Inheritance
 
 **Definition:** A child class inherits from multiple parent classes. The child class can access methods and attributes from all parent classes.
 
@@ -797,7 +797,7 @@ print(dev_emp.get_salary())     # From Employee class
 print(dev_emp.get_info())       # From DeveloperEmployee class
 ```
 
-### 3. Multilevel Inheritance
+#### 3. Multilevel Inheritance
 
 **Definition:** A child class inherits from a parent class, which itself inherits from another class. This creates a chain of inheritance: Grandparent → Parent → Child.
 
