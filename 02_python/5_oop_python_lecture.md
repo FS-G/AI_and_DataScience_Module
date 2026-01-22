@@ -1742,7 +1742,6 @@ if __name__ == "__main__":
 1. **Encapsulation**: Private attributes (`__grades`, `__enrolled_courses`, `__students`) with controlled access through methods
 2. **Inheritance**: `Student` and `Teacher` inherit from `Person` base class
 3. **Polymorphism**: Overridden `get_info()` and `introduce()` methods in child classes
-4. **Abstraction**: Private helper methods (`__find_student`, `__generate_id`) hide implementation details
 5. **Class Organization**: Separate classes for different responsibilities
 6. **Method Overriding**: Child classes override parent methods while using `super()` to call parent methods
 7. **Direct Attribute Access**: Public attributes for simple data access without getters/setters

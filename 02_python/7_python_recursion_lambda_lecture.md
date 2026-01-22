@@ -37,6 +37,39 @@ countdown(5)
 Blast off! 🚀
 ```
 
+**Logic**
+```
+graph TD
+    Start([Start: add_numbers 5]) --> Check1{n == 1?}
+    Check1 -->|No, n=5| Recurse1[Return 5 + add_numbers 4]
+    
+    Recurse1 --> Check2{n == 1?}
+    Check2 -->|No, n=4| Recurse2[Return 4 + add_numbers 3]
+    
+    Recurse2 --> Check3{n == 1?}
+    Check3 -->|No, n=3| Recurse3[Return 3 + add_numbers 2]
+    
+    Recurse3 --> Check4{n == 1?}
+    Check4 -->|No, n=2| Recurse4[Return 2 + add_numbers 1]
+    
+    Recurse4 --> Check5{n == 1?}
+    Check5 -->|Yes| Base[Return 1]
+    
+    Base --> Unwind1[2 + 1 = 3]
+    Unwind1 --> Unwind2[3 + 3 = 6]
+    Unwind2 --> Unwind3[4 + 6 = 10]
+    Unwind3 --> Unwind4[5 + 10 = 15]
+    Unwind4 --> End([Result: 15])
+    
+    style Start fill:#e1f5ff
+    style End fill:#d4edda
+    style Base fill:#fff3cd
+    style Unwind1 fill:#d4edda
+    style Unwind2 fill:#d4edda
+    style Unwind3 fill:#d4edda
+    style Unwind4 fill:#d4edda
+```
+
 ### Another Example: Adding Numbers
 
 ```python
