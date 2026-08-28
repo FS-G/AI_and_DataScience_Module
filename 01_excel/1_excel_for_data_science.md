@@ -243,157 +243,8 @@ Segment: =IF(DATEDIF(D2,TODAY(),"D")<=90,"New","Existing")
 
 ---
 
-## Part 3: Data Import and Cleaning
 
-### Data Import Techniques
-
-**CSV File Import:**
-1. Data > Get Data > From File > From Text/CSV
-2. Select file and preview data
-3. Choose delimiter (comma, semicolon, tab)
-4. Set data types for each column
-5. Load to worksheet or Power Query Editor
-
-**Excel File Import:**
-1. Data > Get Data > From File > From Workbook
-2. Select specific sheets or ranges
-3. Preview and transform if needed
-4. Load to current workbook
-
-**Text File Import:**
-1. Data > Get Data > From File > From Text/CSV
-2. Handle fixed-width or delimited formats
-3. Set column breaks for fixed-width
-4. Preview and adjust data types
-
-### Power Query Basics
-
-**Power Query Interface:**
-- **Query Editor**: Transform data before loading
-- **Applied Steps**: Track all transformations
-- **Formula Bar**: View and edit M language code
-- **Data Preview**: See transformation results
-
-**Common Power Query Transformations:**
-```
-1. Remove Columns: Select columns > Remove Columns
-2. Change Data Type: Select column > Data Type
-3. Split Columns: Select column > Split Column > By Delimiter
-4. Filter Rows: Click dropdown > Filter values
-5. Group By: Transform > Group By
-```
-
-**Power Query M Language Examples:**
-```m
-// Remove empty rows
-Table.SelectRows(Source, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))
-
-// Convert text to proper case
-Table.TransformColumns(Source, {"Name", Text.Proper})
-
-// Filter dates within last 30 days
-Table.SelectRows(Source, each [Date] >= Date.AddDays(Date.From(DateTime.LocalNow()), -30))
-```
-
-### Handling Different File Formats
-
-**JSON Data Import:**
-1. Data > Get Data > From File > From JSON
-2. Navigate nested structure
-3. Convert to table format
-4. Expand record columns
-
-**XML Data Import:**
-1. Data > Get Data > From File > From XML
-2. Select appropriate table from hierarchy
-3. Transform nested elements
-4. Handle attributes vs elements
-
-**Database Connections:**
-```
-Data > Get Data > From Database
-- SQL Server
-- MySQL
-- PostgreSQL
-- SQLite
-```
-
-**Web Data Import:**
-1. Data > Get Data > From Web
-2. Enter URL or upload HTML file
-3. Select tables from web page
-4. Handle authentication if required
-
-### Encoding and Special Characters
-
-**Common Encoding Issues:**
-- UTF-8 vs ANSI encoding
-- Special characters (è, ñ, ü)
-- Different decimal separators (, vs .)
-- Date format variations
-
-**Solutions:**
-- Specify encoding during import
-- Use Text.Encoding.Utf8 in Power Query
-- Transform characters using SUBSTITUTE
-- Set regional settings in Excel
-
-### Hands-on Exercise 3: Multi-Source Data Import
-
-**Scenario: Sales Data from Multiple Sources**
-
-**Source 1: CSV - Online Sales**
-```
-OrderID,CustomerID,Product,Quantity,Price,Date,Channel,Region
-1001,C001,Laptop,1,999.99,2024-01-15,Online,North
-1002,C002,Mouse,2,25.50,2024-01-16,Online,South
-1003,C003,Tablet,1,299.99,2024-01-17,Online,East
-1004,C004,Keyboard,3,45.00,2024-01-18,Online,West
-1005,C005,Monitor,2,199.99,2024-01-19,Online,North
-1006,C006,Headphones,1,89.99,2024-01-20,Online,South
-1007,C007,Webcam,1,59.99,2024-01-21,Online,East
-1008,C008,Speaker,2,129.99,2024-01-22,Online,West
-```
-
-**Source 2: Excel - Store Sales**
-```
-Order_ID | Customer_ID | Product_Name | Qty | Unit_Price | Sale_Date | Store_Location | Sales_Rep
-2001 | C003 | Tablet | 1 | 299.99 | 15-Jan-2024 | Downtown | Sarah
-2002 | C004 | Keyboard | 3 | 45.00 | 16-Jan-2024 | Mall | Mike
-2003 | C005 | Monitor | 2 | 199.99 | 17-Jan-2024 | Downtown | Lisa
-2004 | C006 | Headphones | 1 | 89.99 | 18-Jan-2024 | Mall | John
-2005 | C007 | Webcam | 1 | 59.99 | 19-Jan-2024 | Downtown | Sarah
-2006 | C008 | Speaker | 2 | 129.99 | 20-Jan-2024 | Mall | Mike
-2007 | C009 | Mouse | 5 | 25.50 | 21-Jan-2024 | Downtown | Lisa
-2008 | C010 | Laptop | 1 | 999.99 | 22-Jan-2024 | Mall | John
-```
-
-**Source 3: JSON - Customer Data**
-```json
-{
-  "customers": [
-    {"id": "C001", "name": "John Smith", "email": "john.smith@techcorp.com", "city": "New York", "membership_level": "Premium"},
-    {"id": "C002", "name": "Jane Doe", "email": "jane.doe@techcorp.com", "city": "Los Angeles", "membership_level": "Standard"},
-    {"id": "C003", "name": "Bob Johnson", "email": "bob.johnson@techcorp.com", "city": "Chicago", "membership_level": "Premium"},
-    {"id": "C004", "name": "Alice Brown", "email": "alice.brown@techcorp.com", "city": "Houston", "membership_level": "Standard"},
-    {"id": "C005", "name": "Charlie Wilson", "email": "charlie.wilson@techcorp.com", "city": "Miami", "membership_level": "Premium"},
-    {"id": "C006", "name": "Diana Garcia", "email": "diana.garcia@techcorp.com", "city": "Phoenix", "membership_level": "Basic"},
-    {"id": "C007", "name": "Edward Lee", "email": "edward.lee@techcorp.com", "city": "Seattle", "membership_level": "Premium"},
-    {"id": "C008", "name": "Fiona Chen", "email": "fiona.chen@techcorp.com", "city": "Denver", "membership_level": "Standard"}
-  ]
-}
-```
-
-**Tasks:**
-1. Import all three data sources
-2. Standardize column names across sources
-3. Combine online and store sales data
-4. Join with customer information
-5. Create unified sales dataset
-
----
-
-## Part 4: Data Cleaning and Transformation
+## Part 3: Data Cleaning and Transformation
 
 ### Identifying Data Quality Issues
 
@@ -545,7 +396,7 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
 
 ---
 
-## Part 5: Descriptive Statistics and Analysis
+## Part 4: Descriptive Statistics and Analysis
 
 ### Measures of Central Tendency
 
@@ -744,7 +595,7 @@ Sophia | West | 95000 | 105000 | 115000 | 120000 | 1 | Small | 60
 
 ---
 
-## Part 6: Conditional Aggregation and Grouping
+## Part 5: Conditional Aggregation and Grouping
 
 ### SUMIF, COUNTIF, AVERAGEIF Functions
 
@@ -866,7 +717,7 @@ C010 | Helen Taylor | 41 | F | Portland | 3600 | 16 | 2024-01-30 | Premium | Onl
 
 ---
 
-## Part 7: Pivot Tables Mastery
+## Part 6: Pivot Tables Mastery
 
 ### Creating and Customizing Pivot Tables
 
@@ -1070,7 +921,7 @@ OrderID | Date | Customer | Product | Category | Region | Channel | Quantity | P
 
 ---
 
-## Part 8: Data Visualization with Charts
+## Part 7: Data Visualization with Charts
 
 ### Chart Fundamentals
 
@@ -1284,7 +1135,7 @@ Dec | 235000 | 164000 | 71000 | 2350 | 13500 | 315 | 6.1% | 4.6
 
 ---
 
-## Part 9: Advanced Visualization Techniques
+## Part 8: Advanced Visualization Techniques
 
 ### Combination Charts and Secondary Axes
 
