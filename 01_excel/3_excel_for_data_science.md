@@ -8,7 +8,7 @@
 
 ## Advanced Analytics
 
-### Session 5A: Statistical Analysis
+### Statistical Analysis
 
 #### 1. Regression Analysis Using Excel's Built-in Tools
 
@@ -145,7 +145,7 @@ Additional Factors:
 6. Compare forecasting methods using MAD (Mean Absolute Deviation)
 7. Select best method based on accuracy metrics
 
-### Session 5B: What-If Analysis
+### What-If Analysis
 
 #### 1. Data Tables for Sensitivity Analysis
 
@@ -312,7 +312,7 @@ Objective: Maximize total profit while meeting all constraints
 
 ## Automation and Efficiency
 
-### Session 6A: Excel Automation
+### Excel Automation
 
 #### 1. Recording and Editing Macros
 
@@ -548,7 +548,7 @@ Additional Features:
 4. Build email automation using Outlook integration
 5. Test and refine automation
 
-### Session 6B: Best Practices and Integration
+### Best Practices and Integration
 
 #### 1. Data Validation and Error Checking
 
