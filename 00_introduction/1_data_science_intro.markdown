@@ -131,7 +131,7 @@
 - **Supervised Learning:** Learning from **labeled examples** to make predictions
 - **Unsupervised Learning:** Finding **hidden patterns** in unlabeled data
 - **Reinforcement Learning:** Learning through **trial and error** with rewards
-- **Deep Learning:** **Neural networks** with multiple layers for complex patterns
+
 
 **Supervised Learning Applications:**
 - **Classification:** Email spam detection, medical diagnosis, image recognition
