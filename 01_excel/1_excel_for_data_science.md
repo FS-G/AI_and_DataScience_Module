@@ -24,21 +24,21 @@
 
 **Essential Keyboard Shortcuts:**
 
-- `Ctrl+C`: Copy | `Ctrl+X`: Cut | `Ctrl+V`: Paste  
-- `Ctrl+Z`: Undo | `Ctrl+Y`: Redo | `Ctrl+B`: Bold | `Ctrl+U`: Underline | `Ctrl+I`: Italic
+- `Ctrl+C`: Copy|`Ctrl+X`: Cut|`Ctrl+V`: Paste  
+- `Ctrl+Z`: Undo|`Ctrl+Y`: Redo|`Ctrl+B`: Bold|`Ctrl+U`: Underline|`Ctrl+I`: Italic
 
 - `Ctrl+Arrow Key`: Move to edge of data region  
 - `Ctrl+Shift+Arrow Key`: Select to edge of data region  
-- `Ctrl+Home`: Go to A1 | `Ctrl+End`: Go to last used cell | `Ctrl+Shift+End`: Select to end of data
+- `Ctrl+Home`: Go to A1|`Ctrl+End`: Go to last used cell|`Ctrl+Shift+End`: Select to end of data
 
-- `Ctrl+T`: Create table | `Ctrl+1`: Format cells dialog | `Alt+=`: AutoSum | `Ctrl+Shift+L`: Toggle filters
+- `Ctrl+T`: Create table|`Ctrl+1`: Format cells dialog|`Alt+=`: AutoSum|`Ctrl+Shift+L`: Toggle filters
 
-- `Ctrl+F`: Find | `Ctrl+H`: Replace | `F4`: Repeat last action
+- `Ctrl+F`: Find|`Ctrl+H`: Replace|`F4`: Repeat last action
 
-- `Ctrl+Space`: Select entire column | `Shift+Space`: Select entire row  
-- `Ctrl+-`: Delete row/column | `Ctrl+Shift++`: Insert row/column | `Ctrl+9`: Hide row | `Ctrl+0`: Hide column
+- `Ctrl+Space`: Select entire column|`Shift+Space`: Select entire row  
+- `Ctrl+-`: Delete row/column|`Ctrl+Shift++`: Insert row/column|`Ctrl+9`: Hide row|`Ctrl+0`: Hide column
 
-- `Alt+Enter`: New line within cell | `Ctrl+D`: Fill down | `Ctrl+R`: Fill right | `Ctrl+;`: Insert current date
+- `Alt+Enter`: New line within cell|`Ctrl+D`: Fill down|`Ctrl+R`: Fill right|`Ctrl+;`: Insert current date
 
 ---
 
@@ -85,15 +85,15 @@ Data > Data Validation > Settings
 
 **Sample Dataset: Customer Information**
 ```
-CustomerID | Name | Email | Registration_Date | Age | Status | City | Annual_Spend | Last_Purchase
-001 | John Smith | john.smith@techcorp.com | 2024-01-15 | 25 | Active | New York | 2500 | 2024-03-15
-002 | Jane Doe | jane.doe@techcorp.com | 2024-02-20 | 30 | Inactive | Los Angeles | 1800 | 2024-02-28
-003 | Bob Johnson | bob.johnson@techcorp.com | 2024-03-10 | 28 | Active | Chicago | 3200 | 2024-03-20
-004 | Alice Brown | alice.brown@techcorp.com | 2024-01-25 | 35 | Active | Houston | 2100 | 2024-03-18
-005 | Charlie Wilson | charlie.wilson@techcorp.com | 2024-02-05 | 42 | Active | Miami | 4500 | 2024-03-22
-006 | Diana Garcia | diana.garcia@techcorp.com | 2024-03-01 | 29 | Inactive | Phoenix | 1200 | 2024-02-15
-007 | Edward Lee | edward.lee@techcorp.com | 2024-01-30 | 38 | Active | Seattle | 3800 | 2024-03-25
-008 | Fiona Chen | fiona.chen@techcorp.com | 2024-02-12 | 26 | Active | Denver | 2900 | 2024-03-19
+CustomerID|Name|Email|Registration_Date|Age|Status|City|Annual_Spend|Last_Purchase
+001|John Smith|john.smith@techcorp.com|2024-01-15|25|Active|New York|2500|2024-03-15
+002|Jane Doe|jane.doe@techcorp.com|2024-02-20|30|Inactive|Los Angeles|1800|2024-02-28
+003|Bob Johnson|bob.johnson@techcorp.com|2024-03-10|28|Active|Chicago|3200|2024-03-20
+004|Alice Brown|alice.brown@techcorp.com|2024-01-25|35|Active|Houston|2100|2024-03-18
+005|Charlie Wilson|charlie.wilson@techcorp.com|2024-02-05|42|Active|Miami|4500|2024-03-22
+006|Diana Garcia|diana.garcia@techcorp.com|2024-03-01|29|Inactive|Phoenix|1200|2024-02-15
+007|Edward Lee|edward.lee@techcorp.com|2024-01-30|38|Active|Seattle|3800|2024-03-25
+008|Fiona Chen|fiona.chen@techcorp.com|2024-02-12|26|Active|Denver|2900|2024-03-19
 ```
 
 **Tasks:**
@@ -214,13 +214,13 @@ Order Count: =COUNT(D2:D100)
 
 **Sample Messy Dataset:**
 ```
-Customer_Name | email_address | phone | registration_date | status | city | annual_spend
-john smith | JOHN.SMITH@TECHCORP.COM | 555-1234 | 1/15/2024 | active | new york | $2,500
-JANE DOE | jane.doe@techcorp.com | (555) 567-8901 | 2024-02-20 | INACTIVE | los angeles | 1800
-Bob Johnson | bob.johnson@techcorp.com | 555.234.5678 | 3/10/24 | Active | chicago | $3,200
-alice brown | ALICE.BROWN@TECHCORP.COM | (555) 789-0123 | 1/25/2024 | ACTIVE | houston | 2100
-CHARLIE WILSON | charlie.wilson@techcorp.com | 555.456.7890 | 2/5/24 | active | miami | $4,500
-diana garcia | DIANA.GARCIA@TECHCORP.COM | (555) 321-6540 | 3/1/2024 | inactive | phoenix | 1200
+Customer_Name|email_address|phone|registration_date|status|city|annual_spend
+john smith|JOHN.SMITH@TECHCORP.COM|555-1234|1/15/2024|active|new york|$2,500
+JANE DOE|jane.doe@techcorp.com|(555) 567-8901|2024-02-20|INACTIVE|los angeles|1800
+Bob Johnson|bob.johnson@techcorp.com|555.234.5678|3/10/24|Active|chicago|$3,200
+alice brown|ALICE.BROWN@TECHCORP.COM|(555) 789-0123|1/25/2024|ACTIVE|houston|2100
+CHARLIE WILSON|charlie.wilson@techcorp.com|555.456.7890|2/5/24|active|miami|$4,500
+diana garcia|DIANA.GARCIA@TECHCORP.COM|(555) 321-6540|3/1/2024|inactive|phoenix|1200
 ```
 
 **Cleaning Tasks:**
@@ -349,18 +349,18 @@ Data > Filter > Uncheck (Blanks)
 
 **Sample Messy Survey Dataset:**
 ```
-respondent_id | age | gender | income | education | satisfaction | comments | purchase_frequency | preferred_channel
-1 | 25 | M | $50,000 | bachelor's | 4 | "good service" | monthly | online
-2 | | F | 60000 | Bachelor | 5 | Very satisfied!!! | weekly | store
-3 | 35 | male | $75,000 | Masters | 3 | | bi-weekly | online
-4 | 28 | F | 45,000 | bachelor's degree | 4 | "could be better" | monthly | store
-5 | 45 | M | $90,000 | PhD | 5 | excellent | weekly | online
-2 | 30 | F | $60,000 | Bachelor | 5 | Very satisfied!!! | monthly | store
-6 | 32 | Female | $65,000 | Master's | 4 | "decent experience" | bi-weekly | online
-7 | 29 | m | $55,000 | bachelor | 3 | needs improvement | monthly | store
-8 | 41 | F | $85,000 | MBA | 5 | outstanding service | weekly | online
-9 | 26 | Male | $48,000 | college | 4 | "pretty good" | monthly | store
-10 | 38 | f | $72,000 | master's degree | 5 | excellent experience | weekly | online
+respondent_id|age|gender|income|education|satisfaction|comments|purchase_frequency|preferred_channel
+1|25|M|$50,000|bachelor's|4|"good service"|monthly|online
+2||F|60000|Bachelor|5|Very satisfied!!!|weekly|store
+3|35|male|$75,000|Masters|3||bi-weekly|online
+4|28|F|45,000|bachelor's degree|4|"could be better"|monthly|store
+5|45|M|$90,000|PhD|5|excellent|weekly|online
+2|30|F|$60,000|Bachelor|5|Very satisfied!!!|monthly|store
+6|32|Female|$65,000|Master's|4|"decent experience"|bi-weekly|online
+7|29|m|$55,000|bachelor|3|needs improvement|monthly|store
+8|41|F|$85,000|MBA|5|outstanding service|weekly|online
+9|26|Male|$48,000|college|4|"pretty good"|monthly|store
+10|38|f|$72,000|master's degree|5|excellent experience|weekly|online
 ```
 
 **Data Quality Issues to Address:**
@@ -545,15 +545,15 @@ C  =CORREL(C:C,A:A)  =CORREL(C:C,B:B)  1
 
 **Sample Sales Dataset:**
 ```
-SalesRep | Region | Q1_Sales | Q2_Sales | Q3_Sales | Q4_Sales | Years_Experience | Territory_Size | Customer_Count
-John | North | 125000 | 130000 | 145000 | 150000 | 5 | Large | 150
-Sarah | South | 110000 | 120000 | 135000 | 140000 | 3 | Medium | 120
-Mike | East | 135000 | 140000 | 155000 | 160000 | 7 | Large | 180
-Lisa | West | 105000 | 115000 | 125000 | 130000 | 2 | Small | 80
-David | North | 140000 | 145000 | 160000 | 165000 | 8 | Large | 200
-Emma | South | 100000 | 110000 | 125000 | 130000 | 4 | Medium | 100
-Alex | East | 120000 | 125000 | 140000 | 145000 | 6 | Medium | 140
-Sophia | West | 95000 | 105000 | 115000 | 120000 | 1 | Small | 60
+SalesRep|Region|Q1_Sales|Q2_Sales|Q3_Sales|Q4_Sales|Years_Experience|Territory_Size|Customer_Count
+John|North|125000|130000|145000|150000|5|Large|150
+Sarah|South|110000|120000|135000|140000|3|Medium|120
+Mike|East|135000|140000|155000|160000|7|Large|180
+Lisa|West|105000|115000|125000|130000|2|Small|80
+David|North|140000|145000|160000|165000|8|Large|200
+Emma|South|100000|110000|125000|130000|4|Medium|100
+Alex|East|120000|125000|140000|145000|6|Medium|140
+Sophia|West|95000|105000|115000|120000|1|Small|60
 ```
 
 **Analysis Tasks:**
@@ -648,17 +648,17 @@ Sophia | West | 95000 | 105000 | 115000 | 120000 | 1 | Small | 60
 
 **Sample Customer Dataset:**
 ```
-CustomerID | Name | Age | Gender | City | Annual_Spend | Frequency | Last_Purchase | Membership_Level | Preferred_Channel
-C001 | John Smith | 35 | M | New York | 2500 | 12 | 2024-01-15 | Premium | Online
-C002 | Jane Doe | 28 | F | Los Angeles | 1800 | 8 | 2024-02-20 | Standard | Store
-C003 | Bob Johnson | 42 | M | Chicago | 3200 | 15 | 2024-01-10 | Premium | Online
-C004 | Alice Brown | 31 | F | Houston | 2100 | 10 | 2024-03-05 | Standard | Store
-C005 | Charlie Wilson | 45 | M | Miami | 4500 | 20 | 2024-01-05 | Premium | Online
-C006 | Diana Garcia | 29 | F | Phoenix | 1200 | 6 | 2024-02-15 | Basic | Store
-C007 | Edward Lee | 38 | M | Seattle | 3800 | 18 | 2024-01-20 | Premium | Online
-C008 | Fiona Chen | 26 | F | Denver | 2900 | 14 | 2024-03-10 | Standard | Online
-C009 | George Martinez | 33 | M | Austin | 2200 | 11 | 2024-02-25 | Standard | Store
-C010 | Helen Taylor | 41 | F | Portland | 3600 | 16 | 2024-01-30 | Premium | Online
+CustomerID|Name|Age|Gender|City|Annual_Spend|Frequency|Last_Purchase|Membership_Level|Preferred_Channel
+C001|John Smith|35|M|New York|2500|12|2024-01-15|Premium|Online
+C002|Jane Doe|28|F|Los Angeles|1800|8|2024-02-20|Standard|Store
+C003|Bob Johnson|42|M|Chicago|3200|15|2024-01-10|Premium|Online
+C004|Alice Brown|31|F|Houston|2100|10|2024-03-05|Standard|Store
+C005|Charlie Wilson|45|M|Miami|4500|20|2024-01-05|Premium|Online
+C006|Diana Garcia|29|F|Phoenix|1200|6|2024-02-15|Basic|Store
+C007|Edward Lee|38|M|Seattle|3800|18|2024-01-20|Premium|Online
+C008|Fiona Chen|26|F|Denver|2900|14|2024-03-10|Standard|Online
+C009|George Martinez|33|M|Austin|2200|11|2024-02-25|Standard|Store
+C010|Helen Taylor|41|F|Portland|3600|16|2024-01-30|Premium|Online
 ```
 
 **Segmentation Tasks:**
@@ -842,19 +842,19 @@ Right-click slicer > Slicer Settings
 
 **Sample E-commerce Dataset:**
 ```
-OrderID | Date | Customer | Product | Category | Region | Channel | Quantity | Price | Cost | Sales_Rep
-1001 | 2024-01-15 | John Smith | Laptop | Electronics | North | Online | 1 | 999 | 600 | Sarah
-1002 | 2024-01-16 | Jane Doe | Mouse | Electronics | South | Store | 2 | 25 | 15 | Mike
-1003 | 2024-01-17 | Bob Johnson | Shirt | Clothing | East | Online | 3 | 30 | 18 | Lisa
-1004 | 2024-01-18 | Alice Brown | Tablet | Electronics | West | Online | 1 | 299 | 200 | John
-1005 | 2024-01-19 | Charlie Wilson | Monitor | Electronics | North | Store | 2 | 199 | 120 | Sarah
-1006 | 2024-01-20 | Diana Garcia | Headphones | Electronics | South | Online | 1 | 89 | 45 | Mike
-1007 | 2024-01-21 | Edward Lee | Keyboard | Electronics | East | Store | 3 | 45 | 25 | Lisa
-1008 | 2024-01-22 | Fiona Chen | Speaker | Electronics | West | Online | 2 | 129 | 80 | John
-1009 | 2024-01-23 | George Martinez | Jeans | Clothing | North | Store | 2 | 75 | 40 | Sarah
-1010 | 2024-01-24 | Helen Taylor | Webcam | Electronics | South | Online | 1 | 59 | 35 | Mike
-1011 | 2024-01-25 | Ian Anderson | T-shirt | Clothing | East | Store | 5 | 20 | 12 | Lisa
-1012 | 2024-01-26 | Julia Rodriguez | Printer | Electronics | West | Online | 1 | 199 | 120 | John
+OrderID|Date|Customer|Product|Category|Region|Channel|Quantity|Price|Cost|Sales_Rep
+1001|2024-01-15|John Smith|Laptop|Electronics|North|Online|1|999|600|Sarah
+1002|2024-01-16|Jane Doe|Mouse|Electronics|South|Store|2|25|15|Mike
+1003|2024-01-17|Bob Johnson|Shirt|Clothing|East|Online|3|30|18|Lisa
+1004|2024-01-18|Alice Brown|Tablet|Electronics|West|Online|1|299|200|John
+1005|2024-01-19|Charlie Wilson|Monitor|Electronics|North|Store|2|199|120|Sarah
+1006|2024-01-20|Diana Garcia|Headphones|Electronics|South|Online|1|89|45|Mike
+1007|2024-01-21|Edward Lee|Keyboard|Electronics|East|Store|3|45|25|Lisa
+1008|2024-01-22|Fiona Chen|Speaker|Electronics|West|Online|2|129|80|John
+1009|2024-01-23|George Martinez|Jeans|Clothing|North|Store|2|75|40|Sarah
+1010|2024-01-24|Helen Taylor|Webcam|Electronics|South|Online|1|59|35|Mike
+1011|2024-01-25|Ian Anderson|T-shirt|Clothing|East|Store|5|20|12|Lisa
+1012|2024-01-26|Julia Rodriguez|Printer|Electronics|West|Online|1|199|120|John
 ```
 
 **Analysis Tasks:**
@@ -1068,19 +1068,19 @@ Axis Formatting:
 
 **Sample Business Data:**
 ```
-Month | Revenue | Expenses | Profit | Units_Sold | Marketing_Spend | New_Customers | Conversion_Rate | Customer_Satisfaction
-Jan | 125000 | 85000 | 40000 | 1250 | 8000 | 150 | 2.8% | 4.2
-Feb | 135000 | 92000 | 43000 | 1350 | 8500 | 165 | 3.1% | 4.3
-Mar | 145000 | 98000 | 47000 | 1450 | 9000 | 180 | 3.4% | 4.4
-Apr | 155000 | 105000 | 50000 | 1550 | 9500 | 195 | 3.7% | 4.5
-May | 165000 | 112000 | 53000 | 1650 | 10000 | 210 | 4.0% | 4.6
-Jun | 175000 | 118000 | 57000 | 1750 | 10500 | 225 | 4.3% | 4.7
-Jul | 185000 | 125000 | 60000 | 1850 | 11000 | 240 | 4.6% | 4.8
-Aug | 195000 | 132000 | 63000 | 1950 | 11500 | 255 | 4.9% | 4.9
-Sep | 205000 | 140000 | 65000 | 2050 | 12000 | 270 | 5.2% | 4.9
-Oct | 215000 | 148000 | 67000 | 2150 | 12500 | 285 | 5.5% | 4.8
-Nov | 225000 | 156000 | 69000 | 2250 | 13000 | 300 | 5.8% | 4.7
-Dec | 235000 | 164000 | 71000 | 2350 | 13500 | 315 | 6.1% | 4.6
+Month|Revenue|Expenses|Profit|Units_Sold|Marketing_Spend|New_Customers|Conversion_Rate|Customer_Satisfaction
+Jan|125000|85000|40000|1250|8000|150|2.8%|4.2
+Feb|135000|92000|43000|1350|8500|165|3.1%|4.3
+Mar|145000|98000|47000|1450|9000|180|3.4%|4.4
+Apr|155000|105000|50000|1550|9500|195|3.7%|4.5
+May|165000|112000|53000|1650|10000|210|4.0%|4.6
+Jun|175000|118000|57000|1750|10500|225|4.3%|4.7
+Jul|185000|125000|60000|1850|11000|240|4.6%|4.8
+Aug|195000|132000|63000|1950|11500|255|4.9%|4.9
+Sep|205000|140000|65000|2050|12000|270|5.2%|4.9
+Oct|215000|148000|67000|2150|12500|285|5.5%|4.8
+Nov|225000|156000|69000|2250|13000|300|5.8%|4.7
+Dec|235000|164000|71000|2350|13500|315|6.1%|4.6
 ```
 
 **Chart Creation Tasks:**
@@ -1202,10 +1202,10 @@ Sparkline Tools Design tab:
 **Practical Sparkline Applications:**
 ```
 Sales Performance Table:
-Product | Q1 | Q2 | Q3 | Q4 | Trend
-Laptop  | 100| 110| 120| 130| [sparkline]
-Mouse   | 50 | 45 | 55 | 60 | [sparkline]
-Keyboard| 75 | 80 | 70 | 85 | [sparkline]
+Product|Q1|Q2|Q3|Q4|Trend
+Laptop |100|110|120|130|[sparkline]
+Mouse  |50|45|55|60|[sparkline]
+Keyboard|75|80|70|85|[sparkline]
 ```
 
 ### Conditional Formatting for Data Visualization
@@ -1317,19 +1317,19 @@ Chart updates based on control selection
 
 **Sample Extended Dataset:**
 ```
-Date | Region | Product | Category | Sales | Profit | Units | Manager | Channel | Customer_Segment
-2024-01-01 | North | Laptop | Electronics | 2500 | 500 | 5 | John | Online | Premium
-2024-01-02 | South | Mouse | Electronics | 150 | 50 | 10 | Sarah | Store | Standard
-2024-01-03 | East | Shirt | Clothing | 200 | 80 | 8 | Mike | Online | Basic
-2024-01-04 | West | Tablet | Electronics | 1200 | 300 | 4 | Lisa | Store | Premium
-2024-01-05 | North | Monitor | Electronics | 800 | 200 | 4 | John | Online | Standard
-2024-01-06 | South | Keyboard | Electronics | 135 | 45 | 3 | Sarah | Store | Basic
-2024-01-07 | East | Jeans | Clothing | 300 | 120 | 6 | Mike | Online | Premium
-2024-01-08 | West | Headphones | Electronics | 180 | 60 | 2 | Lisa | Store | Standard
-2024-01-09 | North | Webcam | Electronics | 120 | 40 | 2 | John | Online | Basic
-2024-01-10 | South | Speaker | Electronics | 260 | 80 | 2 | Sarah | Store | Premium
-2024-01-11 | East | T-shirt | Clothing | 100 | 40 | 5 | Mike | Online | Standard
-2024-01-12 | West | Printer | Electronics | 400 | 120 | 2 | Lisa | Store | Premium
+Date|Region|Product|Category|Sales|Profit|Units|Manager|Channel|Customer_Segment
+2024-01-01|North|Laptop|Electronics|2500|500|5|John|Online|Premium
+2024-01-02|South|Mouse|Electronics|150|50|10|Sarah|Store|Standard
+2024-01-03|East|Shirt|Clothing|200|80|8|Mike|Online|Basic
+2024-01-04|West|Tablet|Electronics|1200|300|4|Lisa|Store|Premium
+2024-01-05|North|Monitor|Electronics|800|200|4|John|Online|Standard
+2024-01-06|South|Keyboard|Electronics|135|45|3|Sarah|Store|Basic
+2024-01-07|East|Jeans|Clothing|300|120|6|Mike|Online|Premium
+2024-01-08|West|Headphones|Electronics|180|60|2|Lisa|Store|Standard
+2024-01-09|North|Webcam|Electronics|120|40|2|John|Online|Basic
+2024-01-10|South|Speaker|Electronics|260|80|2|Sarah|Store|Premium
+2024-01-11|East|T-shirt|Clothing|100|40|5|Mike|Online|Standard
+2024-01-12|West|Printer|Electronics|400|120|2|Lisa|Store|Premium
 ```
 
 **Dashboard Creation Tasks:**
