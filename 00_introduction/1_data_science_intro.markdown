@@ -136,7 +136,8 @@
 **Supervised Learning Applications:**
 - **Classification:** Email spam detection, medical diagnosis, image recognition
 - **Regression:** House price prediction, sales forecasting, risk assessment
-- **Time series:** Stock price prediction, demand forecasting, trend analysis
+  - **Time Series Regression:** Stock price prediction, demand forecasting, trend analysis
+
 
 **Unsupervised Learning Applications:**
 - **Clustering:** Customer segmentation, market research, anomaly detection
