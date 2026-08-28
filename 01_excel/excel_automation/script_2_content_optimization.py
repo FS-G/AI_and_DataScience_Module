@@ -16,6 +16,9 @@ content_performance = df.groupby(['platform', 'content_type']).agg({
     'followers_gained': 'sum'
 }).round(2)
 
+# Flatten multi-level columns for easier access
+content_performance.columns = ['_'.join(col).strip() for col in content_performance.columns.values]
+
 # Create recommendation column
 def get_recommendation(platform, engagement):
     if engagement > 10:
@@ -55,9 +58,9 @@ for col_num, header in enumerate(headers, 1):
 for row_num, (idx, row_data) in enumerate(content_performance.iterrows(), 3):
     ws1.cell(row=row_num, column=1).value = idx[0]
     ws1.cell(row=row_num, column=2).value = idx[1]
-    ws1.cell(row=row_num, column=3).value = row_data[0]
-    ws1.cell(row=row_num, column=4).value = row_data[1]
-    ws1.cell(row=row_num, column=5).value = int(row_data[3])
+    ws1.cell(row=row_num, column=3).value = row_data['engagement_rate_mean']
+    ws1.cell(row=row_num, column=4).value = row_data['engagement_rate_max']
+    ws1.cell(row=row_num, column=5).value = int(row_data['followers_gained_sum'])
 
 # Sheet 2: All posts with recommendations
 ws2 = wb.create_sheet("Recommendations")

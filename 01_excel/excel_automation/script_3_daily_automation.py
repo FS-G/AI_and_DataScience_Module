@@ -84,9 +84,9 @@ else:
 
     for row_num, (platform, row_data) in enumerate(platform_daily.iterrows(), 18):
         ws.cell(row=row_num, column=1).value = platform
-        ws.cell(row=row_num, column=2).value = int(row_data[0])
-        ws.cell(row=row_num, column=3).value = row_data[1]
-        ws.cell(row=row_num, column=4).value = int(row_data[2])
+        ws.cell(row=row_num, column=2).value = int(row_data['likes'])
+        ws.cell(row=row_num, column=3).value = row_data['engagement_rate']
+        ws.cell(row=row_num, column=4).value = int(row_data['followers_gained'])
 
     ws.column_dimensions['A'].width = 20
     ws.column_dimensions['B'].width = 15
