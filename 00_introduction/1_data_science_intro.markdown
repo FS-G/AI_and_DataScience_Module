@@ -22,7 +22,7 @@
 - **Data visualization** and communication skills
 - **Critical thinking** and problem-solving abilities
 
-**Programming Languages:** **Python**, **R**, **SQL**
+**Programming Languages:** **Python**, **SQL**
 
 **Core Libraries:** **pandas**, **NumPy**, **scikit-learn**, **statsmodels**, **matplotlib**, **TensorFlow**, **Pytorch**, **Huggingface**, etc
 
@@ -119,14 +119,14 @@
 - **Automated decision-making** processes
 - **Integration** with various data sources and systems
 
-**Programming Languages:** **Python**, **R**, **JavaScript**
+**Programming Languages:** **Python**, **JavaScript**
 
 **Core Frameworks:** **TensorFlow**, **PyTorch**, **Keras**, **scikit-learn**, **Huggingface**, etc
 
 ### Machine Learning Fundamentals
 #### Teaching Machines to Learn from Data
 
-![Types of ML](https://datasciencedojo.com/wp-content/uploads/ml-ds-algos.jpg)
+![Types of ML](https://media.geeksforgeeks.org/wp-content/uploads/20251101122126638001/types_of_machine_learning.webp)
 
 - **Supervised Learning:** Learning from **labeled examples** to make predictions
 - **Unsupervised Learning:** Finding **hidden patterns** in unlabeled data
