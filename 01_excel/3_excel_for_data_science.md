@@ -6,7 +6,7 @@
 
 # Advanced Excel for Data Science
 
-## Module 5: Advanced Analytics
+## Advanced Analytics
 
 ### Session 5A: Statistical Analysis
 
@@ -310,7 +310,7 @@ Objective: Maximize total profit while meeting all constraints
 4. Use Solver to find optimal solution
 5. Perform sensitivity analysis on results
 
-## Module 6: Automation and Efficiency
+## Automation and Efficiency
 
 ### Session 6A: Excel Automation
 
