@@ -1,21 +1,15 @@
 **Course Created by: Farhan Siddiqui**  
 *Data Science & AI Development Expert*
 
-
 ---
 
 # Excel for Data Science - Complete Lecture Notes
 
-## Module 1: Excel Fundamentals for Data Science 
+---
 
-### Session 1A: Setup and Data Types 
+## Part 1: Excel Fundamentals and Setup
 
-#### Learning Objectives
-- Navigate Excel interface efficiently for data work
-- Identify and work with different data types
-- Apply proper formatting and validation to datasets
-
-#### 1. Excel Interface Tour and Customization
+### Getting Started: Excel Interface Tour and Customization
 
 **Key Interface Elements for Data Science:**
 - **Ribbon Tabs**: Focus on Data, Formulas, and Insert tabs
@@ -30,51 +24,25 @@
 
 **Essential Keyboard Shortcuts:**
 
-- `Ctrl+C`: Copy  
-- `Ctrl+X`: Cut  
-- `Ctrl+V`: Paste  
-- `Ctrl+Z`: Undo  
-- `Ctrl+Y`: Redo  
-- `Ctrl+B`: Bold  
-- `Ctrl+U`: Underline  
-- `Ctrl+I`: Italic  
-
+- `Ctrl+C`: Copy | `Ctrl+X`: Cut | `Ctrl+V`: Paste  
+- `Ctrl+Z`: Undo | `Ctrl+Y`: Redo | `Ctrl+B`: Bold | `Ctrl+U`: Underline | `Ctrl+I`: Italic
 
 - `Ctrl+Arrow Key`: Move to edge of data region  
 - `Ctrl+Shift+Arrow Key`: Select to edge of data region  
-- `Ctrl+Home`: Go to A1  
-- `Ctrl+End`: Go to last used cell  
-- `Ctrl+Shift+End`: Select to end of data  
+- `Ctrl+Home`: Go to A1 | `Ctrl+End`: Go to last used cell | `Ctrl+Shift+End`: Select to end of data
 
+- `Ctrl+T`: Create table | `Ctrl+1`: Format cells dialog | `Alt+=`: AutoSum | `Ctrl+Shift+L`: Toggle filters
 
-- `Ctrl+T`: Create table  
-- `Ctrl+1`: Format cells dialog  
-- `Alt+=`: AutoSum  
-- `Ctrl+Shift+L`: Toggle filters  
+- `Ctrl+F`: Find | `Ctrl+H`: Replace | `F4`: Repeat last action
 
+- `Ctrl+Space`: Select entire column | `Shift+Space`: Select entire row  
+- `Ctrl+-`: Delete row/column | `Ctrl+Shift++`: Insert row/column | `Ctrl+9`: Hide row | `Ctrl+0`: Hide column
 
-- `Ctrl+F`: Find  
-- `Ctrl+H`: Replace  
-- `F4`: Repeat last action  
+- `Alt+Enter`: New line within cell | `Ctrl+D`: Fill down | `Ctrl+R`: Fill right | `Ctrl+;`: Insert current date
 
+---
 
-- `Ctrl+Space`: Select entire column  
-- `Shift+Space`: Select entire row  
-- `Ctrl+-`: Delete row/column  
-- `Ctrl+Shift++`: Insert row/column  
-- `Ctrl+9`: Hide row  
-- `Ctrl+0`: Hide column  
-
-
-- `Alt+Enter`: New line within cell  
-- `Ctrl+D`: Fill down  
-- `Ctrl+R`: Fill right  
-- `Ctrl+;`: Insert current date  
-
-
-
-
-#### 2. Understanding Data Types
+### Understanding Data Types
 
 **Numeric Data:**
 - **Integers**: Whole numbers (1, 2, 100, -5)
@@ -96,7 +64,7 @@
 - **Boolean**: TRUE/FALSE values
 - **Binary**: 1/0 representations
 
-#### 3. Cell Formatting and Data Validation
+### Cell Formatting and Data Validation
 
 **Formatting Best Practices:**
 - Use consistent date formats (YYYY-MM-DD for sorting)
@@ -113,7 +81,7 @@ Data > Data Validation > Settings
 - Text Length: Control input length
 ```
 
-#### Hands-on Exercise 1A: Dataset Import and Formatting
+### Hands-on Exercise 1: Dataset Import and Formatting
 
 **Sample Dataset: Customer Information**
 ```
@@ -137,14 +105,9 @@ CustomerID | Name | Email | Registration_Date | Age | Status | City | Annual_Spe
 
 ---
 
-### Session 1B: Essential Functions
+## Part 2: Essential Functions for Data Science
 
-#### Learning Objectives
-- Master fundamental Excel functions for data analysis
-- Combine functions to create complex formulas
-- Clean and prepare data using text and logical functions
-
-#### 1. Mathematical Functions
+### Mathematical Functions
 
 **Basic Statistical Functions:**
 ```excel
@@ -173,7 +136,7 @@ Average Order: =AVERAGE(D2:D100)
 Order Count: =COUNT(D2:D100)
 ```
 
-#### 2. Logical Functions
+### Logical Functions
 
 **IF Function Syntax:**
 ```excel
@@ -199,7 +162,7 @@ Order Count: =COUNT(D2:D100)
 =IF(NOT(A1=""),"Data Present","No Data")
 ```
 
-#### 3. Text Functions
+### Text Functions
 
 **String Manipulation:**
 ```excel
@@ -224,7 +187,7 @@ Order Count: =COUNT(D2:D100)
 =SUBSTITUTE(A1,"old","new") # Replace text
 ```
 
-#### 4. Date/Time Functions
+### Date/Time Functions
 
 **Current Date/Time:**
 ```excel
@@ -247,7 +210,7 @@ Order Count: =COUNT(D2:D100)
 =WEEKDAY(A1)           # Day of week (1-7)
 ```
 
-#### Hands-on Exercise 1B: Customer Dataset Cleaning
+### Hands-on Exercise 2: Customer Dataset Cleaning
 
 **Sample Messy Dataset:**
 ```
@@ -280,16 +243,9 @@ Segment: =IF(DATEDIF(D2,TODAY(),"D")<=90,"New","Existing")
 
 ---
 
-## Module 2: Data Import and Cleaning
+## Part 3: Data Import and Cleaning
 
-### Session 2A: Data Import Techniques
-
-#### Learning Objectives
-- Import data from various file formats
-- Use Power Query for advanced data import
-- Handle encoding and formatting issues
-
-#### 1. Basic Data Import Methods
+### Data Import Techniques
 
 **CSV File Import:**
 1. Data > Get Data > From File > From Text/CSV
@@ -310,7 +266,7 @@ Segment: =IF(DATEDIF(D2,TODAY(),"D")<=90,"New","Existing")
 3. Set column breaks for fixed-width
 4. Preview and adjust data types
 
-#### 2. Power Query Basics
+### Power Query Basics
 
 **Power Query Interface:**
 - **Query Editor**: Transform data before loading
@@ -339,7 +295,7 @@ Table.TransformColumns(Source, {"Name", Text.Proper})
 Table.SelectRows(Source, each [Date] >= Date.AddDays(Date.From(DateTime.LocalNow()), -30))
 ```
 
-#### 3. Handling Different File Formats
+### Handling Different File Formats
 
 **JSON Data Import:**
 1. Data > Get Data > From File > From JSON
@@ -368,7 +324,7 @@ Data > Get Data > From Database
 3. Select tables from web page
 4. Handle authentication if required
 
-#### 4. Encoding and Special Characters
+### Encoding and Special Characters
 
 **Common Encoding Issues:**
 - UTF-8 vs ANSI encoding
@@ -382,7 +338,7 @@ Data > Get Data > From Database
 - Transform characters using SUBSTITUTE
 - Set regional settings in Excel
 
-#### Hands-on Exercise 2A: Multi-Source Data Import
+### Hands-on Exercise 3: Multi-Source Data Import
 
 **Scenario: Sales Data from Multiple Sources**
 
@@ -437,14 +393,9 @@ Order_ID | Customer_ID | Product_Name | Qty | Unit_Price | Sale_Date | Store_Loc
 
 ---
 
-### Session 2B: Data Cleaning and Transformation
+## Part 4: Data Cleaning and Transformation
 
-#### Learning Objectives
-- Identify and resolve data quality issues
-- Handle missing values appropriately
-- Transform data for analysis readiness
-
-#### 1. Identifying Data Quality Issues
+### Identifying Data Quality Issues
 
 **Common Data Quality Problems:**
 - Missing values (blanks, nulls, "N/A")
@@ -455,10 +406,8 @@ Order_ID | Customer_ID | Product_Name | Qty | Unit_Price | Sale_Date | Store_Loc
 
 **Detection Techniques:**
 ```excel
-
 // Find duplicates
 =COUNTIF(A:A,A1)>1
-
 ```
 
 **Data Profiling Checklist:**
@@ -470,7 +419,7 @@ Order_ID | Customer_ID | Product_Name | Qty | Unit_Price | Sale_Date | Store_Loc
 - [ ] Validate date ranges
 - [ ] Examine categorical variable distributions
 
-#### 2. Handling Missing Values
+### Handling Missing Values
 
 **Strategies for Missing Data:**
 
@@ -478,7 +427,6 @@ Order_ID | Customer_ID | Product_Name | Qty | Unit_Price | Sale_Date | Store_Loc
 ```excel
 // Filter out blanks
 Data > Filter > Uncheck (Blanks)
-
 ```
 
 **2. Impute Missing Values:**
@@ -502,13 +450,12 @@ Data > Filter > Uncheck (Blanks)
 =IF(ISBLANK(A1),"Missing","Present")
 ```
 
-#### 3. Removing Duplicates and Inconsistencies
+### Removing Duplicates and Inconsistencies
 
 **Duplicate Detection:**
 ```excel
 // Mark duplicates
 =IF(COUNTIF(A:A,A1)>1,"Duplicate","Unique")
-
 ```
 
 **Remove Duplicates:**
@@ -524,11 +471,9 @@ Data > Filter > Uncheck (Blanks)
 
 // Remove extra spaces
 =TRIM(A1)
-
-
 ```
 
-#### 4. Text-to-Columns and Data Parsing
+### Text-to-Columns and Data Parsing
 
 **Split Delimited Text:**
 1. Select column with delimited data
@@ -547,11 +492,9 @@ Data > Filter > Uncheck (Blanks)
 
 // Extract domain from email
 =RIGHT(A1,LEN(A1)-FIND("@",A1))
-
 ```
 
-
-#### Hands-on Exercise 2B: Real-World Survey Data Cleaning
+### Hands-on Exercise 4: Real-World Survey Data Cleaning
 
 **Sample Messy Survey Dataset:**
 ```
@@ -587,8 +530,6 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
    =IF(OR(C2="M",C2="male"),"Male",IF(OR(C2="F",C2="female"),"Female",C2))
    ```
 
-
-
 3. **Standardize Education:**
    ```excel
    =PROPER(SUBSTITUTE(E2,"'s",""))
@@ -604,16 +545,9 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
 
 ---
 
-## Module 3: Data Analysis and Exploration
+## Part 5: Descriptive Statistics and Analysis
 
-### Session 3A: Descriptive Statistics
-
-#### Learning Objectives
-- Calculate comprehensive descriptive statistics
-- Understand data distributions and variability
-- Perform correlation analysis
-
-#### 1. Measures of Central Tendency
+### Measures of Central Tendency
 
 **Mean, Median, Mode:**
 ```excel
@@ -643,7 +577,7 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
 =HARMEAN(A1:A100)
 ```
 
-#### 2. Measures of Variability
+### Measures of Variability
 
 **Range and Interquartile Range:**
 ```excel
@@ -675,7 +609,7 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
 =STDEV.S(A1:A100)/AVERAGE(A1:A100)
 ```
 
-#### 3. Percentiles and Quartiles
+### Percentiles and Quartiles
 
 **Percentile Functions:**
 ```excel
@@ -707,9 +641,7 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
 =QUARTILE(A1:A100,3)
 ```
 
-
-
-#### 4. Distribution Shape Analysis
+### Distribution Shape Analysis
 
 **Skewness:**
 ```excel
@@ -729,7 +661,7 @@ respondent_id | age | gender | income | education | satisfaction | comments | pu
 // ~0: Normal-like tails
 ```
 
-#### 5. Correlation Analysis
+### Correlation Analysis
 
 **Pearson Correlation:**
 ```excel
@@ -758,7 +690,7 @@ C  =CORREL(C:C,A:A)  =CORREL(C:C,B:B)  1
 =COVARIANCE.P(A1:A100,B1:B100)  // Population covariance
 ```
 
-#### Hands-on Exercise 3A: Sales Performance Analysis
+### Hands-on Exercise 5: Sales Performance Analysis
 
 **Sample Sales Dataset:**
 ```
@@ -812,14 +744,9 @@ Sophia | West | 95000 | 105000 | 115000 | 120000 | 1 | Small | 60
 
 ---
 
-### Session 3B: Data Aggregation and Grouping
+## Part 6: Conditional Aggregation and Grouping
 
-#### Learning Objectives
-- Use conditional functions for data aggregation
-- Create complex criteria for data analysis
-- Master array formulas for advanced calculations
-
-#### 1. SUMIF, COUNTIF, AVERAGEIF Functions
+### SUMIF, COUNTIF, AVERAGEIF Functions
 
 **Basic Conditional Functions:**
 ```excel
@@ -846,7 +773,7 @@ Sophia | West | 95000 | 105000 | 115000 | 120000 | 1 | Small | 60
 =AVERAGEIF(A1:A100,D1,B1:B100)
 ```
 
-#### 2. Advanced Multi-Criteria Functions
+### Advanced Multi-Criteria Functions
 
 **SUMIFS, COUNTIFS, AVERAGEIFS:**
 ```excel
@@ -861,15 +788,12 @@ Sophia | West | 95000 | 105000 | 115000 | 120000 | 1 | Small | 60
 // Date range criteria
 =SUMIFS(Amount,Date,">="&EOMONTH(TODAY(),-1)+1,Date,"<="&EOMONTH(TODAY(),0))
 
-
-
 // Text pattern matching
 =SUMIFS(Revenue,Product,"*Phone*",Status,"<>Cancelled")
 // Sum revenue where the product name contains "Phone" and the status is not "Cancelled"
 ```
 
-
-#### Hands-on Exercise 3B: Customer Segmentation Analysis
+### Hands-on Exercise 6: Customer Segmentation Analysis
 
 **Sample Customer Dataset:**
 ```
@@ -940,15 +864,11 @@ C010 | Helen Taylor | 41 | F | Portland | 3600 | 16 | 2024-01-30 | Premium | Onl
    =COUNTIFS(Recency_Segment,"Recent",Spend_Category,"High Spender")
    ```
 
+---
 
-### Session 3C: Pivot Tables Mastery
+## Part 7: Pivot Tables Mastery
 
-#### Learning Objectives
-- Create and customize comprehensive pivot tables
-- Master grouping and calculated fields
-- Build dynamic analysis dashboards
-
-#### 1. Creating and Customizing Pivot Tables
+### Creating and Customizing Pivot Tables
 
 **Basic Pivot Table Creation:**
 1. Select data range (Ctrl+T to create table first)
@@ -975,7 +895,7 @@ Right-click pivot table > PivotTable Options
 - Data: Refresh data automatically
 ```
 
-#### 2. Advanced Pivot Table Features
+### Advanced Pivot Table Features
 
 **Multiple Value Fields:**
 ```
@@ -1011,7 +931,7 @@ Examples:
 - Regional consolidation: North+South = "Domestic", East+West = "Coastal"
 ```
 
-#### 3. Pivot Table Formatting and Styling
+### Pivot Table Formatting and Styling
 
 **Design and Layout:**
 ```
@@ -1040,7 +960,7 @@ Right-click values > Value Field Settings > Number Format
 - Custom: #,##0.0"K" for thousands
 ```
 
-#### 4. Dynamic Pivot Tables with Slicers and Timelines
+### Dynamic Pivot Tables with Slicers and Timelines
 
 **Slicers for Interactive Filtering:**
 ```
@@ -1067,7 +987,7 @@ Right-click slicer > Slicer Settings
 - Hide items with no data
 ```
 
-#### Hands-on Exercise 3C: E-commerce Multi-Dimensional Analysis
+### Hands-on Exercise 7: E-commerce Multi-Dimensional Analysis
 
 **Sample E-commerce Dataset:**
 ```
@@ -1150,16 +1070,9 @@ OrderID | Date | Customer | Product | Category | Region | Channel | Quantity | P
 
 ---
 
-## Module 4: Data Visualization
+## Part 8: Data Visualization with Charts
 
-### Session 4A: Chart Fundamentals
-
-#### Learning Objectives
-- Select appropriate chart types for different data scenarios
-- Create and customize professional-looking charts
-- Master chart formatting and design principles
-
-#### 1. Choosing Appropriate Chart Types
+### Chart Fundamentals
 
 **Chart Selection Guidelines:**
 
@@ -1204,7 +1117,7 @@ OrderID | Date | Customer | Product | Category | Region | Channel | Quantity | P
   - Use when: Showing median, quartiles, outliers
   - Example: Performance distribution by team
 
-#### 2. Creating Basic Charts
+### Creating and Formatting Charts
 
 **Chart Creation Steps:**
 1. Select data range (include headers)
@@ -1227,7 +1140,7 @@ Keyboard Shortcuts:
 - Ctrl+1: Format selected chart element
 ```
 
-#### 3. Chart Formatting and Customization
+### Chart Design and Formatting
 
 **Chart Design Tab:**
 ```
@@ -1270,7 +1183,7 @@ Axis Formatting:
 - Axis Position: On tick marks or between
 ```
 
-#### 4. Professional Chart Design Principles
+### Professional Chart Design Principles
 
 **Design Best Practices:**
 
@@ -1300,7 +1213,7 @@ Axis Formatting:
 - Don't manipulate to mislead
 - Include context and source information
 
-#### Hands-on Exercise 4A: Business Metrics Dashboard
+### Hands-on Exercise 8: Business Metrics Dashboard
 
 **Sample Business Data:**
 ```
@@ -1371,14 +1284,9 @@ Dec | 235000 | 164000 | 71000 | 2350 | 13500 | 315 | 6.1% | 4.6
 
 ---
 
-### Session 4B: Advanced Visualization
+## Part 9: Advanced Visualization Techniques
 
-#### Learning Objectives
-- Create complex combination charts
-- Master conditional formatting for data visualization
-- Build interactive dashboards with dynamic elements
-
-#### 1. Combination Charts and Secondary Axes
+### Combination Charts and Secondary Axes
 
 **When to Use Combination Charts:**
 - Different data types (values vs. percentages)
@@ -1416,7 +1324,7 @@ Trend Analysis:
 - Line: Monthly growth rate (Secondary axis)
 ```
 
-#### 2. Sparklines for Trend Analysis
+### Sparklines for Trend Analysis
 
 **Sparkline Types:**
 - **Line**: Shows trends over time
@@ -1449,7 +1357,7 @@ Mouse   | 50 | 45 | 55 | 60 | [sparkline]
 Keyboard| 75 | 80 | 70 | 85 | [sparkline]
 ```
 
-#### 3. Conditional Formatting for Data Visualization
+### Conditional Formatting for Data Visualization
 
 **Data Bars:**
 ```
@@ -1491,7 +1399,7 @@ Examples:
 - Format entire rows based on cell values
 ```
 
-#### 4. Creating Heat Maps and Data Visualizations
+### Creating Heat Maps and Data Visualizations
 
 **Heat Map Creation:**
 ```
@@ -1523,7 +1431,7 @@ Performance Dashboard Heat Map:
 - Color coding: Red (below target), Green (above target)
 ```
 
-#### 5. Interactive Dashboard Elements
+### Interactive Dashboard Elements
 
 **Form Controls:**
 ```
@@ -1554,7 +1462,7 @@ Link chart to dynamic named range
 Chart updates based on control selection
 ```
 
-#### Hands-on Exercise 4B: Interactive Sales Dashboard
+### Hands-on Exercise 9: Interactive Sales Dashboard
 
 **Sample Extended Dataset:**
 ```
