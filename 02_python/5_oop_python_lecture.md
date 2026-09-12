@@ -39,8 +39,6 @@ Let's see the difference between **procedural** (old way) and **object-oriented*
 
 #### ❌ Without OOP - Everything Mixed Together
 
-### Using Properties for Even Better Control
-
 ```python
 # calculator_messy.py - The old, confusing way
 
@@ -198,38 +196,12 @@ john.add_grade(78)
 print(f"John's average: {john.get_average()}")  # John's average: 85.0
 ```
 
-### 🎯 Practical Exercise 1
-Create a `Book` class with:
-- Attributes: title, author, pages
-- Methods: get_info(), mark_as_read()
-
-#### Solution:
-
-```python
-# book_exercise.py
-class Book:
-    def __init__(self, title, author, pages):
-        self.title = title
-        self.author = author
-        self.pages = pages
-        self.is_read = False  # Track reading status
-    
-    def get_info(self):
-        status = "Read" if self.is_read else "Not read yet"
-        return f"'{self.title}' by {self.author} - {self.pages} pages ({status})"
-    
-    def mark_as_read(self):
-        self.is_read = True
-        return f"You finished reading '{self.title}'!"
-
-# Test the Book class
-book1 = Book("Python Basics", "John Smith", 250)
-book2 = Book("Web Development", "Jane Doe", 400)
-
-print(book1.get_info())  # 'Python Basics' by John Smith - 250 pages (Not read yet)
-print(book1.mark_as_read())  # You finished reading 'Python Basics'!
-print(book1.get_info())  # 'Python Basics' by John Smith - 250 pages (Read)
-```
+**To run this code:**
+1. Save the `Student` class code (lines 150-167) in a file named `student.py`
+2. Save the test code above in a file named `test_student.py`
+3. Make sure both files are in the same folder
+4. Open your terminal/command prompt and run: `python test_student.py`
+5. You should see the output showing the student introductions and John's average grade
 
 ---
 
@@ -365,6 +337,45 @@ print(f"From John: Is 85 passing? {john.is_passing_grade(85)}")  # True
 - You have a utility function that belongs with the class
 - You don't need any object or class data
 - Examples: `is_valid_email()`, `convert_temperature()`, `calculate_tax()`
+
+### 🎯 Practical Exercise 1
+Create a `Book` class with:
+- Attributes: title, author, pages
+- Methods: get_info(), mark_as_read()
+
+#### Solution:
+
+```python
+# book_exercise.py
+class Book:
+    def __init__(self, title, author, pages):
+        self.title = title
+        self.author = author
+        self.pages = pages
+        self.is_read = False  # Track reading status
+    
+    def get_info(self):
+        status = "Read" if self.is_read else "Not read yet"
+        return f"'{self.title}' by {self.author} - {self.pages} pages ({status})"
+    
+    def mark_as_read(self):
+        self.is_read = True
+        return f"You finished reading '{self.title}'!"
+
+# Test the Book class
+book1 = Book("Python Basics", "John Smith", 250)
+book2 = Book("Web Development", "Jane Doe", 400)
+
+print(book1.get_info())  # 'Python Basics' by John Smith - 250 pages (Not read yet)
+print(book1.mark_as_read())  # You finished reading 'Python Basics'!
+print(book1.get_info())  # 'Python Basics' by John Smith - 250 pages (Read)
+```
+
+**To run this code:**
+1. Save the code above in a file named `book_exercise.py`
+2. Open your terminal/command prompt in the same folder
+3. Run: `python book_exercise.py`
+4. You should see book information before and after marking it as read
 
 ---
 
@@ -1207,7 +1218,7 @@ library_project/
 1. **Making everything public**
 2. **Creating god classes** (classes that do too much)
 3. **Not using inheritance when it makes sense**
-5. **Forgetting to call `super().__init__()`** in child classes
+4. **Forgetting to call `super().__init__()`** in child classes
 
 ### Testing Your Code
 
@@ -1742,8 +1753,8 @@ if __name__ == "__main__":
 1. **Encapsulation**: Private attributes (`__grades`, `__enrolled_courses`, `__students`) with controlled access through methods
 2. **Inheritance**: `Student` and `Teacher` inherit from `Person` base class
 3. **Polymorphism**: Overridden `get_info()` and `introduce()` methods in child classes
-5. **Class Organization**: Separate classes for different responsibilities
-6. **Method Overriding**: Child classes override parent methods while using `super()` to call parent methods
-7. **Direct Attribute Access**: Public attributes for simple data access without getters/setters
+4. **Class Organization**: Separate classes for different responsibilities
+5. **Method Overriding**: Child classes override parent methods while using `super()` to call parent methods
+6. **Direct Attribute Access**: Public attributes for simple data access without getters/setters
 
 This solution demonstrates all the OOP principles covered in this lecture! 🎓✨
