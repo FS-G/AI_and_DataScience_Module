@@ -7,7 +7,7 @@
 
 ## Our goal
 
-We will use the provided `data/sales.csv` file to answer simple business questions. A row is one sales record. The file has columns such as `Sales`, `Profit`, `Product`, `Product Type`, `Market`, and `Date`.
+We will use the provided `data/sales.csv` file to answer simple business questions. A row is one sales record. The file has columns such as `Sales`, `COGS`, `Product`, `Product Type`, `Market`, and `Date`. In this teaching copy, a few values are missing, one row is repeated, and Profit is not included—we will calculate it from Sales and COGS.
 
 Run the examples from the main course folder so the file path works.
 
@@ -65,7 +65,45 @@ print(sales.isna().sum())
 
 `info()` shows column names and data types. `isna().sum()` counts missing values in each column.
 
-## 5. Choose columns and make a new column
+## 5. Handle missing values and duplicate rows
+
+The teaching CSV has missing values in Sales and COGS, plus one repeated row. First, count the missing values:
+
+```python
+print(sales.isna().sum())
+```
+
+For practice, we can see what mean, median, and forward fill would do to Sales:
+
+```python
+sales_mean_example = sales["Sales"].fillna(sales["Sales"].mean())
+sales_median_example = sales["Sales"].fillna(sales["Sales"].median())
+sales_forward_example = sales["Sales"].ffill()
+```
+
+Mean uses the average; median uses the middle value; forward fill (`ffill`) copies the previous row's value. For our main analysis, we will fill missing Sales and COGS with their medians:
+
+```python
+sales["Sales"] = sales["Sales"].fillna(sales["Sales"].median())
+sales["COGS"] = sales["COGS"].fillna(sales["COGS"].median())
+```
+
+We can also remove rows with missing values instead of filling them:
+
+```python
+sales_without_missing = sales.dropna()
+```
+
+Now check for and remove the repeated row:
+
+```python
+print("Repeated rows:", sales.duplicated().sum())
+sales = sales.drop_duplicates()
+```
+
+`duplicated()` counts repeated rows, and `drop_duplicates()` keeps one copy of each row.
+
+## 6. Choose columns and calculate profit
 
 ```python
 print(sales["Product"])
@@ -74,35 +112,31 @@ print(sales["Product"])
 One pair of square brackets and a column name selects one column.
 
 ```python
-small_table = sales[["Product", "Sales", "Profit"]]
+small_table = sales[["Product", "Sales", "COGS"]]
 print(small_table.head())
 ```
 
 Use a list of column names to select several columns.
 
-We can calculate a new value for every row. For example, add Sales and Profit into a new column:
+The CSV does not contain a Profit column. We will calculate it using the business rule **Profit = Sales - COGS**:
 
 ```python
-sales["Sales plus Profit"] = sales["Sales"] + sales["Profit"]
-print(sales[["Sales", "Profit", "Sales plus Profit"]].head())
+sales["Profit"] = sales["Sales"] - sales["COGS"]
+print(sales[["Sales", "COGS", "Profit"]].head())
 ```
 
-Pandas adds the values row by row. We can also do other simple calculations:
+Pandas subtracts the values row by row and stores each result in the new Profit column.
 
-```python
-sales["Sales after 10"] = sales["Sales"] - 10
-```
-
-## 6. Choose rows that match a condition
+## 7. Choose rows that match a condition
 
 ```python
 high_sales = sales[sales["Sales"] > 200]
-print(high_sales[["Product", "Sales", "Profit"]].head())
+print(high_sales[["Product", "Sales", "COGS", "Profit"]].head())
 ```
 
 This keeps rows where Sales is greater than 200. Try changing `200` to another amount.
 
-## 7. Sort the records
+## 8. Sort the records
 
 ```python
 highest_sales = sales.sort_values("Sales", ascending=False)
@@ -111,7 +145,7 @@ print(highest_sales[["Product", "Sales"]].head())
 
 Sorting helps us see the largest sales first. `ascending=False` means descending order.
 
-## 8. Calculate simple summaries
+## 9. Calculate simple summaries
 
 ```python
 print("Total sales:", sales["Sales"].sum())
@@ -121,7 +155,7 @@ print("Highest sale:", sales["Sales"].max())
 
 These calculations use the `Sales` column.
 
-## 9. Compare products
+## 10. Compare products
 
 ```python
 sales_by_product = sales.groupby("Product")["Sales"].sum()
@@ -137,7 +171,7 @@ sales_by_type = sales.groupby("Product Type")["Sales"].sum()
 print(sales_by_type)
 ```
 
-## 10. Compare sales and profit by market
+## 11. Compare sales and profit by market
 
 ```python
 market_summary = sales.groupby("Market")[["Sales", "Profit"]].sum()
@@ -145,43 +179,6 @@ print(market_summary)
 ```
 
 This gives one total for Sales and one for Profit in each market.
-
-## 11. Missing values and duplicates
-
-### Find missing values
-
-```python
-print(sales.isna().sum())
-```
-
-`isna().sum()` counts the missing values in each column.
-
-### Fill missing numbers
-
-These examples make a copy of the Sales column first, so each method is easy to compare:
-
-```python
-sales["Sales mean fill"] = sales["Sales"].fillna(sales["Sales"].mean())
-sales["Sales median fill"] = sales["Sales"].fillna(sales["Sales"].median())
-sales["Sales forward fill"] = sales["Sales"].ffill()
-```
-
-Mean fill uses the average. Median fill uses the middle value. Forward fill (`ffill`) copies the previous row's value into a missing spot. Use a fill method that makes sense for the data; forward fill depends on row order.
-
-To remove rows with missing values instead, make a cleaned copy:
-
-```python
-sales_without_missing = sales.dropna()
-```
-
-### Find and remove duplicates
-
-```python
-print(sales.duplicated().sum())
-sales_without_duplicates = sales.drop_duplicates()
-```
-
-`duplicated()` identifies repeated rows. `drop_duplicates()` returns a DataFrame with repeated rows removed.
 
 ## 12. Combine DataFrames
 
