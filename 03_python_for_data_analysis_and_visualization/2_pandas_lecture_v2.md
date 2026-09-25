@@ -233,6 +233,22 @@ outer_join = pd.merge(left_table, right_table, on="Product", how="outer")
 
 To inspect each result, print it, for example: `print(inner_join)`.
 
+### Practice question: customers and ZIP code areas
+
+The files `data/customers.csv` and `data/zip_areas.csv` contain customer ZIP codes and area information. Every customer ZIP code appears in the area file, but the area file also has ZIP codes with no customers.
+
+**Question:** We want to keep every customer and add their area information. Which join should we use?
+
+**Solution:** Use a **left join**, with customers on the left. This keeps every customer and adds matching area information.
+
+```python
+customers = pd.read_csv("data/customers.csv", dtype={"ZipCode": str})
+zip_areas = pd.read_csv("data/zip_areas.csv", dtype={"ZipCode": str})
+
+customers_with_area = pd.merge(customers, zip_areas, on="ZipCode", how="left")
+print(customers_with_area.head())
+```
+
 ## 13. A simple class exercise
 
 Use the same steps to answer:
