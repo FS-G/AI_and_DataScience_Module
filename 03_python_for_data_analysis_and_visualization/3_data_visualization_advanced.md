@@ -442,72 +442,6 @@ fig = px.violin(data, x="Category", y="Sales", title="Sales by Category")
 fig.show()
 ```
 
-## 2.7 Category and category: grouped counts
-
-A grouped bar chart compares order counts for two categories. We will compare Channel within each Region.
-
-```python
-channel_region = pd.crosstab(data["Region"], data["Channel"])
-```
-
-**Matplotlib**
-
-```python
-channel_region.plot(kind="bar")
-plt.title("Orders by Region and Channel")
-plt.xlabel("Region")
-plt.ylabel("Orders")
-plt.show()
-```
-
-**Seaborn** (count chart, with color separating the second category)
-
-```python
-sns.countplot(data=data, x="Region", hue="Channel")
-plt.title("Orders by Region and Channel")
-plt.show()
-```
-
-**Plotly**
-
-```python
-fig = px.bar(channel_region.reset_index(), x="Region", y=list(channel_region.columns),
-             barmode="group", title="Orders by Region and Channel")
-fig.show()
-```
-
-The same grouped counts can be shown as a **stacked bar chart**. In Matplotlib, use `channel_region.plot(kind="bar", stacked=True)`. In Plotly, set `barmode="stack"` instead of `barmode="group"` in the example above.
-
-## 2.8 Category and category: heatmap of counts
-
-A heatmap uses color to make high and low counts easy to compare.
-
-**Matplotlib**
-
-```python
-plt.imshow(channel_region, aspect="auto")
-plt.title("Orders by Region and Channel")
-plt.xticks(range(len(channel_region.columns)), channel_region.columns)
-plt.yticks(range(len(channel_region.index)), channel_region.index)
-plt.colorbar(label="Orders")
-plt.show()
-```
-
-**Seaborn**
-
-```python
-sns.heatmap(channel_region, annot=True, fmt="d")
-plt.title("Orders by Region and Channel")
-plt.show()
-```
-
-**Plotly**
-
-```python
-fig = px.imshow(channel_region, aspect="auto", title="Orders by Region and Channel")
-fig.show()
-```
-
 # Part 3: Multivariate — three or more variables
 
 Multivariate charts add information such as a color, size, panel, or extra axis. Add only details that help answer a question.
@@ -702,36 +636,73 @@ fig.show()
 
 Seaborn does not provide a built-in 3D scatter chart. Matplotlib and Plotly are suitable choices.
 
-## 3.7 Parallel coordinates
+## 3.7 Grouped and stacked counts
 
-Parallel coordinates show several numerical values for each order as a line across a set of axes. This chart is most straightforward in Plotly.
+A grouped or stacked bar chart compares order counts across Region and Channel. These are three variables: the count, Region, and Channel.
 
 ```python
-fig = px.parallel_coordinates(
-    data.head(100),
-    dimensions=["Sales", "Profit", "Quantity", "Discount", "Rating"],
-    color="Rating",
-    title="Order Measures in Parallel Coordinates"
-)
+channel_region = pd.crosstab(data["Region"], data["Channel"])
+```
+
+**Matplotlib**
+
+```python
+channel_region.plot(kind="bar")
+plt.title("Orders by Region and Channel")
+plt.xlabel("Region")
+plt.ylabel("Orders")
+plt.show()
+```
+
+For a stacked version, use `channel_region.plot(kind="bar", stacked=True)`.
+
+**Seaborn**
+
+```python
+sns.countplot(data=data, x="Region", hue="Channel")
+plt.title("Orders by Region and Channel")
+plt.show()
+```
+
+**Plotly**
+
+```python
+fig = px.bar(channel_region.reset_index(), x="Region", y=list(channel_region.columns),
+             barmode="group", title="Orders by Region and Channel")
 fig.show()
 ```
 
-Plotly provides a direct parallel-coordinates chart. Matplotlib and Seaborn do not have a similarly simple built-in version for beginners.
+Set `barmode="stack"` for stacked bars.
 
-## 3.8 Parallel categories
+## 3.8 Count heatmap
 
-Parallel categories show how categorical groups connect, such as which Regions, Categories, Channels, and Customer Segments appear together. Plotly provides a direct chart for this:
+A heatmap uses color to compare order counts across Region and Channel.
+
+**Matplotlib**
 
 ```python
-fig = px.parallel_categories(
-    data.head(100),
-    dimensions=["Region", "Category", "Channel", "CustomerSegment"],
-    title="Orders Across Categorical Groups"
-)
-fig.show()
+plt.imshow(channel_region, aspect="auto")
+plt.title("Orders by Region and Channel")
+plt.xticks(range(len(channel_region.columns)), channel_region.columns)
+plt.yticks(range(len(channel_region.index)), channel_region.index)
+plt.colorbar(label="Orders")
+plt.show()
 ```
 
-This chart is best used with a smaller number of rows so the paths remain readable.
+**Seaborn**
+
+```python
+sns.heatmap(channel_region, annot=True, fmt="d")
+plt.title("Orders by Region and Channel")
+plt.show()
+```
+
+**Plotly**
+
+```python
+fig = px.imshow(channel_region, aspect="auto", title="Orders by Region and Channel")
+fig.show()
+```
 
 ## 3.9 Sunburst chart
 
