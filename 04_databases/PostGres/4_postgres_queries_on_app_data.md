@@ -28,7 +28,7 @@ DELETE FROM products WHERE name = 'USB-C Cable';
 
 ## Setting Up Our Practice Database
 
-Use the PostgreSQL demo app's `shop_db`. The API creates the same tables when it starts. You can also set up a fresh database from DBeaver by running the SQL below in order. If the app is already running, tables exist; skip the `CREATE TABLE` statements and use the sample-data inserts only if you want additional rows.
+Use the PostgreSQL demo app's `shop_db`. The API creates the same tables when it starts. You can also set up a fresh database from DBeaver by running the SQL below in order. If the app has already created the tables, skip the `CREATE TABLE` and index statements. Before loading the sample rows, the script truncates these four practice tables and resets their identity counters so the fixed sample IDs start at `1`. **This deletes existing customers, products, and orders in this database.** Use it only when you are ready to replace the current demo data.
 
 ### Database Structure Diagram
 
@@ -113,8 +113,12 @@ CREATE TABLE order_items (
     UNIQUE (order_id, product_id)
 );
 
-CREATE INDEX idx_orders_customer_id ON orders(customer_id);
-CREATE INDEX idx_order_items_product_id ON order_items(product_id);
+CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id);
+CREATE INDEX IF NOT EXISTS idx_order_items_product_id ON order_items(product_id);
+
+-- Reset the practice tables before loading the fixed sample IDs below.
+-- WARNING: This permanently deletes all existing app data in these four tables.
+TRUNCATE TABLE order_items, orders, products, customers RESTART IDENTITY;
 
 INSERT INTO customers (name, email) VALUES
 ('Aisha Khan', 'aisha@example.com'),
@@ -281,10 +285,6 @@ SELECT name product_name, email customer_email FROM customers;
 SELECT name, price, (price * 0.90)::NUMERIC(10, 2) AS sale_price
 FROM products;
 
--- Add useful labels to an aggregate result
-SELECT status, COUNT(*) AS order_count
-FROM orders
-GROUP BY status;
 ```
 
 ## 2. Advanced Filtering
@@ -511,13 +511,7 @@ DELETE FROM customers
 WHERE email = 'mina@example.com'
 RETURNING *;
 
--- Delete products with no order history, if any
-DELETE FROM products p
-WHERE p.name = 'Desk Mat'
-  AND NOT EXISTS (
-      SELECT 1 FROM order_items oi WHERE oi.product_id = p.product_id
-  )
-RETURNING *;
+
 
 -- Delete a particular order; its order_items are deleted by ON DELETE CASCADE
 DELETE FROM orders WHERE order_id = 5 RETURNING *;

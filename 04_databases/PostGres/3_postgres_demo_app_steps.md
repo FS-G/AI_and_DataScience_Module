@@ -799,7 +799,8 @@ document.querySelector("#product-cancel").addEventListener("click", () => setEdi
 
 document.querySelector("#order-form").addEventListener("submit", async (event) => {
   event.preventDefault();
-  const data = Object.fromEntries(new FormData(event.currentTarget));
+  const form = event.currentTarget;
+  const data = Object.fromEntries(new FormData(form));
   try {
     await request("/orders", {
       method: "POST",
@@ -808,7 +809,7 @@ document.querySelector("#order-form").addEventListener("submit", async (event) =
         items: [{ product_id: Number(data.product_id), quantity: Number(data.quantity) }],
       }),
     });
-    event.currentTarget.reset();
+    form.reset();
     await refresh();
     showMessage("Order created and stock updated.");
   } catch (error) { showMessage(error.message, true); }
