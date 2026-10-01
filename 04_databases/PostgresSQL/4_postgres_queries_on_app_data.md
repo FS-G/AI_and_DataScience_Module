@@ -653,14 +653,29 @@ Joins let a query return related information stored in different tables.
 
 ### Understanding Joins with Tables
 
-Use a customer and order example:
+Use these two tables as the example. Each order's `customer_id` refers to a customer row.
 
-```sql
-SELECT customer_id, name FROM customers ORDER BY customer_id LIMIT 3;
-SELECT order_id, customer_id, status FROM orders ORDER BY order_id;
-```
+**customers**
 
-For illustration, suppose customers 1, 2, and 3 are Aisha, Bilal, and Sara. Orders belong to customers 1, 2, 3, 4, and 5. Customer 6, Omar, has no orders.
+| customer_id | name |
+|---:|---|
+| 1 | Aisha Khan |
+| 2 | Bilal Ahmed |
+| 3 | Sara Malik |
+| 4 | Hamza Ali |
+| 5 | Noor Iqbal |
+| 6 | Omar Shah |
+
+**orders**
+
+| order_id | customer_id | status |
+|---:|---:|---|
+| 1 | 1 | paid |
+| 2 | 1 | shipped |
+| 3 | 2 | pending |
+| 4 | 3 | paid |
+| 5 | 4 | cancelled |
+| 6 | 5 | paid |
 
 ### Visual Join Examples
 
@@ -674,6 +689,9 @@ customer name | order_id | status
 Aisha Khan    | 1        | paid
 Aisha Khan    | 2        | shipped
 Bilal Ahmed   | 3        | pending
+Sara Malik    | 4        | paid
+Hamza Ali     | 5        | cancelled
+Noor Iqbal    | 6        | paid
 ```
 
 #### LEFT JOIN
@@ -685,12 +703,27 @@ customer name | order_id | status
 --------------|----------|--------
 Aisha Khan    | 1        | paid
 Aisha Khan    | 2        | shipped
+Bilal Ahmed   | 3        | pending
+Sara Malik    | 4        | paid
+Hamza Ali     | 5        | cancelled
+Noor Iqbal    | 6        | paid
 Omar Shah     | NULL     | NULL
 ```
 
 #### RIGHT JOIN
 
-Shows every row from the right table, plus matching rows from the left. This is useful when every order should appear, including rows whose optional related values are missing.
+Shows every row from the right table (`orders`), plus matching customer columns. Here, every order must have a valid customer because of the foreign key, so no customer fields are NULL.
+
+```text
+customer name | order_id | status
+--------------|----------|----------
+Aisha Khan    | 1        | paid
+Aisha Khan    | 2        | shipped
+Bilal Ahmed   | 3        | pending
+Sara Malik    | 4        | paid
+Hamza Ali     | 5        | cancelled
+Noor Iqbal    | 6        | paid
+```
 
 ### INNER JOIN
 
@@ -705,13 +738,7 @@ SELECT p.name, oi.quantity, oi.unit_price
 FROM products p
 INNER JOIN order_items oi ON p.product_id = oi.product_id;
 
--- Customer, order, and product on each order line
-SELECT c.name, o.order_id, p.name AS product_name,
-       oi.quantity, oi.unit_price
-FROM customers c
-INNER JOIN orders o ON c.customer_id = o.customer_id
-INNER JOIN order_items oi ON o.order_id = oi.order_id
-INNER JOIN products p ON oi.product_id = p.product_id;
+
 ```
 
 ### LEFT JOIN
@@ -728,15 +755,8 @@ SELECT p.name, oi.order_id, oi.quantity
 FROM products p
 LEFT JOIN order_items oi ON p.product_id = oi.product_id;
 
--- Every customer and their order count
-SELECT c.customer_id, c.name, COUNT(o.order_id) AS order_count
-FROM customers c
-LEFT JOIN orders o ON c.customer_id = o.customer_id
-GROUP BY c.customer_id, c.name
-ORDER BY c.customer_id;
-```
 
-Use `COUNT(o.order_id)`, not `COUNT(*)`, to get zero for customers with no matching orders.
+```
 
 ### RIGHT JOIN
 
@@ -771,14 +791,7 @@ SELECT c.name, o.order_id, o.status
 FROM customers AS c
 JOIN orders AS o ON c.customer_id = o.customer_id;
 
--- Customer, product, and line totals
-SELECT c.name, p.name AS product_name,
-       oi.quantity, oi.quantity * oi.unit_price AS line_total
-FROM customers c
-JOIN orders o ON c.customer_id = o.customer_id
-JOIN order_items oi ON o.order_id = oi.order_id
-JOIN products p ON oi.product_id = p.product_id
-WHERE o.status IN ('paid', 'shipped');
+
 ```
 
 ### Join Tips for Beginners
