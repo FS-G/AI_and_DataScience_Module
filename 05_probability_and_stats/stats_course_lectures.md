@@ -141,12 +141,22 @@ It may be easier to measure the reverse: **P(Phrase | Spam)**—among emails alr
 
 A **random variable** represents an outcome with a number, such as the number of orders or the time until a customer arrives. Distributions describe the possible values and how likely they are.
 
+These two kinds describe **numeric variables**, not categories such as product names or colors.
+
 There are two main kinds:
 
 - **Discrete:** values you can count, such as 0, 1, 2, 3 orders.
 - **Continuous:** values you measure, such as time, height, or temperature.
 
-For discrete data, a **probability mass function (PMF)** gives the chance of each value. For continuous data, a **probability density function (PDF)** shows where values are more or less common; probability is represented by the area under the curve. A **cumulative distribution function (CDF)** gives the chance of getting a value up to a chosen point.
+A **PMF** gives the probability of each **discrete** value. A **PDF** shows where **continuous** values are more common; probability is the area under its curve.
+
+![PMF and PDF compared](images/pmf-pdf.svg)
+
+A **cumulative distribution function (CDF)** works with both. It gives the probability of getting a value **less than or equal to x**. The graph rises as probability adds up: in discrete data it rises in steps; in continuous data it rises smoothly.
+
+![PMF with its discrete CDF, and PDF with its continuous CDF](images/cdf.svg)
+
+**Example:** If x is 2, the CDF gives the chance of getting **2 or less**.
 
 ### Discrete distributions
 
@@ -164,13 +174,13 @@ The two bars show the **two possible outcomes** of one trial: no and yes.
 
 #### Binomial: count successes across trials
 
-A **binomial distribution** counts successes across a fixed number of similar trials. For example, how many of 10 visitors sign up?
+A **binomial distribution** counts successes across a fixed number of similar trials. For example, how many of 5 visitors sign up?
 
 ![Binomial distribution: number of sign-ups in five visits](images/binomial.svg)
 
-Unlike Bernoulli’s single result, this shows the **number of successes across several trials**.
+There are **5 trials** (the 5 visitors). Each bar shows the chance of that number of sign-ups. With a 50% chance per visitor, 2 or 3 sign-ups are most likely; **5 sign-ups is less likely** because all 5 visitors must sign up.
 
-**Use it when:** counting how many of **10 customers sign up**; the number of tries is fixed.
+**Use it when:** counting how many of **5 customers sign up**; the number of tries is fixed.
 
 #### Poisson: count events over time
 
@@ -178,7 +188,7 @@ A **Poisson distribution** models how many times an event happens in a set time 
 
 ![Poisson distribution: number of events in a time period](images/poisson.svg)
 
-Like binomial, it counts events, but focuses on a **time period** rather than a fixed number of trials.
+The **time period is fixed**—for example, one hour. Each bar shows the chance of that many calls arriving in that hour. Counts near the average are more likely; very low or high counts are less common. Unlike binomial, we do not set a fixed number of trials.
 
 **Use it when:** counting how many **support calls arrive in an hour**; there is no fixed number of call opportunities.
 
@@ -221,6 +231,8 @@ Unlike the symmetric normal curve, **short waits are more common** than long wai
 
 ### Why EDA is Critical for AI
 
+**Note:** We completed a hands-on data visualization activity in the **Pandas Data Visualization** lecture. Use those plotting skills here to explore statistical patterns.
+
 **The Foundation of Good AI**
 • "Garbage in, garbage out" - bad data = bad models
 • EDA helps us understand our data before building models
@@ -242,14 +254,15 @@ Unlike the symmetric normal curve, **short waits are more common** than long wai
 • Best for symmetric distributions
 
 **Median - The Middle Value**
-• 50th percentile when data is sorted
-• Robust to outliers
-• Better for skewed distributions
+• The middle of sorted data; it is **one median value**.
+• With an even number of values, average the two middle values.
+• Less affected by outliers; useful for skewed data.
 
 **Mode - The Most Common Value**
-• Value that appears most frequently
-• Can have multiple modes
-• Useful for categorical data
+• The value that appears most often; a dataset can have more than one mode.
+• **One mode:** [1, 2, 2, 3] → mode = 2.
+• **Two modes:** [1, 1, 2, 2, 3] → modes = 1 and 2.
+• **Three modes:** [1, 1, 2, 2, 3, 3, 4] → modes = 1, 2, and 3.
 
 **Example - House Prices:**
 Houses sold: $200K, $250K, $300K, $320K, $2M
@@ -267,6 +280,8 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 • How much data varies around the mean
 • **Variance = Average of squared differences from mean**
   - Formula: Var = Σ(x - mean)² / n
+  - **Sample variance:** s² = Σ(x - x̄)² / (n - 1)
+  - Use **n** for a full population and **n - 1** for a sample.
 • **Standard Deviation = √Variance**
   - Same units as original data
 • **Simple Example - Test Scores:** [70, 80, 90]
@@ -278,21 +293,20 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 • 75th percentile - 25th percentile
 • Robust to outliers
 • Contains middle 50% of data
-• **Example - Daily Coffee Sales:** [12, 15, 18, 20, 22, 25, 28, 30, 35, 100]
-  - Sort data (already sorted)
+• **Example - Daily Coffee Sales:** [12, 15, 18, 20, 22, 25, 28, 30, 35, 100000]
   - Q1 (25th percentile) = 18 cups
   - Q3 (75th percentile) = 30 cups
-  - IQR = 30 - 18 = 12 cups
-  - Notice: The outlier (100 cups) doesn't affect IQR!
+  - IQR = Q3 - Q1 = 30 - 18 = 12 cups
+  - The **IQR stays small** because it describes the middle half of the data.
 
 **Range**
-• Maximum - Minimum
-• Very sensitive to outliers
-• Simple but not very informative
+• Range = maximum - minimum = 100000 - 12 = **99988 cups**.
+• The range is very large because it is strongly affected by the extreme value.
 
 **Outlier Detection Rule:**
-• Values below Q1 - 1.5×IQR or above Q3 + 1.5×IQR
-• Simple rule for identifying unusual data points
+• Lower limit = Q1 - 1.5 × IQR = 18 - 18 = **0 cups**.
+• Upper limit = Q3 + 1.5 × IQR = 30 + 18 = **48 cups**.
+• Any value below 0 or above 48 is an outlier by this rule. So **100000 cups is an outlier**.
 
 ---
 
@@ -303,10 +317,18 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 • Negative skew: Long tail to the left (exam scores in easy test)
 • Zero skew: Symmetric (height, temperature)
 
+![Negative skew, symmetry, and positive skew](images/skewness.svg)
+
+The **middle curve is a normal distribution**: a symmetric, bell-shaped pattern with most values near the average.
+
 **Kurtosis - How "Peaky" is it?**
-• High kurtosis: Sharp peak, heavy tails
-• Low kurtosis: Flat top, light tails
-• Normal distribution has kurtosis = 3
+• **Leptokurtic (high kurtosis):** sharper peak and heavier tails.
+• **Mesokurtic (normal kurtosis):** the normal distribution; kurtosis = 3.
+• **Platykurtic (low kurtosis):** flatter peak and lighter tails.
+
+![Higher and lower kurtosis](images/kurtosis.svg)
+
+The **normal distribution** is the reference shape: symmetric and bell-shaped, with moderate tails.
 
 **Why This Matters for AI:**
 • Many algorithms assume normal distributions
@@ -317,78 +339,111 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 
 ### Essential Visualizations
 
-**Univariate Analysis - Exploring Single Variables**
+Choose a visualization based on the **number** and **type** of variables. Each example below shows one chart or table type.
 
-**Histograms:**
-• Shows distribution of one continuous variable
-• Bins group data into ranges
-• Look for: shape (normal, skewed), outliers, multiple peaks
-• **Tip:** Try different bin widths - too few bins hide patterns, too many create noise
+#### 1. Univariate: one variable
 
-**Box Plots (Single Variable):**
-• Shows five-number summary: min, Q1, median, Q3, max
-• Outliers appear as individual points beyond "whiskers"
-• Quickly reveals skewness and spread
+**Numeric variable** (such as Sales):
 
-**Bar Charts:**
-• For categorical variables (colors, brands, regions)
-• Height shows frequency or percentage
-• Easy comparison between categories
+**Histogram** — groups values into ranges to show the distribution.
 
-**Density Plots:**
-• Smooth version of histogram
-• Better for comparing multiple groups on same plot
-• Shows probability density rather than counts
+![Histogram example](images/plot_histogram.svg)
 
----
+**Box plot** — summarizes the median, spread, and possible outliers.
 
-**Bivariate Analysis - Exploring Relationships Between Two Variables**
+![Box plot example](images/plot_box.svg)
 
-**Scatter Plots:**
-• Two continuous variables (X vs Y)
-• Each point represents one observation
-• Look for: linear/curved relationships, outliers, clusters
-• Foundation for correlation and regression analysis
+**Density plot** — shows a smooth version of a numeric distribution.
 
-**Side-by-Side Box Plots:**
-• One continuous variable across categories
-• Compare distributions between groups
-• Quickly shows which group has higher median, more variation
+![Density plot example](images/plot_density.svg)
 
-**Cross-Tabulation Tables:**
-• Two categorical variables
-• Shows frequency counts in each combination
-• Foundation for chi-square tests
+**Categorical variable** (such as Product Type):
 
-**Correlation Heatmaps:**
-• Shows correlation coefficients between multiple variables
-• Color intensity indicates strength of relationship
-• Quick way to spot highly correlated pairs
+**Bar chart** — compares the counts of categories.
 
----
+![Bar chart example](images/plot_bar.svg)
 
-**Multivariate Analysis - Exploring Multiple Variables Together**
+#### 2. Bivariate: two variables
 
-**Pair Plots (Scatter Plot Matrix):**
-• Shows scatter plots for every pair of variables
-• Diagonal usually shows histograms of each variable
-• Great for initial exploration of datasets
+**Numeric + numeric** (such as Marketing and Sales):
 
+**Scatter plot** — shows the relationship between two numeric variables.
 
+![Scatter plot example](images/plot_scatter.svg)
 
----
+**Correlation matrix** — uses color and values to summarize pairwise linear relationships.
 
-**Special Purpose Plots**
+![Correlation matrix example](images/plot_corr.svg)
 
-**QQ Plots - Testing Normality:**
-• Compares your data to theoretical normal distribution
-• Points on straight diagonal line = data is normal
-• S-curves indicate skewness
-• Curved ends indicate heavy/light tails
-• Essential before using methods that assume normality
+**Numeric + categorical** (such as Sales by Product Type):
 
----
+**Side-by-side box plots** — compare medians and spread across categories.
 
+![Side-by-side box plots example](images/plot_box_groups.svg)
+
+**Grouped histograms** — compare value ranges between categories.
+
+![Grouped histograms example](images/plot_group_hist.svg)
+
+**Grouped density plots** — compare smooth distribution shapes between categories.
+
+![Grouped density plots example](images/plot_group_density.svg)
+
+**Categorical + categorical** (such as Product Type and Market):
+
+**Cross-tabulation** — lists the count for each category combination.
+
+![Cross-tabulation example](images/plot_crosstab2.png)
+
+**Grouped bar chart** — compares the category combinations visually.
+
+![Grouped bar chart example](images/plot_group_bar.svg)
+
+In this example, **blue = East** and **orange = West**.
+
+#### 3. Multivariate: three variables
+
+**Three numeric variables** (such as Sales, Marketing, and Profit):
+
+**3D scatter plot** — places each observation using three numeric values.
+
+![3D scatter plot example](images/plot_scatter3d.svg)
+
+**Pair plot** — shows a scatter plot for each pair of numeric variables.
+
+![Pair plot example](images/plot_pairplot.svg)
+
+**Two numeric + one categorical** (such as Sales, Marketing, and Product Type):
+
+**Colored scatter plot** — uses color to identify each category.
+
+![Colored scatter plot example](images/plot_color_scatter.svg)
+
+**Faceted scatter plot** — puts each category in its own panel.
+
+![Faceted scatter plot example](images/plot_facet_scatter.svg)
+
+**One numeric + two categorical** (such as Sales, Product Type, and Market):
+
+**Grouped box plots** — compare the numeric values across both categories.
+
+![Grouped box plots example](images/plot_multi_1num_2cat.svg)
+
+**Heatmap of group averages** — uses color to compare an average across category combinations.
+
+![Heatmap of group averages example](images/plot_heatmap.svg)
+
+**Three categorical variables** (such as Product Type, Market, and Store Size):
+
+**Faceted bar chart** — compares category counts in separate panels.
+
+![Faceted bar chart example](images/plot_faceted_bar.svg)
+
+**Three-way cross-tabulation** — lists counts for combinations of all three categories.
+
+![Three-way cross-tabulation example](images/plot_crosstab3.svg)
+
+Start with the **simplest chart** that answers your question. Add visual details only when they help compare groups or reveal a pattern.
 ## Central Limit Theorem - The Magic Behind Statistics
 
 ### Population vs Sample - The Fundamental Distinction
