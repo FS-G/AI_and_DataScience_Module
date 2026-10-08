@@ -205,25 +205,19 @@ Conclusion: If the new design really had no effect, we'd only see results this e
 
 ---
 
-### Types of Errors
+### Types of Errors: A Medical Test Example
 
-**Type I Error (False Positive)**
-• Rejecting H₀ when it's actually true
-• "Crying wolf" - seeing an effect that isn't there
-• Probability = α (significance level)
+Suppose a screening test checks whether a patient has a **malignancy**. A follow-up examination tells us the actual condition.
 
-**Type II Error (False Negative)**
-• Failing to reject H₀ when it's actually false
-• Missing a real effect
-• Probability = β
+| Actual condition | Test says malignancy (positive) | Test says no malignancy (negative) |
+|---|---|---|
+| Malignancy present | **True positive:** correctly flags malignancy | **False negative (Type II):** misses the malignancy |
+| No malignancy | **False positive (Type I):** incorrectly flags malignancy | **True negative:** correctly reports no malignancy |
 
+- **Type I error (α):** the test is positive even though no malignancy is present.
+- **Type II error (β):** the test is negative even though malignancy is present.
 
-
-**Balancing Act:**
-• Lower α → Lower Type I error, but higher Type II error
-• Like adjusting sensitivity of a medical test
-
----
+Reducing false alarms can sometimes make a test more likely to miss real cases, so medical screening balances both risks. A positive screening result usually needs follow-up; it is not by itself a diagnosis.
 
 ### Common Statistical Tests
 
