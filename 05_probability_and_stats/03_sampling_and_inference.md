@@ -39,24 +39,21 @@ As sample size increases, sample mean gets closer to true population mean
 
 ### Central Limit Theorem - The Miracle of Statistics
 
-**The Amazing Result:**
-No matter what the original population looks like, the distribution of sample means will be approximately normal if sample size is large enough (usually n ≥ 30)
+**The Main Idea:**
+If we repeatedly take random samples of the same size and calculate each sample’s mean, those means tend to form an approximately normal, bell-shaped distribution as the sample size grows. This works best when observations are independent and the population does not have extreme values or infinite variance. A sample size of 30 is a **rough guide**, not a guarantee; highly skewed data may need larger samples.
 
 **Key Points:**
-• Works for ANY population distribution (uniform, exponential, bimodal...)
-• Sample means have less variability than individual observations
-• Standard error = σ/√n (gets smaller as n increases)
+• The pattern describes **sample means**, not the original data.
+• Sample means vary less than individual observations.
+• Standard error = σ/√n; larger samples usually give more stable means.
 
-**Simple Example:**
-• Roll dice (uniform distribution from 1-6)
-• Take samples of 30 rolls, calculate mean of each sample
-• Plot histogram of these sample means
-• Result: Beautiful bell curve centered at 3.5!
+**Dice Example:**
+• Roll a die 30 times and calculate the average. That is **one sample mean**.
+• Repeat many times, each time using a new set of 30 rolls and calculating its mean.
+• Plot all the sample means. They will tend to form a bell-shaped pattern around 3.5.
 
-**Why This is Magical:**
-• Enables all of statistical inference
-• Explains why we can make probability statements about estimates
-• Foundation of confidence intervals and hypothesis testing
+**Why It Matters:**
+This pattern helps us estimate population averages and understand confidence intervals and hypothesis tests.
 
 ---
 
@@ -73,28 +70,23 @@ No matter what the original population looks like, the distribution of sample me
 • Instead of just saying 5'6", we say "between 5'4" and 5'8""
 • Acknowledges uncertainty in our estimate
 
-**Why Intervals Matter in AI:**
-• Model A: 90% ± 5% accuracy
-• Model B: 85% ± 1% accuracy
-• Which is better? Depends on the application!
+
 
 ---
 
 ### Understanding Confidence Intervals
 
-**The Formula:**
-Point Estimate ± (Critical Value × Standard Error)
+**Confidence interval formula:**
 
-**Components:**
-• **Point Estimate**: Our best guess (sample mean)
-• **Critical Value**: From normal distribution (1.96 for 95% CI)
-• **Standard Error**: Standard deviation of sampling distribution
+**Point estimate ± (critical value × standard error)**
 
-**Correct Interpretation:**
-"If we repeated this study 100 times, about 95 of the confidence intervals would contain the true population parameter"
+For a sample mean:
 
-**Common Misinterpretation:**
-"There's a 95% chance the true value is in this interval" (Wrong!)
+- **t formula:** x̄ ± t* × (s / √n) — use when the population standard deviation is unknown; this is common in practice.
+- **z formula:** x̄ ± z* × (σ / √n) — use when the population standard deviation is known.
+
+In both formulas, **x̄ is the point estimate** (the sample mean) and **n** is the sample size. The standard error is **s / √n** for t and **σ / √n** for z. For a 95% interval, **z*** is about 1.96; **t*** depends on the sample’s degrees of freedom.
+
 
 ---
 
@@ -102,7 +94,7 @@ Point Estimate ± (Critical Value × Standard Error)
 
 **Understanding z vs t Distributions**
 
-![z vs t distribution](https://cdn.prod.website-files.com/6634a8f8dd9b2a63c9e6be83/669d64959d5970e08c48ad1c_360214.image0.jpeg)
+![SVG comparing the z and t distributions](images/z-vs-t.svg)
 
 **z Distribution (Standard Normal):**
 • Use when population standard deviation (σ) is **known**
@@ -114,6 +106,7 @@ Point Estimate ± (Critical Value × Standard Error)
 • Use when population standard deviation (σ) is **unknown** (most real cases!)
 • Similar to z but with "fatter tails" (more uncertainty)
 • Shape depends on degrees of freedom (df = n-1)
+  - **Example:** With 6 observations, df = 6 - 1 = 5.
 • As sample size increases, t approaches z distribution
 • For n>30: t ≈ z (practically the same)
 
@@ -125,8 +118,15 @@ Point Estimate ± (Critical Value × Standard Error)
 | σ unknown, n≤30 | t | x̄ ± t_(α/2,df) × (s/√n) |
 | σ unknown, n>30 | z or t | x̄ ± z_(α/2) × (s/√n) |
 
-**For a Proportion (always use z):**
-p̂ ± z_(α/2) × √(p̂(1-p̂)/n)
+For a **95% interval**, α = 0.05 is split between two tails, so **α/2 = 0.025 (2.5%) per tail**. The middle 95% lies between the critical values.
+
+![A 95% confidence interval with alpha over 2 in each tail](images/alpha-half.svg)
+
+**Z critical-value table:** For a 95% interval, use **z* = 1.96**.
+
+![Common z critical values by confidence level](images/z-critical-table.svg)
+
+
 
 **Worked Example - Customer Satisfaction (Using Mean Formula):**
 • Sample: 100 customers

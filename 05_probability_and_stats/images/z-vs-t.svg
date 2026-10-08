@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="380" viewBox="0 0 720 380">
+  <rect width="720" height="380" fill="white"/>
+  <text x="360" y="32" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#243447">Standard normal (z) and t-distribution</text>
+  <path d="M80 300H650M365 305V75" fill="none" stroke="#374151" stroke-width="2"/>
+  <text x="365" y="345" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#374151">Value (both centered at 0)</text>
+  <text x="34" y="190" transform="rotate(-90 34,190)" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" fill="#374151">Density</text>
+  <path d="M95 296 C180 291 245 250 290 163 C322 99 342 72 365 70 C388 72 408 99 440 163 C485 250 550 291 635 296" fill="none" stroke="#3978ac" stroke-width="5"/>
+  <path d="M95 294 C165 282 225 248 280 190 C320 146 340 125 365 123 C390 125 410 146 450 190 C505 248 565 282 635 294" fill="none" stroke="#e28b58" stroke-width="5"/>
+  <line x1="455" y1="78" x2="490" y2="78" stroke="#3978ac" stroke-width="5"/><text x="500" y="84" font-family="Arial, sans-serif" font-size="15" fill="#243447">z (standard normal)</text>
+  <line x1="455" y1="105" x2="490" y2="105" stroke="#e28b58" stroke-width="5"/><text x="500" y="111" font-family="Arial, sans-serif" font-size="15" fill="#243447">t (fewer degrees of freedom)</text>
+  <text x="365" y="325" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" fill="#6b7280">The t-curve has heavier tails; it approaches z as sample size grows.</text>
+</svg>
