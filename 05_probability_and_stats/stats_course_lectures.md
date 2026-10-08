@@ -5,9 +5,9 @@
 
 # Statistics for AI: Complete Course Lectures
 
-## Module 1: The Foundations of Probability
+## The Foundations of Probability
 
-### Lecture 1.1: Why Probability Matters in AI
+### Why Probability Matters in AI
 
 **Learning Objectives:**
 - Understand why uncertainty is everywhere in AI
@@ -28,7 +28,7 @@ A medical AI says a patient has a 85% chance of having diabetes based on symptom
 
 ---
 
-### Lecture 1.2: Basic Probability Concepts
+### Basic Probability Concepts
 
 **Sample Space and Events**
 • **Sample Space (S)**: All possible outcomes
@@ -52,7 +52,7 @@ Rolling a fair dice:
 
 ---
 
-### Lecture 1.3: Combining Probabilities
+### Combining Probabilities
 
 **Joint Probability P(A and B)**
 • Probability that both events happen
@@ -69,7 +69,7 @@ If we flip two coins:
 
 ---
 
-### Lecture 1.4: Conditional Probability - The Game Changer
+### Conditional Probability - The Game Changer
 
 **What is Conditional Probability?**
 Think of it as "probability with extra information"
@@ -101,7 +101,7 @@ Imagine all the days B happens. Of those days, what fraction also has A?
 
 ---
 
-### Lecture 1.5: Bayes' Rule - The Heart of AI Learning
+### Bayes' Rule - The Heart of AI Learning
 
 **The Revolutionary Idea:**
 Bayes' rule lets us "flip" probabilities and learn from evidence, just like humans do!
@@ -205,9 +205,9 @@ Bayes' rule is how rational thinking works - start with what you know, update wi
 
 ---
 
-## Module 2: Common Probability Distributions
+## Common Probability Distributions
 
-### Lecture 2.1: Random Variables - Turning Outcomes into Numbers
+### Random Variables - Turning Outcomes into Numbers
 
 **What is a Random Variable?**
 • A function that assigns numbers to outcomes
@@ -225,7 +225,7 @@ Bayes' rule is how rational thinking works - start with what you know, update wi
 
 ---
 
-### Lecture 2.2: Essential Probability Functions
+### Essential Probability Functions
 
 **Probability Mass Function (PMF) - For Discrete Variables**
 • Shows probability of each specific value
@@ -251,7 +251,7 @@ Bayes' rule is how rational thinking works - start with what you know, update wi
 
 ---
 
-### Lecture 2.3: The Discrete Distribution Family
+### The Discrete Distribution Family
 
 ![Discrete Distributions Overview](https://blogger.googleusercontent.com/img/a/AVvXsEhx17znSE17sn4oPqq3bXvxw7_Df0zGsN9imB7AK6_IDA5nrBq-A1aIG5q03zK_CNLlGRawxBQIWUKPQU4vh3U34YcONBFU75kqfbphhG_WVTcy52vkutvsf5AO8X_f-KCd_6C1uH27PDXMFbXiKWWb2h_mROTgR5KPsiHhOGxG3rd8vrRyWFdyEdMp)
 
@@ -288,7 +288,7 @@ Bayes' rule is how rational thinking works - start with what you know, update wi
 
 ---
 
-### Lecture 2.4: The Continuous Distribution Family
+### The Continuous Distribution Family
 
 **Uniform Distribution - Equal Chances**
 • All values in range equally likely
@@ -320,9 +320,9 @@ Bayes' rule is how rational thinking works - start with what you know, update wi
 
 ---
 
-## Module 3: Exploratory Data Analysis (EDA)
+## Exploratory Data Analysis (EDA)
 
-### Lecture 3.1: Why EDA is Critical for AI
+### Why EDA is Critical for AI
 
 **The Foundation of Good AI**
 • "Garbage in, garbage out" - bad data = bad models
@@ -337,7 +337,7 @@ Bayes' rule is how rational thinking works - start with what you know, update wi
 
 ---
 
-### Lecture 3.2: Measures of Central Tendency
+### Measures of Central Tendency
 
 **Mean - The Average**
 • Sum of all values / number of values
@@ -364,7 +364,7 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 
 ---
 
-### Lecture 3.3: Measures of Spread
+### Measures of Spread
 
 **Variance and Standard Deviation**
 • How much data varies around the mean
@@ -399,7 +399,7 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 
 ---
 
-### Lecture 3.4: Understanding Distribution Shapes
+### Understanding Distribution Shapes
 
 **Skewness - Is it Symmetric?**
 • Positive skew: Long tail to the right (income, house prices)
@@ -418,7 +418,7 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 
 ---
 
-### Lecture 3.5: Essential Visualizations
+### Essential Visualizations
 
 **Univariate Analysis - Exploring Single Variables**
 
@@ -492,9 +492,9 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 
 ---
 
-## Module 4: Central Limit Theorem - The Magic Behind Statistics
+## Central Limit Theorem - The Magic Behind Statistics
 
-### Lecture 4.1: Population vs Sample - The Fundamental Distinction
+### Population vs Sample - The Fundamental Distinction
 
 **Population**
 • All possible data points we care about
@@ -514,7 +514,7 @@ Houses sold: $200K, $250K, $300K, $320K, $2M
 
 ---
 
-### Lecture 4.2: Law of Large Numbers - Building Intuition
+### Law of Large Numbers - Building Intuition
 
 **The Simple Idea:**
 As sample size increases, sample mean gets closer to true population mean
@@ -531,7 +531,7 @@ As sample size increases, sample mean gets closer to true population mean
 
 ---
 
-### Lecture 4.3: Central Limit Theorem - The Miracle of Statistics
+### Central Limit Theorem - The Miracle of Statistics
 
 **The Amazing Result:**
 No matter what the original population looks like, the distribution of sample means will be approximately normal if sample size is large enough (usually n ≥ 30)
@@ -554,9 +554,9 @@ No matter what the original population looks like, the distribution of sample me
 
 ---
 
-## Module 5: Confidence Intervals - How Sure Are We?
+## Confidence Intervals - How Sure Are We?
 
-### Lecture 5.1: From Point to Interval Estimates
+### From Point to Interval Estimates
 
 **Point Estimate - A Single Number**
 • Sample mean = 85% accuracy
@@ -574,7 +574,7 @@ No matter what the original population looks like, the distribution of sample me
 
 ---
 
-### Lecture 5.2: Understanding Confidence Intervals
+### Understanding Confidence Intervals
 
 **The Formula:**
 Point Estimate ± (Critical Value × Standard Error)
@@ -592,7 +592,7 @@ Point Estimate ± (Critical Value × Standard Error)
 
 ---
 
-### Lecture 5.3: Constructing Confidence Intervals
+### Constructing Confidence Intervals
 
 **Understanding z vs t Distributions**
 
@@ -639,7 +639,7 @@ p̂ ± z_(α/2) × √(p̂(1-p̂)/n)
 
 ---
 
-### Lecture 5.4: Bootstrap - A Modern Approach
+### Bootstrap - A Modern Approach
 
 **The Bootstrap Idea:**
 • Resample from your original sample (with replacement)
@@ -660,9 +660,9 @@ Bootstrap sample 2: [8, 8, 2, 10, 6] → mean = 6.8
 
 ---
 
-## Module 6: Hypothesis Testing - Is This Effect Real?
+## Hypothesis Testing - Is This Effect Real?
 
-### Lecture 6.1: The Logic of Hypothesis Testing
+### The Logic of Hypothesis Testing
 
 **The Scientific Method in Statistics:**
 • Start with a claim to test
@@ -678,7 +678,7 @@ Bootstrap sample 2: [8, 8, 2, 10, 6] → mean = 6.8
 
 ---
 
-### Lecture 6.2: Understanding P-values
+### Understanding P-values
 
 **What is a P-value?**
 Probability of observing a test statistic as extreme as (or more extreme than) what we actually observed, assuming the null hypothesis is true
@@ -699,7 +699,7 @@ Conclusion: If the new design really had no effect, we'd only see results this e
 
 ---
 
-### Lecture 6.3: Types of Errors
+### Types of Errors
 
 **Type I Error (False Positive)**
 • Rejecting H₀ when it's actually true
@@ -719,7 +719,7 @@ Conclusion: If the new design really had no effect, we'd only see results this e
 
 ---
 
-### Lecture 6.4: Common Statistical Tests
+### Common Statistical Tests
 
 **One-Sample t-test**
 • Tests if sample mean differs from known value
@@ -738,7 +738,7 @@ Conclusion: If the new design really had no effect, we'd only see results this e
 
 ---
 
-### Lecture 6.5: A/B Testing - Statistics in Action
+### A/B Testing - Statistics in Action
 
 **The Setup:**
 • Group A: Current website (control)
@@ -762,9 +762,9 @@ H₁: p_B ≠ p_A (there is a difference)
 
 ---
 
-## Module 7: Statistical Modeling - Making Predictions
+## Statistical Modeling - Making Predictions
 
-### Lecture 7.1: From Correlation to Causation
+### From Correlation to Causation
 
 **Why Statistical Modeling?**
 • Understanding relationships between variables
@@ -779,7 +779,7 @@ H₁: p_B ≠ p_A (there is a difference)
 
 ---
 
-### Lecture 7.2: Simple Linear Regression
+### Simple Linear Regression
 
 **The Basic Idea:**
 Fit a straight line through data points to model relationship between X and Y
@@ -802,7 +802,7 @@ House Price = 50,000 + 100 × Square_Feet
 
 ---
 
-### Lecture 7.3: Checking Model Assumptions
+### Checking Model Assumptions
 
 **Key Assumptions:**
 • **Linearity**: Relationship is actually linear
@@ -822,7 +822,7 @@ House Price = 50,000 + 100 × Square_Feet
 
 ---
 
-### Lecture 7.4: Statistical Significance in Regression
+### Statistical Significance in Regression
 
 **Testing Coefficient Significance:**
 H₀: β₁ = 0 (no relationship)
@@ -843,7 +843,7 @@ t = (β̂₁ - 0) / SE(β̂₁)
 
 ---
 
-### Lecture 7.5: Logistic Regression - Modeling Probabilities
+### Logistic Regression - Modeling Probabilities
 
 **When to Use Logistic Regression:**
 • Outcome is binary (yes/no, success/failure)
