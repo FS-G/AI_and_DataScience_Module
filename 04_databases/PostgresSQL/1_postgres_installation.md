@@ -1,3 +1,8 @@
+**Course Created by: Farhan Siddiqui**  
+*Data Science & AI Development Expert*
+
+---
+
 # PostgreSQL, Docker, and DBeaver Installation Guide
 
 This guide runs PostgreSQL in Docker and connects to it with DBeaver. Install Docker for your operating system, then use the shared Compose setup below.

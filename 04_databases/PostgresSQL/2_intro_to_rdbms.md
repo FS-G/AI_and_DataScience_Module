@@ -1,3 +1,8 @@
+**Course Created by: Farhan Siddiqui**  
+*Data Science & AI Development Expert*
+
+---
+
 # Database Fundamentals, RDBMS, and ERD Design
 
 ## What Is Data?

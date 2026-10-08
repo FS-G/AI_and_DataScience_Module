@@ -1,3 +1,8 @@
+**Course Created by: Farhan Siddiqui**  
+*Data Science & AI Development Expert*
+
+---
+
 # Beginner's PostgreSQL Course — Queries on the Shop Demo App
 
 ## What Is SQL?

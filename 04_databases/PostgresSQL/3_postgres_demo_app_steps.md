@@ -1,3 +1,8 @@
+**Course Created by: Farhan Siddiqui**  
+*Data Science & AI Development Expert*
+
+---
+
 # PostgreSQL Demo App: Step-by-Step Build Guide
 
 ## Project Structure

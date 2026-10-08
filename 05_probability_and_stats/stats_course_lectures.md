@@ -1,3 +1,8 @@
+**Course Created by: Farhan Siddiqui**  
+*Data Science & AI Development Expert*
+
+---
+
 # Statistics for AI: Complete Course Lectures
 
 ## Module 1: The Foundations of Probability
