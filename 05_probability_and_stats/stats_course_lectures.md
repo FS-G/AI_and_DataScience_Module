@@ -188,7 +188,7 @@ It may be easier to measure the reverse: **P(Phrase | Spam)**—among emails alr
 ![Discrete Distributions Overview](https://blogger.googleusercontent.com/img/a/AVvXsEhx17znSE17sn4oPqq3bXvxw7_Df0zGsN9imB7AK6_IDA5nrBq-A1aIG5q03zK_CNLlGRawxBQIWUKPQU4vh3U34YcONBFU75kqfbphhG_WVTcy52vkutvsf5AO8X_f-KCd_6C1uH27PDXMFbXiKWWb2h_mROTgR5KPsiHhOGxG3rd8vrRyWFdyEdMp)
 
 
-![Exponential Disctibution](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Exponential_distribution_pdf_-_public_domain.svg/488px-Exponential_distribution_pdf_-_public_domain.svg.png)
+![Exponential Disctibution](https://commons.wikimedia.org/wiki/Special:FilePath/Exponential_distribution_pdf_-_public_domain.svg)
 
 **Bernoulli Distribution - The Yes/No Distribution**
 • Models single trial with two outcomes
