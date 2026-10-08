@@ -139,119 +139,84 @@ It may be easier to measure the reverse: **P(Phrase | Spam)**—among emails alr
 
 ## Common Probability Distributions
 
-### Random Variables - Turning Outcomes into Numbers
+A **random variable** represents an outcome with a number, such as the number of orders or the time until a customer arrives. Distributions describe the possible values and how likely they are.
 
-**What is a Random Variable?**
-• A function that assigns numbers to outcomes
-• Bridges the gap between events and mathematics
+There are two main kinds:
 
-**Types:**
-• **Discrete**: Can count the values (1, 2, 3...)
-  - Number of emails received per day
-  - Number of website clicks
+- **Discrete:** values you can count, such as 0, 1, 2, 3 orders.
+- **Continuous:** values you measure, such as time, height, or temperature.
 
-• **Continuous**: Can measure on a scale (any real number)
-  - Temperature
-  - Stock prices
-  - Time between events
+For discrete data, a **probability mass function (PMF)** gives the chance of each value. For continuous data, a **probability density function (PDF)** shows where values are more or less common; probability is represented by the area under the curve. A **cumulative distribution function (CDF)** gives the chance of getting a value up to a chosen point.
 
----
+### Discrete distributions
 
-### Essential Probability Functions
+Discrete distributions describe **countable outcomes**.
 
-**Probability Mass Function (PMF) - For Discrete Variables**
-• Shows probability of each specific value
-• **Example - Flipping 3 coins, counting heads:**
-  - P(X=0) = 1/8 (TTT)
-  - P(X=1) = 3/8 (HTT, THT, TTH)  
-  - P(X=2) = 3/8 (HHT, HTH, THH)
-  - P(X=3) = 1/8 (HHH)
+#### Bernoulli: one yes-or-no result
 
-**Probability Density Function (PDF) - For Continuous Variables**
-• Shows relative likelihood of values (height of curve)
-• **Example - Height of students:**
-  - Curve is tallest around 5'6" (most common height)
-  - Gets shorter toward 4'0" and 7'0" (rare heights)
-  - Total area under curve = 100%
+A **Bernoulli distribution** models one trial with two outcomes: success or failure. For example, one visitor either signs up or does not.
 
-**Cumulative Distribution Function (CDF)**
-• P(X ≤ x) = probability of getting value x or less
-• **Example - Test scores (out of 100):**
-  - CDF(70) = 0.60 means 60% of students scored 70 or below
-  - CDF(90) = 0.90 means 90% of students scored 90 or below
-  - Always increases: if you scored higher, more students are below you
+![Bernoulli distribution: one yes-or-no trial](images/bernoulli.svg)
 
----
+The two bars show the **two possible outcomes** of one trial: no and yes.
 
-### The Discrete Distribution Family
+**Use it when:** recording whether one customer **buys or does not buy**.
 
-![Discrete Distributions Overview](https://blogger.googleusercontent.com/img/a/AVvXsEhx17znSE17sn4oPqq3bXvxw7_Df0zGsN9imB7AK6_IDA5nrBq-A1aIG5q03zK_CNLlGRawxBQIWUKPQU4vh3U34YcONBFU75kqfbphhG_WVTcy52vkutvsf5AO8X_f-KCd_6C1uH27PDXMFbXiKWWb2h_mROTgR5KPsiHhOGxG3rd8vrRyWFdyEdMp)
+#### Binomial: count successes across trials
 
+A **binomial distribution** counts successes across a fixed number of similar trials. For example, how many of 10 visitors sign up?
 
-![Exponential Disctibution](https://commons.wikimedia.org/wiki/Special:FilePath/Exponential_distribution_pdf_-_public_domain.svg)
+![Binomial distribution: number of sign-ups in five visits](images/binomial.svg)
 
-**Bernoulli Distribution - The Yes/No Distribution**
-• Models single trial with two outcomes
-• Examples:
-  - Click/No Click on ad
-  - Spam/Not Spam email
-  - Success/Failure
+Unlike Bernoulli’s single result, this shows the **number of successes across several trials**.
 
-• Parameter: p = probability of success
-• P(X=1) = p, P(X=0) = 1-p
+**Use it when:** counting how many of **10 customers sign up**; the number of tries is fixed.
 
-**Binomial Distribution - Multiple Bernoulli Trials**
-• Models number of successes in n trials
-• Examples:
-  - Number of sales out of 10 customer visits
-  - Number of correct predictions in 100 test cases
+#### Poisson: count events over time
 
-• Parameters: n (trials), p (success probability)
-• Mean = np, Variance = np(1-p)
+A **Poisson distribution** models how many times an event happens in a set time or area. For example, how many support calls arrive in an hour?
 
-**Poisson Distribution - Counting Rare Events**
-• Models number of events in fixed time period
-• Examples:
-  - Number of website crashes per day
-  - Number of customer service calls per hour
+![Poisson distribution: number of events in a time period](images/poisson.svg)
 
-• Parameter: λ (average rate)
-• Mean = Variance = λ
+Like binomial, it counts events, but focuses on a **time period** rather than a fixed number of trials.
 
----
+**Use it when:** counting how many **support calls arrive in an hour**; there is no fixed number of call opportunities.
 
-### The Continuous Distribution Family
+### Continuous distributions
 
-**Uniform Distribution - Equal Chances**
-• All values in range equally likely
-• Examples:
-  - Random number generator
-  - Initial neural network weights
+Continuous distributions describe **measured values** that can take many values within a range.
 
-• Perfect for modeling "complete uncertainty"
+#### Uniform: equal chance across a range
 
-**Normal Distribution - The Bell Curve**
-• Most important distribution in statistics
-• Examples:
-  - Heights of people
-  - Measurement errors
-  - Many natural phenomena
+A **uniform distribution** means values in a range are equally likely. For example, a fair random number generator can select any value in its range with equal chance.
 
-• Parameters: μ (mean), σ (standard deviation)
-• Bell-shaped, symmetric
-• 68-95-99.7 rule
+![Uniform distribution: values across a range are equally likely](images/uniform.svg)
 
-**Exponential Distribution - Waiting Times**
-• Models time between events
-• Examples:
-  - Time between customer arrivals
-  - Time until system failure
+Unlike the discrete charts, this shows **measured values**; all values in the range are equally likely.
 
-• Parameter: λ (rate)
-• "Memoryless" property
+**Use it when:** a computer randomly picks a time between **0 and 1 second**, with every moment equally likely.
 
----
+#### Normal: values cluster around an average
 
+A **normal distribution** is the familiar bell shape. Values near the average are common; very low or high values are less common. Some measurements, such as errors in a process, can be roughly normal.
+
+![Normal distribution: values cluster around the average](images/normal.svg)
+
+Unlike uniform, values **cluster near the average** and become less common toward either end.
+
+**Use it when:** modeling small **measurement errors** that usually stay near zero, with large errors less common.
+
+#### Exponential: waiting time until an event
+
+An **exponential distribution** describes waiting time until the next event, such as the time until the next customer arrives. Short waits are more common than very long waits.
+
+![Exponential distribution: waiting time until the next event](images/exponential.svg)
+
+Unlike the symmetric normal curve, **short waits are more common** than long waits.
+
+**Use it when:** estimating the **waiting time until the next support call** arrives.
+
+**Quick guide:** Is the result a count or yes/no outcome? Start with a discrete distribution. Is it a measurement or waiting time? Start with a continuous distribution. Use a chart and the context to decide which subtype fits.
 ## Exploratory Data Analysis (EDA)
 
 ### Why EDA is Critical for AI
