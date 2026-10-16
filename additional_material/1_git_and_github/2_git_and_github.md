@@ -28,6 +28,12 @@ That's exactly what version control does for software development!
 ### Real-World Analogy
 Think of Git as your personal notebook where you jot down ideas, and GitHub as the library where you store and share these notebooks with others.
 
+### Key Benefits of Git and GitHub
+
+**Git:** Tracks code changes, saves versions, enables branching, and helps merge work.
+
+**GitHub:** Stores repositories online, supports collaboration, enables code sharing and pull requests, and helps manage projects.
+
 ---
 
 ## 2. Setting Up Your Development Environment
@@ -66,6 +72,10 @@ sudo apt install git
 git config --global user.name "Your Name"
 git config --global user.email "your.email@example.com"
 
+# Set identity for the current repository only
+git config user.name "Your Local Name"
+git config user.email "local.email@example.com"
+
 # Set default branch name
 git config --global init.defaultBranch main
 
@@ -77,25 +87,26 @@ git config --list
 
 ## 3. Git Fundamentals
 
-### The Git Workflow: Three States
+### The Git Workflow: From Local Work to GitHub
 ```
-Working Directory → Staging Area → Repository
-     (Modified)      (Staged)      (Committed)
+Working Directory → Staging Area → Local Repository → Remote Repository
+     (Modified)          (Staged)        (Committed)          (Pushed)
 ```
+
+- `git add .` → Staging Area
+- `git commit` → Local Repository
+- `git push` → Remote Repository, such as GitHub
 
 ### Creating Your First Repository
 
 **Step 1: Initialize a Repository**
 ```bash
-# Create a new project folder
-mkdir my-awesome-project
-cd my-awesome-project
 
 # Initialize Git
 git init
 ```
 
-**Step 2: Check Status (Your Best Friend!)**
+**Step 2: Check Status (Optional) **
 ```bash
 git status
 ```
@@ -232,103 +243,9 @@ git branch -m main
 git push origin main
 ```
 
-## 6. GitHub Integration & VS Code Connection
-
-### 🎯 Connecting VS Code to GitHub
-
-**Step 1: Install GitHub Extension**
-1. Open VS Code
-2. Go to Extensions (Ctrl+Shift+X)
-3. Search for "GitHub Pull Requests and Issues"
-4. Install it
-
-**Step 2: Sign in to GitHub**
-1. Press `Ctrl+Shift+P`
-2. Type "GitHub: Sign in"
-3. Follow the authentication flow
-
-**Step 3: Clone Repository in VS Code**
-1. Press `Ctrl+Shift+P`
-2. Type "Git: Clone"
-3. Enter GitHub repository URL
-4. Select folder location
-
-### Setting up Authentication with Personal Access Token (PAT)
-
-**Why PAT?** GitHub requires secure authentication for pushing changes. Personal Access Tokens are more secure than passwords.
-
-**Step 1: Create a Personal Access Token**
-1. Go to GitHub.com → Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. Click "Generate new token (classic)"
-3. Give it a descriptive name (e.g., "VS Code Git Access")
-4. Set expiration (recommended: 90 days)
-5. Select scopes: `repo`, `workflow`, `write:packages`
-6. Click "Generate token"
-7. **Important:** Copy the token immediately - you won't see it again!
-
-**Step 2: Configure Git with HTTPS and PAT**
-```bash
-# When you first try to push, Git will ask for credentials
-git push
-
-# Enter your GitHub username
-# For password, paste your Personal Access Token (not your GitHub password!)
-```
-
-**Step 3: Store Credentials (Optional but Recommended)**
-```bash
-# Configure Git to remember credentials
-git config --global credential.helper store
-
-# Or for Windows users:
-git config --global credential.helper manager-core
-```
-
-**Alternative: Using VS Code's Built-in Authentication**
-- When you try to push from VS Code, it will automatically prompt you to authenticate
-- Choose "Sign in with GitHub" for the easiest setup
-- This handles PAT creation and storage automatically
-
-### Connecting Local Repository to GitHub
-
-**Step 1: Create Repository on GitHub**
-1. Go to github.com
-2. Click "New repository"
-3. Name it (same as your local folder)
-4. **Don't** initialize with README if you already have local files
-
-**Step 2: Connect Local to Remote**
-```bash
-# Add GitHub repository as remote
-git remote add origin https://github.com/yourusername/your-repo-name.git
-
-# Verify the connection
-git remote -v
-
-# Push your code to GitHub
-git push -u origin main
-```
-
-### Working with Remote Repositories
-```bash
-# Push changes
-git push
-
-# Pull changes from remote (downloads AND merges automatically)
-git pull
-
-# Fetch changes (downloads but doesn't merge - safer option)
-git fetch
-```
-
-**Difference between `git pull` and `git fetch`:**
-- **`git pull`**: Downloads changes from remote AND automatically merges them into your current branch
-- **`git fetch`**: Only downloads the changes but leaves them separate - you decide when to merge
-- **Best Practice**: Use `git fetch` first to see what changed, then merge manually if everything looks good
-
 ---
 
-## 7. Collaborative Development Activity
+## 6. Collaborative Development Activity
 
 ### 🎯 Class Collaboration Exercise: "Python Recipe Book"
 
