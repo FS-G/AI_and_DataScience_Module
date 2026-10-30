@@ -196,7 +196,7 @@ A web application is a set of cooperating parts. Each part has a clear responsib
 | Browser / frontend | Presents information, collects user input, and sends requests | Searchable book catalog and loan status badges |
 | API | Defines the available operations and the shape of requests and responses | `GET /api/books`, `POST /api/loans` |
 | Backend | Validates requests, applies rules, coordinates work, and returns results | Checks that a book can be borrowed |
-| Database | Stores durable, related records and answers queries | PostgreSQL tables for books, members, and loans |
+| Database | Stores durable, related records and answers queries | PostgreSQL tables for books, students, staff, and loans |
 
 The browser does not connect directly to the database. It talks to the backend through an API. The backend is the trusted middle layer: it checks input and permissions, applies business rules, and asks the database to read or change records. The database enforces data relationships and stores committed changes so that they remain after the application restarts.
 
@@ -335,11 +335,11 @@ A small browser application can begin with ordinary HTTP and JSON because it is 
 For the library, the central relationship is:
 
 ```text
-books (one) ──── (many) loans (many) ──── (one) members
+books (one) ──── (many) loans (many) ──── (one) students
 ```
 
-- **Loan relationships:** Each loan references one book and one member. A book can appear in many historical loans, and a member can have many loans.
-- **Example columns:** `books.id`, `books.title`, `members.id`, `members.name`, and `loans.id`, `loans.book_id`, `loans.member_id`, `loans.checked_out_on`, `loans.due_on`, and nullable `loans.returned_on`.
+- **Loan relationships:** Each loan references one book, one student (the library member), and the staff member who issued it. A book, student, or staff member can appear in many historical loans.
+- **Example columns:** `books.id`, `books.title`, `students.id`, `students.name`, `staff.id`, `staff.name`, and `loans.id`, `loans.book_id`, `loans.student_id`, `loans.staff_id`, `loans.checked_out_on`, `loans.due_on`, and nullable `loans.returned_on`.
 - **Dates:** Store dates as date/time values, not formatted display strings.
 - **Active loan:** Has no return date.
 - **Overdue loan:** Is active and has a due date earlier than today. Query this from the dates instead of saving a status that may become stale tomorrow.
@@ -368,11 +368,11 @@ books (one) ──── (many) loans (many) ──── (one) members
 
 ### Project goal
 
-Build a small web app where a library keeps track of books, members, and loans. Members can borrow books and return them, and the system flags any loan that is past its due date. It is a familiar concept, so students can focus on how the web application works instead of learning unfamiliar domain rules.
+Build a small web app where a library keeps track of books, student members, staff, and loans. Students can borrow books through staff and return them, and the system flags any loan that is past its due date. It is a familiar concept, so students can focus on how the web application works instead of learning unfamiliar domain rules.
 
 This project introduces:
 
-- **Foreign keys**, since loans link a book to a member
+- **Foreign keys**, since loans link a book and student to a staff member
 - **Date handling**, for due dates and late calculations
 - **Useful queries**, like finding overdue loans
 
@@ -419,7 +419,7 @@ library_app/
 │       └── api/
 │           └── routes/
 │               ├── books.py
-│               ├── members.py
+│               ├── students.py
 │               └── loans.py
 └── frontend/
     ├── index.html
@@ -428,6 +428,55 @@ library_app/
 ```
 
 The exact module names can vary. Preserve the simple boundaries: routes handle HTTP, schemas describe data exchanged over the API, services hold use-case rules, repositories handle persistence, models describe database structure, and `core`/`db` handle configuration and connections. If teaching a very small first version, several directories may initially contain only one file; the structure is there to show each responsibility clearly.
+
+### Database ERD: plan the tables before starting PostgreSQL
+
+Before starting the database, review this **entity-relationship diagram (ERD)**. It shows the four tables the activity creates, their important columns, and how a loan connects the other records. In the diagram, `PK` means primary key and `FK` means foreign key.
+
+```mermaid
+erDiagram
+    BOOKS ||--o{ LOANS : "is checked out in"
+    STUDENTS ||--o{ LOANS : "borrows"
+    STAFF ||--o{ LOANS : "issues"
+
+    BOOKS {
+        int id PK
+        string title
+        string author
+        string isbn UK
+        int year_published
+    }
+    STUDENTS {
+        int id PK
+        string name
+        string email UK
+        string phone
+    }
+    STAFF {
+        int id PK
+        string name
+        string email UK
+        string role
+    }
+    LOANS {
+        int id PK
+        int book_id FK
+        int student_id FK
+        int staff_id FK
+        date checked_out_on
+        date due_on
+        date returned_on "nullable until returned"
+    }
+```
+
+- **One book can have many loan records over time.** A loan points to exactly one book.
+- **One student can have many loan records.** A loan points to exactly one student who borrowed the book.
+- **One staff member can issue many loans.** Each loan records the staff member who processed it.
+- **`returned_on` is nullable:** an empty value means the loan is still active. The app derives `on_loan`, `overdue`, or `returned` from the dates rather than storing a status that can become out of date.
+- **Unique values:** `books.isbn`, `students.email`, and `staff.email` must not be duplicated.
+- **Delete rule:** foreign keys restrict deletion of books, students, or staff that are referenced by loan history.
+
+The SQL in `backend/app/db/setup.py` implements this ERD. Looking at the diagram first helps students understand why the loans table has three foreign keys and why PostgreSQL can prevent accidental deletion of referenced records.
 
 ### Start PostgreSQL with Docker
 
@@ -471,33 +520,40 @@ These values are local teaching credentials only. Add `.env` to `.gitignore`; co
 
 ### API map for the project
 
-Keep the API small and understandable. A first version can expose:
+Keep the API understandable. This guided version provides CRUD operations for students, books, and staff, plus the loan workflow:
 
 | Method and path | Purpose | Example result |
 |---|---|---|
-| `GET /api/books?search=history` | Search the catalog and include current loan status | Matching books with `available`, `on_loan`, or `overdue` status |
-| `GET /api/members` | List members for the borrow form | Member IDs and names |
-| `POST /api/loans` | Borrow an available book for a member | New loan ID and due date (`201`) |
+| `GET /api/students?search=amina` | List or search students | Student records |
+| `POST /api/students` | Create a student | New student (`201`) |
+| `PUT /api/students/{id}` | Replace a student's details | Updated student |
+| `DELETE /api/students/{id}` | Delete a student with no loan history | `204`; conflict if loans reference the student |
+| `GET /api/books?search=history` | Search catalog and show current status | Books with `available`, `on_loan`, or `overdue` status |
+| `POST /api/books`, `PUT /api/books/{id}`, `DELETE /api/books/{id}` | Create, replace, or delete a book | Book record; deletion is blocked if loan history exists |
+| `GET /api/staff`, `POST /api/staff`, `PUT /api/staff/{id}`, `DELETE /api/staff/{id}` | Manage staff records | Staff records |
+| `GET /api/loans` | List loans with book, student, and staff names | Loan history and current state |
+| `POST /api/loans` | Check out an available book to a student by a staff member | New loan and due date (`201`) |
 | `PATCH /api/loans/{loan_id}/return` | Return an active loan | Updated loan with return date |
-| `GET /api/loans/overdue` | Find active loans whose due date has passed | Loan, book, member, and due date details |
+| `GET /api/loans/overdue` | Find active loans whose due dates have passed | Loan, book, student, staff, and due date |
 
-For example, a borrow request might send `{"book_id": 12, "member_id": 4}` as JSON. FastAPI validates that these are integers, the `Library` use case checks availability, and PostgreSQL enforces the foreign keys. The response might include `{"loan_id": 27, "due_on": "2026-11-14", "status": "on_loan"}`. In a complete implementation, use consistent timezone/date rules and define whether a loan due today becomes overdue at the start or end of the due date.
+For example, a borrow request might send `{"book_id": 12, "student_id": 4, "staff_id": 2}` as JSON. FastAPI validates that these are integers, the `Library` use case checks availability, and PostgreSQL enforces the foreign keys. The response might include `{"id": 27, "due_on": "2026-11-14", "status": "on_loan"}`. In a complete implementation, use consistent timezone/date rules and define whether a loan due today becomes overdue at the start or end of the due date.
 
 ### What students should observe
 
 1. Starting Docker starts PostgreSQL; it does not start FastAPI or the browser page.
 2. Starting FastAPI loads backend settings from `.env`, connects to PostgreSQL, and makes API routes available. FastAPI's interactive documentation is at `http://localhost:8000/docs`.
 3. The static frontend is served from `http://localhost:5500` by a simple development server (for example, `python -m http.server 5500` from the `frontend` directory). Serving the files over HTTP avoids browser `file://` restrictions.
-4. Searching makes the browser send a `GET`; the backend asks PostgreSQL for matches and sends JSON back; JavaScript renders the catalog and status badges.
-5. Borrowing makes the browser send a `POST`; the backend checks the rules and writes a loan; the response gives the frontend the due date to display.
-6. Returning makes the browser send a `PATCH`; the database records the return date. The status then changes to returned.
-7. Passing the due date makes an unreturned loan overdue. The backend's date comparison and overdue query support that badge and the overdue list.
+4. Managing students, books, and staff uses `GET`, `POST`, `PUT`, and `DELETE`; the browser updates its tables after the API confirms each change.
+5. Searching makes the browser send a `GET`; the backend asks PostgreSQL for matches and sends JSON back; JavaScript renders the catalog and status badges.
+6. Borrowing makes the browser send a `POST`; the backend checks the rules and writes a loan; the response gives the frontend the due date to display.
+7. Returning makes the browser send a `PATCH`; the database records the return date. The status then changes to returned.
+8. Passing the due date makes an unreturned loan overdue. The backend's date comparison and overdue query support that badge and the overdue list.
 
 The important outcome is a mental model of the complete cycle: a user action becomes an HTTP request; an API route validates and dispatches it; backend logic applies rules; PostgreSQL reads or stores related data; the backend returns a response; the frontend renders the result. Each file should be simple enough for students to run and trace without needing to design the architecture themselves.
 
 ### Guided coding activity: build and run the library app
 
-In this activity, students copy the code into the named files and run the application. Read each file's short responsibility, then trace one search, borrow, and return from the browser to the database and back. The code uses simple SQL through `psycopg` so the database operations remain visible; it keeps a small module per task and one main class per module.
+In this activity, students copy the code into the named files and run the application. Read each file's short responsibility, then trace student, book, and staff creation, a search, a borrow, and a return from the browser to the database and back. The code uses simple SQL through `psycopg` so the database operations remain visible; it keeps a small module per task and one main class per module. To keep the example manageable, the CRUD operations are grouped in the `Library` service while the HTTP routes stay in FastAPI.
 
 #### 1. Create the project files
 
@@ -573,7 +629,7 @@ class Connection:
         return psycopg.connect(self.__database_url)
 ```
 
-`backend/app/db/setup.py` creates the tables and a few starter records. A loan has foreign keys to both books and members; `returned_on` remains empty until a book is returned.
+`backend/app/db/setup.py` creates the tables and a few starter records. Loans reference books, students, and the staff member who issued them. Foreign keys use `ON DELETE RESTRICT` so records with loan history cannot be deleted accidentally; `returned_on` remains empty until a book is returned.
 
 ```python
 from app.db.connection import Connection
@@ -589,43 +645,66 @@ class Setup:
                 CREATE TABLE IF NOT EXISTS books (
                     id SERIAL PRIMARY KEY,
                     title TEXT NOT NULL,
-                    author TEXT NOT NULL
+                    author TEXT NOT NULL,
+                    isbn TEXT NOT NULL UNIQUE,
+                    year_published INTEGER NOT NULL
                 )
             """)
             conn.execute("""
-                CREATE TABLE IF NOT EXISTS members (
+                CREATE TABLE IF NOT EXISTS students (
                     id SERIAL PRIMARY KEY,
-                    name TEXT NOT NULL
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    phone TEXT NOT NULL DEFAULT ''
+                )
+            """)
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS staff (
+                    id SERIAL PRIMARY KEY,
+                    name TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    role TEXT NOT NULL DEFAULT 'Librarian'
                 )
             """)
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS loans (
                     id SERIAL PRIMARY KEY,
-                    book_id INTEGER NOT NULL REFERENCES books(id),
-                    member_id INTEGER NOT NULL REFERENCES members(id),
+                    book_id INTEGER NOT NULL REFERENCES books(id) ON DELETE RESTRICT,
+                    student_id INTEGER NOT NULL REFERENCES students(id) ON DELETE RESTRICT,
+                    staff_id INTEGER NOT NULL REFERENCES staff(id) ON DELETE RESTRICT,
                     checked_out_on DATE NOT NULL,
                     due_on DATE NOT NULL,
                     returned_on DATE
                 )
             """)
             conn.execute("""
-                INSERT INTO books (title, author)
-                SELECT v.title, v.author
+                INSERT INTO books (title, author, isbn, year_published)
+                SELECT v.title, v.author, v.isbn, v.year_published
                 FROM (VALUES
-                    ('The Hobbit', 'J.R.R. Tolkien'),
-                    ('Pride and Prejudice', 'Jane Austen'),
-                    ('A Brief History of Time', 'Stephen Hawking')
-                ) AS v(title, author)
+                    ('The Hobbit', 'J.R.R. Tolkien', '9780547928227', 1937),
+                    ('Pride and Prejudice', 'Jane Austen', '9780141439518', 1813),
+                    ('A Brief History of Time', 'Stephen Hawking', '9780553380163', 1988)
+                ) AS v(title, author, isbn, year_published)
                 WHERE NOT EXISTS (SELECT 1 FROM books)
             """)
             conn.execute("""
-                INSERT INTO members (name)
-                SELECT v.name FROM (VALUES ('Amina Khan'), ('Omar Ali')) AS v(name)
-                WHERE NOT EXISTS (SELECT 1 FROM members)
+                INSERT INTO students (name, email, phone)
+                SELECT v.name, v.email, v.phone
+                FROM (VALUES
+                    ('Amina Khan', 'amina@example.com', '0300-1111111'),
+                    ('Omar Ali', 'omar@example.com', '0300-2222222')
+                ) AS v(name, email, phone)
+                WHERE NOT EXISTS (SELECT 1 FROM students)
+            """)
+            conn.execute("""
+                INSERT INTO staff (name, email, role)
+                SELECT v.name, v.email, v.role
+                FROM (VALUES ('Sara Ahmed', 'sara@example.com', 'Librarian')) AS v(name, email, role)
+                WHERE NOT EXISTS (SELECT 1 FROM staff)
             """)
 ```
 
-`backend/app/db/setup.py` runs schema setup once when the API starts. The connection context commits successful changes and closes the connection.
+`backend/app/db/setup.py` runs schema setup once when the API starts. The connection context commits successful changes and closes the connection. The starter data provides a student and staff member to make borrowing available immediately.
 
 #### 3. Library operations
 
@@ -640,10 +719,34 @@ class Library:
     def __init__(self):
         self.__connection = Connection()
 
+    def list_students(self, search=""):
+        return self.__list_records("students", search)
+
+    def create_student(self, data):
+        return self.__create_person("students", data, ("name", "email", "phone"))
+
+    def update_student(self, student_id, data):
+        return self.__update_person("students", student_id, data, ("name", "email", "phone"))
+
+    def delete_student(self, student_id):
+        return self.__delete_record("students", student_id)
+
+    def list_staff(self):
+        return self.__list_records("staff")
+
+    def create_staff(self, data):
+        return self.__create_person("staff", data, ("name", "email", "role"))
+
+    def update_staff(self, staff_id, data):
+        return self.__update_person("staff", staff_id, data, ("name", "email", "role"))
+
+    def delete_staff(self, staff_id):
+        return self.__delete_record("staff", staff_id)
+
     def list_books(self, search=""):
         with self.__connection.open() as conn:
             rows = conn.execute("""
-                SELECT b.id, b.title, b.author,
+                SELECT b.id, b.title, b.author, b.isbn, b.year_published,
                        CASE
                            WHEN l.returned_on IS NULL AND l.due_on < CURRENT_DATE THEN 'overdue'
                            WHEN l.returned_on IS NULL THEN 'on_loan'
@@ -651,26 +754,63 @@ class Library:
                        END AS status
                 FROM books b
                 LEFT JOIN loans l ON l.book_id = b.id AND l.returned_on IS NULL
-                WHERE b.title ILIKE %s OR b.author ILIKE %s
+                WHERE b.title ILIKE %s OR b.author ILIKE %s OR b.isbn ILIKE %s
                 ORDER BY b.title
-            """, (f"%{search}%", f"%{search}%")).fetchall()
+            """, (f"%{search}%", f"%{search}%", f"%{search}%")).fetchall()
         return [dict(row) for row in rows]
 
-    def list_members(self):
+    def create_book(self, data):
         with self.__connection.open() as conn:
-            rows = conn.execute("SELECT id, name FROM members ORDER BY name").fetchall()
+            row = conn.execute("""
+                INSERT INTO books (title, author, isbn, year_published)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, title, author, isbn, year_published
+            """, (data.title, data.author, data.isbn, data.year_published)).fetchone()
+        return dict(row)
+
+    def update_book(self, book_id, data):
+        with self.__connection.open() as conn:
+            row = conn.execute("""
+                UPDATE books SET title = %s, author = %s, isbn = %s, year_published = %s
+                WHERE id = %s
+                RETURNING id, title, author, isbn, year_published
+            """, (data.title, data.author, data.isbn, data.year_published, book_id)).fetchone()
+        return dict(row) if row else None
+
+    def delete_book(self, book_id):
+        return self.__delete_record("books", book_id)
+
+    def list_staff_for_select(self):
+        with self.__connection.open() as conn:
+            rows = conn.execute("SELECT id, name FROM staff ORDER BY name").fetchall()
         return [dict(row) for row in rows]
 
-    def borrow_book(self, book_id, member_id):
+    def list_loans(self):
+        with self.__connection.open() as conn:
+            rows = conn.execute("""
+                SELECT l.id, b.title AS book_title, s.name AS student_name,
+                       f.name AS staff_name, l.checked_out_on, l.due_on, l.returned_on,
+                       CASE WHEN l.returned_on IS NOT NULL THEN 'returned'
+                            WHEN l.due_on < CURRENT_DATE THEN 'overdue'
+                            ELSE 'on_loan' END AS status
+                FROM loans l
+                JOIN books b ON b.id = l.book_id
+                JOIN students s ON s.id = l.student_id
+                JOIN staff f ON f.id = l.staff_id
+                ORDER BY l.checked_out_on DESC, l.id DESC
+            """).fetchall()
+        return [dict(row) for row in rows]
+
+    def borrow_book(self, book_id, student_id, staff_id):
         with self.__connection.open() as conn:
             if not self.__book_is_available(conn, book_id):
                 return None
             today = date.today()
             row = conn.execute("""
-                INSERT INTO loans (book_id, member_id, checked_out_on, due_on)
-                VALUES (%s, %s, %s, %s)
-                RETURNING id, book_id, member_id, checked_out_on, due_on, returned_on
-            """, (book_id, member_id, today, today + timedelta(days=14))).fetchone()
+                INSERT INTO loans (book_id, student_id, staff_id, checked_out_on, due_on)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id, book_id, student_id, staff_id, checked_out_on, due_on, returned_on
+            """, (book_id, student_id, staff_id, today, today + timedelta(days=14))).fetchone()
         return dict(row)
 
     def return_book(self, loan_id):
@@ -678,17 +818,19 @@ class Library:
             row = conn.execute("""
                 UPDATE loans SET returned_on = CURRENT_DATE
                 WHERE id = %s AND returned_on IS NULL
-                RETURNING id, book_id, member_id, checked_out_on, due_on, returned_on
+                RETURNING id, book_id, student_id, staff_id, checked_out_on, due_on, returned_on
             """, (loan_id,)).fetchone()
         return dict(row) if row else None
 
     def list_overdue(self):
         with self.__connection.open() as conn:
             rows = conn.execute("""
-                SELECT l.id AS loan_id, b.title, m.name AS member_name, l.due_on
+                SELECT l.id AS loan_id, b.title, s.name AS student_name,
+                       f.name AS staff_name, l.due_on
                 FROM loans l
                 JOIN books b ON b.id = l.book_id
-                JOIN members m ON m.id = l.member_id
+                JOIN students s ON s.id = l.student_id
+                JOIN staff f ON f.id = l.staff_id
                 WHERE l.returned_on IS NULL AND l.due_on < CURRENT_DATE
                 ORDER BY l.due_on
             """).fetchall()
@@ -701,6 +843,43 @@ class Library:
             ) AS available
         """, (book_id,)).fetchone()
         return row["available"]
+
+    def __list_records(self, table, search=""):
+        with self.__connection.open() as conn:
+            if table == "students":
+                rows = conn.execute("""
+                    SELECT id, name, email, phone FROM students
+                    WHERE name ILIKE %s OR email ILIKE %s ORDER BY name
+                """, (f"%{search}%", f"%{search}%")).fetchall()
+            else:
+                rows = conn.execute("SELECT id, name, email, role FROM staff ORDER BY name").fetchall()
+        return [dict(row) for row in rows]
+
+    def __create_person(self, table, data, fields):
+        columns = ", ".join(fields)
+        placeholders = ", ".join(["%s"] * len(fields))
+        values = tuple(getattr(data, field) for field in fields)
+        with self.__connection.open() as conn:
+            row = conn.execute(
+                f"INSERT INTO {table} ({columns}) VALUES ({placeholders}) RETURNING *", values
+            ).fetchone()
+        return dict(row)
+
+    def __update_person(self, table, record_id, data, fields):
+        assignments = ", ".join(f"{field} = %s" for field in fields)
+        values = tuple(getattr(data, field) for field in fields) + (record_id,)
+        with self.__connection.open() as conn:
+            row = conn.execute(
+                f"UPDATE {table} SET {assignments} WHERE id = %s RETURNING *", values
+            ).fetchone()
+        return dict(row) if row else None
+
+    def __delete_record(self, table, record_id):
+        with self.__connection.open() as conn:
+            row = conn.execute(
+                f"DELETE FROM {table} WHERE id = %s RETURNING id", (record_id,)
+            ).fetchone()
+        return bool(row)
 ```
 
 In `backend/app/db/connection.py`, set rows to dictionary-like objects so the code above can return JSON-friendly dictionaries. Update its imports and `open` method as follows:
@@ -721,7 +900,7 @@ class Connection:
 
 #### 4. FastAPI routes
 
-`backend/app/main.py` sets up the tables, allows the local frontend origin, and exposes the API endpoints. FastAPI uses Pydantic to check the JSON body for a new loan.
+`backend/app/main.py` sets up the tables, allows the local frontend origin, and exposes CRUD endpoints for students, books, and staff, as well as loan operations. FastAPI uses Pydantic models to validate incoming JSON.
 
 ```python
 from contextlib import asynccontextmanager
@@ -746,14 +925,96 @@ app = FastAPI(title="Library API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[config.frontend_origin],
-    allow_methods=["GET", "POST", "PATCH"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
     allow_headers=["Content-Type"],
 )
 
 
 class LoanRequest(BaseModel):
     book_id: int
-    member_id: int
+    student_id: int
+    staff_id: int
+
+
+class StudentInput(BaseModel):
+    name: str
+    email: str
+    phone: str = ""
+
+
+class StaffInput(BaseModel):
+    name: str
+    email: str
+    role: str = "Librarian"
+
+
+class BookInput(BaseModel):
+    title: str
+    author: str
+    isbn: str
+    year_published: int
+
+
+def handle_delete(table, record_id):
+    try:
+        deleted = getattr(library, f"delete_{table}")(record_id)
+    except Exception as error:
+        raise HTTPException(status_code=409, detail="Record is in use or conflicts with existing data") from error
+    if not deleted:
+        raise HTTPException(status_code=404, detail="Record was not found")
+    return None
+
+
+@app.get("/api/students")
+def get_students(search: str = ""):
+    return library.list_students(search)
+
+
+@app.post("/api/students", status_code=201)
+def create_student(request: StudentInput):
+    try:
+        return library.create_student(request)
+    except Exception as error:
+        raise HTTPException(status_code=409, detail="Student email already exists") from error
+
+
+@app.put("/api/students/{student_id}")
+def update_student(student_id: int, request: StudentInput):
+    result = library.update_student(student_id, request)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Student was not found")
+    return result
+
+
+@app.delete("/api/students/{student_id}", status_code=204)
+def delete_student(student_id: int):
+    return handle_delete("student", student_id)
+
+
+@app.get("/api/staff")
+def get_staff():
+    return library.list_staff()
+
+
+@app.post("/api/staff", status_code=201)
+def create_staff(request: StaffInput):
+    try:
+        return library.create_staff(request)
+    except Exception as error:
+        raise HTTPException(status_code=409, detail="Staff email already exists") from error
+
+
+@app.put("/api/staff/{staff_id}")
+def update_staff(staff_id: int, request: StaffInput):
+    result = library.update_staff(staff_id, request)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Staff member was not found")
+    return result
+
+
+@app.delete("/api/staff/{staff_id}", status_code=204)
+def delete_staff(staff_id: int):
+    return handle_delete("staff", staff_id)
 
 
 @app.get("/api/books")
@@ -761,15 +1022,36 @@ def get_books(search: str = ""):
     return library.list_books(search)
 
 
-@app.get("/api/members")
-def get_members():
-    return library.list_members()
+@app.post("/api/books", status_code=201)
+def create_book(request: BookInput):
+    try:
+        return library.create_book(request)
+    except Exception as error:
+        raise HTTPException(status_code=409, detail="ISBN already exists") from error
+
+
+@app.put("/api/books/{book_id}")
+def update_book(book_id: int, request: BookInput):
+    result = library.update_book(book_id, request)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Book was not found")
+    return result
+
+
+@app.delete("/api/books/{book_id}", status_code=204)
+def delete_book(book_id: int):
+    return handle_delete("book", book_id)
+
+
+@app.get("/api/loans")
+def get_loans():
+    return library.list_loans()
 
 
 @app.post("/api/loans", status_code=201)
 def borrow_book(request: LoanRequest):
     try:
-        loan = library.borrow_book(request.book_id, request.member_id)
+        loan = library.borrow_book(request.book_id, request.student_id, request.staff_id)
     except Exception as error:
         raise HTTPException(status_code=404, detail="Book or member was not found") from error
     if loan is None:
@@ -792,7 +1074,7 @@ def get_overdue_loans():
 
 #### 5. Frontend files
 
-`frontend/index.html` provides the catalog, search, and member selector:
+`frontend/index.html` provides a small admin-style dashboard. The tabs separate the catalog, student records, staff records, and loan desk so each task is easy to find:
 
 ```html
 <!doctype html>
@@ -800,102 +1082,267 @@ def get_overdue_loans():
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Library Loans</title>
+  <title>Library Desk</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header><div><p class="eyebrow">LIBRARY MANAGEMENT</p><h1>Library Desk</h1></div><span class="live">● System ready</span></header>
   <main>
-    <h1>Library Catalog</h1>
-    <label>Search books <input id="search" type="search" placeholder="Title or author"></label>
-    <label>Borrow for <select id="member"></select></label>
+    <nav class="tabs" aria-label="Library sections">
+      <button class="tab active" data-view="catalog">Catalog</button>
+      <button class="tab" data-view="students">Students</button>
+      <button class="tab" data-view="staff">Staff</button>
+      <button class="tab" data-view="loans">Loans</button>
+    </nav>
     <p id="message" role="status"></p>
-    <section id="books" aria-live="polite"></section>
-    <h2>Overdue loans</h2>
-    <ul id="overdue"></ul>
+    <section id="catalog-view" class="view">
+      <div class="section-heading"><div><h2>Book catalog</h2><p>Search titles and manage the collection.</p></div><button id="add-book" class="primary">Add book</button></div>
+      <input id="search" type="search" placeholder="Search title, author, or ISBN">
+      <div id="books" class="records"></div>
+    </section>
+    <section id="students-view" class="view hidden">
+      <div class="section-heading"><div><h2>Students</h2><p>Manage library members.</p></div><button id="add-student" class="primary">Add student</button></div>
+      <input id="student-search" type="search" placeholder="Search students">
+      <div id="students" class="records"></div>
+    </section>
+    <section id="staff-view" class="view hidden">
+      <div class="section-heading"><div><h2>Staff</h2><p>Manage the people who issue and return books.</p></div><button id="add-staff" class="primary">Add staff</button></div>
+      <div id="staff" class="records"></div>
+    </section>
+    <section id="loans-view" class="view hidden">
+      <div class="section-heading"><div><h2>Loans</h2><p>Track checkouts, returns, and overdue books.</p></div></div>
+      <form id="loan-form" class="loan-form">
+        <label>Book<select id="loan-book" required></select></label>
+        <label>Student<select id="loan-student" required></select></label>
+        <label>Issued by<select id="loan-staff" required></select></label>
+        <button class="primary">Check out book</button>
+      </form>
+      <h3>Loan history</h3><div id="loans" class="records"></div>
+      <h3>Overdue</h3><div id="overdue" class="records"></div>
+    </section>
+    <dialog id="record-dialog">
+      <form id="record-form" method="dialog">
+        <div class="section-heading"><h2 id="dialog-title">Add record</h2><button type="button" id="close-dialog" class="icon">×</button></div>
+        <div id="dialog-fields"></div><div class="dialog-actions"><button type="button" id="cancel-dialog">Cancel</button><button class="primary">Save record</button></div>
+      </form>
+    </dialog>
   </main>
   <script src="app.js"></script>
 </body>
 </html>
 ```
 
-`frontend/styles.css` makes the app readable and highlights loan states:
+`frontend/styles.css` gives the dashboard a clear layout, readable tables, responsive forms, and distinct loan-state badges:
 
 ```css
-body { font: 16px Arial, sans-serif; margin: 0; background: #f4f6f8; color: #203040; }
-main { max-width: 850px; margin: 2rem auto; padding: 1.5rem; background: white; border-radius: 12px; }
-label { display: inline-block; margin: 0 1rem 1rem 0; }
-input, select, button { padding: .55rem; font: inherit; }
-.book { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 1rem 0; border-top: 1px solid #ddd; }
-.badge { border-radius: 1rem; padding: .3rem .7rem; background: #e7eef5; }
-.badge.overdue { background: #ffe0df; color: #8b1e18; }
-.badge.on_loan { background: #fff0c2; color: #694d00; }
-@media (max-width: 600px) { main { margin: 0; border-radius: 0; } .book { align-items: flex-start; flex-direction: column; } }
+* { box-sizing: border-box; }
+body { font: 15px Arial, sans-serif; margin: 0; background: #f3f6fa; color: #203047; }
+header { display: flex; justify-content: space-between; align-items: center; padding: 1.2rem max(1.25rem, calc((100% - 1050px)/2)); background: #173b67; color: white; }
+h1, h2, h3, p { margin-top: 0; } h1 { margin-bottom: 0; } h2 { margin-bottom: .35rem; } h3 { margin-top: 1.5rem; }
+.eyebrow { margin: 0 0 .3rem; font-size: .7rem; letter-spacing: .14em; opacity: .75; } .live { color: #c7f5db; font-size: .85rem; }
+main { max-width: 1050px; margin: 1.5rem auto; padding: 0 1rem; }
+.tabs { display: flex; gap: .35rem; border-bottom: 1px solid #d9e1eb; margin-bottom: 1.3rem; }
+button, input, select { padding: .65rem .75rem; font: inherit; border: 1px solid #ccd6e2; border-radius: 7px; background: white; color: inherit; }
+button { cursor: pointer; } button:hover { background: #eef3f8; } .tab { border: 0; background: transparent; border-radius: 7px 7px 0 0; } .tab.active { color: #145cb5; box-shadow: inset 0 -3px #2876d2; font-weight: bold; }
+.primary { background: #2168b5; color: white; border-color: #2168b5; } .primary:hover { background: #174f8d; color: white; }
+.section-heading { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin: .5rem 0 1.1rem; } .section-heading p { color: #69788d; margin: 0; }
+.view { background: white; border: 1px solid #e0e6ee; border-radius: 12px; padding: 1.3rem; box-shadow: 0 5px 20px #1b35520b; } .hidden { display: none; }
+#search, #student-search { width: min(100%, 420px); margin-bottom: 1rem; }
+.record { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1rem .25rem; border-top: 1px solid #e8edf3; }
+.record-main { flex: 1; } .record-title { font-weight: bold; margin-bottom: .3rem; } .muted { color: #68778b; font-size: .9rem; }
+.actions { display: flex; gap: .4rem; } .actions button { padding: .4rem .6rem; font-size: .85rem; }
+.badge { display: inline-block; border-radius: 1rem; padding: .3rem .65rem; background: #e7eef5; font-size: .8rem; text-transform: capitalize; white-space: nowrap; }
+.badge.overdue { background: #ffe0df; color: #8b1e18; } .badge.on_loan { background: #fff0c2; color: #694d00; } .badge.available, .badge.returned { background: #dff5e8; color: #17633b; }
+.loan-form { display: flex; flex-wrap: wrap; align-items: end; gap: .8rem; padding: 1rem; background: #f5f8fb; border-radius: 9px; } .loan-form label { display: grid; gap: .4rem; flex: 1; min-width: 170px; }
+dialog { width: min(460px, calc(100% - 2rem)); border: 0; border-radius: 12px; padding: 1.4rem; box-shadow: 0 20px 80px #132b4880; } dialog::backdrop { background: #12253b88; } #dialog-fields label { display: grid; gap: .4rem; margin-bottom: .9rem; } #dialog-fields input { width: 100%; }
+.dialog-actions { display: flex; justify-content: end; gap: .5rem; margin-top: 1.2rem; } .icon { border: 0; font-size: 1.4rem; padding: .25rem .6rem; }
+#message { min-height: 1.3rem; color: #235f9f; }
+@media (max-width: 650px) { header { padding: 1rem; } main { margin-top: .8rem; padding: 0 .6rem; } .view { padding: .9rem; } .record { align-items: flex-start; flex-wrap: wrap; } .actions { width: 100%; } .tabs { overflow-x: auto; } }
 ```
 
-`frontend/app.js` calls the API and renders its responses. The browser does not connect to PostgreSQL:
+`frontend/app.js` calls the API, builds the CRUD forms, and renders the catalog and loan tables. The browser does not connect to PostgreSQL. This small helper-driven file keeps the example readable while all data changes still travel through HTTP:
 
 ```javascript
 const API = "http://localhost:8000";
-const booksArea = document.querySelector("#books");
 const message = document.querySelector("#message");
+const dialog = document.querySelector("#record-dialog");
+let editing = null;
 
-async function loadMembers() {
-  const response = await fetch(`${API}/api/members`);
-  const members = await response.json();
-  document.querySelector("#member").innerHTML = members
-    .map(member => `<option value="${member.id}">${member.name}</option>`).join("");
+async function api(path, options = {}) {
+  const response = await fetch(`${API}${path}`, {
+    ...options,
+    headers: { "Content-Type": "application/json", ...(options.headers || {}) }
+  });
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.detail || `Request failed (${response.status})`);
+  }
+  return response.status === 204 ? null : response.json();
+}
+
+function showMessage(text) {
+  message.textContent = text;
+  window.setTimeout(() => { if (message.textContent === text) message.textContent = ""; }, 4000);
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  })[char]);
+}
+
+function recordRow(title, detail, badge = "", buttons = "") {
+  return `<article class="record"><div class="record-main"><div class="record-title">${title}</div><div class="muted">${detail}</div></div>${badge ? `<span class="badge ${esc(badge)}">${esc(badge.replaceAll("_", " "))}</span>` : ""}<div class="actions">${buttons}</div></article>`;
+}
+
+function actionButton(action, id, label) {
+  return `<button data-action="${action}" data-id="${id}">${label}</button>`;
+}
+
+function setView(name) {
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.toggle("active", tab.dataset.view === name));
+  document.querySelectorAll(".view").forEach(view => view.classList.toggle("hidden", view.id !== `${name}-view`));
+  if (name === "loans") loadLoans();
+}
+
+const schemas = {
+  student: [ ["name", "Full name", "text"], ["email", "Email", "email"], ["phone", "Phone", "tel"] ],
+  staff: [ ["name", "Full name", "text"], ["email", "Email", "email"], ["role", "Role", "text"] ],
+  book: [ ["title", "Title", "text"], ["author", "Author", "text"], ["isbn", "ISBN", "text"], ["year_published", "Year published", "number"] ]
+};
+
+function openForm(type, record = null) {
+  editing = record ? { type, id: record.id } : { type, id: null };
+  document.querySelector("#dialog-title").textContent = `${record ? "Edit" : "Add"} ${type}`;
+  document.querySelector("#dialog-fields").innerHTML = schemas[type].map(([key, label, inputType]) =>
+    `<label>${label}<input name="${key}" type="${inputType}" value="${esc(record?.[key] ?? "")}" required></label>`
+  ).join("");
+  dialog.showModal();
 }
 
 async function loadBooks() {
-  message.textContent = "Loading books...";
+  const search = encodeURIComponent(document.querySelector("#search").value);
+  const books = await api(`/api/books?search=${search}`);
+  document.querySelector("#books").innerHTML = books.map(book => recordRow(
+    `${esc(book.title)} <span class="muted">(${book.year_published})</span>`,
+    `${esc(book.author)} · ISBN ${esc(book.isbn)}`,
+    book.status,
+    `${book.status === "available" ? actionButton("borrow", book.id, "Borrow") : ""}${actionButton("edit-book", book.id, "Edit")}${actionButton("delete-book", book.id, "Delete")}`
+  )).join("") || "<p class='muted'>No books match this search.</p>";
+}
+
+async function loadMembers() {
+  const [students, staff, books] = await Promise.all([
+    api("/api/students"), api("/api/staff"), api("/api/books")
+  ]);
+  document.querySelector("#loan-student").innerHTML = students.map(person => `<option value="${person.id}">${esc(person.name)}</option>`).join("");
+  document.querySelector("#loan-staff").innerHTML = staff.map(person => `<option value="${person.id}">${esc(person.name)}</option>`).join("");
+  document.querySelector("#loan-book").innerHTML = books.filter(book => book.status === "available")
+    .map(book => `<option value="${book.id}">${esc(book.title)}</option>`).join("");
+}
+
+async function loadStudents() {
+  const search = encodeURIComponent(document.querySelector("#student-search").value);
+  const students = await api(`/api/students?search=${search}`);
+  document.querySelector("#students").innerHTML = students.map(student => recordRow(
+    esc(student.name), `${esc(student.email)} · ${esc(student.phone || "No phone")}`,
+    "", `${actionButton("edit-student", student.id, "Edit")}${actionButton("delete-student", student.id, "Delete")}`
+  )).join("") || "<p class='muted'>No students found.</p>";
+}
+
+async function loadStaff() {
+  const staff = await api("/api/staff");
+  document.querySelector("#staff").innerHTML = staff.map(person => recordRow(
+    esc(person.name), `${esc(person.email)} · ${esc(person.role)}`,
+    "", `${actionButton("edit-staff", person.id, "Edit")}${actionButton("delete-staff", person.id, "Delete")}`
+  )).join("") || "<p class='muted'>No staff records.</p>";
+}
+
+async function loadLoans() {
+  const [loans, overdue] = await Promise.all([api("/api/loans"), api("/api/loans/overdue")]);
+  document.querySelector("#loans").innerHTML = loans.map(loan => recordRow(
+    esc(loan.book_title), `Student: ${esc(loan.student_name)} · Issued by: ${esc(loan.staff_name)} · Due: ${esc(loan.due_on)}`,
+    loan.status, loan.status !== "returned" ? actionButton("return-loan", loan.id, "Return") : ""
+  )).join("") || "<p class='muted'>No loans yet.</p>";
+  document.querySelector("#overdue").innerHTML = overdue.map(loan => recordRow(
+    esc(loan.title), `Student: ${esc(loan.student_name)} · Due: ${esc(loan.due_on)}`, "overdue"
+  )).join("") || "<p class='muted'>No overdue loans.</p>";
+}
+
+async function refreshAll() {
   try {
-    const search = encodeURIComponent(document.querySelector("#search").value);
-    const response = await fetch(`${API}/api/books?search=${search}`);
-    if (!response.ok) throw new Error("Could not load books");
-    const books = await response.json();
-    booksArea.innerHTML = books.map(book => `
-      <article class="book">
-        <div><strong>${book.title}</strong><br><small>${book.author}</small></div>
-        <span class="badge ${book.status}">${book.status.replace("_", " ")}</span>
-        ${book.status === "available" ? `<button data-book-id="${book.id}">Borrow</button>` : ""}
-      </article>`).join("") || "<p>No matching books.</p>";
-    message.textContent = "";
-  } catch (error) {
-    message.textContent = error.message;
-  }
+    await Promise.all([loadBooks(), loadStudents(), loadStaff(), loadMembers()]);
+    if (!document.querySelector("#loans-view").classList.contains("hidden")) await loadLoans();
+  } catch (error) { showMessage(error.message); }
 }
 
-async function borrowBook(bookId) {
-  const memberId = Number(document.querySelector("#member").value);
-  const response = await fetch(`${API}/api/loans`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ book_id: bookId, member_id: memberId })
-  });
-  if (!response.ok) {
-    const error = await response.json();
-    message.textContent = error.detail || "Could not borrow this book";
-    return;
-  }
-  const loan = await response.json();
-  message.textContent = `Borrowed successfully. Due date: ${loan.due_on}`;
-  await loadBooks();
-}
+document.querySelectorAll(".tab").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
+document.querySelector("#search").addEventListener("input", () => loadBooks().catch(error => showMessage(error.message)));
+document.querySelector("#student-search").addEventListener("input", () => loadStudents().catch(error => showMessage(error.message)));
+document.querySelector("#add-book").addEventListener("click", () => openForm("book"));
+document.querySelector("#add-student").addEventListener("click", () => openForm("student"));
+document.querySelector("#add-staff").addEventListener("click", () => openForm("staff"));
+document.querySelector("#close-dialog").addEventListener("click", () => dialog.close());
+document.querySelector("#cancel-dialog").addEventListener("click", () => dialog.close());
 
-async function loadOverdue() {
-  const response = await fetch(`${API}/api/loans/overdue`);
-  const loans = await response.json();
-  document.querySelector("#overdue").innerHTML = loans
-    .map(loan => `<li>${loan.title} — ${loan.member_name}; due ${loan.due_on}</li>`).join("")
-    || "<li>No overdue loans.</li>";
-}
-
-booksArea.addEventListener("click", event => {
-  const button = event.target.closest("button[data-book-id]");
-  if (button) borrowBook(Number(button.dataset.bookId));
+document.querySelector("#record-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  const data = Object.fromEntries(new FormData(event.currentTarget));
+  if (editing.type === "book") data.year_published = Number(data.year_published);
+  const plural = { student: "students", staff: "staff", book: "books" }[editing.type];
+  const path = `/api/${plural}${editing.id ? `/${editing.id}` : ""}`;
+  try {
+    await api(path, { method: editing.id ? "PUT" : "POST", body: JSON.stringify(data) });
+    dialog.close(); await refreshAll(); showMessage(`${editing.type} saved.`);
+  } catch (error) { showMessage(error.message); }
 });
-document.querySelector("#search").addEventListener("input", loadBooks);
-Promise.all([loadMembers(), loadBooks(), loadOverdue()]);
+
+document.querySelector("#loan-form").addEventListener("submit", async event => {
+  event.preventDefault();
+  const payload = {
+    book_id: Number(document.querySelector("#loan-book").value),
+    student_id: Number(document.querySelector("#loan-student").value),
+    staff_id: Number(document.querySelector("#loan-staff").value)
+  };
+  try {
+    const loan = await api("/api/loans", { method: "POST", body: JSON.stringify(payload) });
+    showMessage(`Book checked out. Due ${loan.due_on}.`); await refreshAll(); await loadLoans();
+  } catch (error) { showMessage(error.message); }
+});
+
+document.querySelector("main").addEventListener("click", async event => {
+  const button = event.target.closest("button[data-action]");
+  if (!button) return;
+  const id = Number(button.dataset.id), action = button.dataset.action;
+  try {
+    if (action.startsWith("edit-")) {
+      const type = action.slice(5);
+      const endpoint = type === "book" ? "books" : type === "student" ? "students" : "staff";
+      const records = await api(`/api/${endpoint}`);
+      const record = records.find(item => item.id === id);
+      if (record) openForm(type, record);
+      return;
+    }
+    if (action.startsWith("delete-")) {
+      const type = action.slice(7), endpoint = type === "book" ? "books" : type === "student" ? "students" : "staff";
+      if (!confirm(`Delete this ${type}? Records used in loan history cannot be deleted.`)) return;
+      await api(`/api/${endpoint}/${id}`, { method: "DELETE" });
+      showMessage(`${type} deleted.`); await refreshAll(); return;
+    }
+    if (action === "return-loan") {
+      await api(`/api/loans/${id}/return`, { method: "PATCH" });
+      showMessage("Book returned."); await refreshAll(); await loadLoans();
+    }
+    if (action === "borrow") {
+      await loadMembers();
+      setView("loans");
+      document.querySelector("#loan-book").value = String(id);
+      showMessage("Choose a student and staff member, then check out the book.");
+    }
+  } catch (error) { showMessage(error.message); }
+});
+
+refreshAll();
 ```
 
 #### 6. Run and explore
@@ -906,7 +1353,9 @@ Open three terminals from the project root or the relevant folders:
 2. **FastAPI:** from `backend`, activate the virtual environment and run `uvicorn app.main:app --reload`. Visit `http://localhost:8000/docs` to inspect and try the API.
 3. **Frontend:** from `frontend`, run `python -m http.server 5500`, then visit `http://localhost:5500`.
 
-Students can then search for a book, choose a member, and borrow an available title. They should observe the `POST` request in the browser's developer tools Network panel, inspect its JSON response, and see the badge update after the next `GET`. To explore returns, use the `PATCH /api/loans/{loan_id}/return` route in `/docs`, then refresh the catalog. To explore overdue results, change a loan's `due_on` to yesterday in the database and refresh the overdue list. This intentionally keeps the return and date manipulation steps visible in the API/database tools so the activity can focus on how data moves across the layers.
+This setup assumes a fresh demo database. If PostgreSQL already has tables from an earlier version of this lesson, stop the compose service and reset its named volume with `docker compose down -v`, then start it again with `docker compose up -d`. This removes the old demo data so the updated table definitions can be created cleanly.
+
+Students can create a student, book, or staff record from the matching dashboard tab, edit it, and try to delete it. A record referenced by loan history is protected by the foreign key and cannot be deleted. Then search the catalog, choose an available title, student, and issuing staff member, and check out the book. They should observe the `POST` request in the browser's developer tools Network panel, inspect its JSON response, and see the badge update after the next `GET`. Return the book with the **Return** button in the Loans tab; the frontend sends `PATCH`, then refreshes the history and catalog. To explore overdue results, change a loan's `due_on` to yesterday in the database and refresh the loan view. This activity makes each CRUD action visible while keeping the focus on how data moves across the layers.
 
 ---
 
