@@ -512,11 +512,11 @@ Check that it is running with `docker compose ps`. Stop the container with `dock
 Create `backend/.env` and have backend settings read this file:
 
 ```env
-DATABASE_URL=postgresql+psycopg://library_user:library_password@localhost:5432/library_db
-FRONTEND_ORIGIN=http://localhost:5500
+DATABASE_URL=postgresql://library_user:library_password@localhost:5432/library_db
+FRONTEND_ORIGIN=http://127.0.0.1:5500
 ```
 
-These values are local teaching credentials only. Add `.env` to `.gitignore`; commit `.env.example` with placeholder values instead. When the backend itself runs inside Docker, the database host in the URL becomes the Compose service name `postgres`, rather than `localhost`.
+These values are local teaching credentials only. The URL uses `postgresql://` because this activity calls `psycopg.connect()` directly (the `postgresql+psycopg://` form is for SQLAlchemy). Set `FRONTEND_ORIGIN` to exactly match the address used to open the frontend: use `http://127.0.0.1:5500` for that address, or `http://localhost:5500` if the browser address uses `localhost`. Add `.env` to `.gitignore`; commit `.env.example` with placeholder values instead. When the backend itself runs inside Docker, the database host in the URL becomes the Compose service name `postgres`, rather than `localhost`.
 
 ### API map for the project
 
@@ -748,9 +748,9 @@ class Library:
             rows = conn.execute("""
                 SELECT b.id, b.title, b.author, b.isbn, b.year_published,
                        CASE
-                           WHEN l.returned_on IS NULL AND l.due_on < CURRENT_DATE THEN 'overdue'
-                           WHEN l.returned_on IS NULL THEN 'on_loan'
-                           ELSE 'available'
+                           WHEN l.id IS NULL THEN 'available'
+                           WHEN l.due_on < CURRENT_DATE THEN 'overdue'
+                           ELSE 'on_loan'
                        END AS status
                 FROM books b
                 LEFT JOIN loans l ON l.book_id = b.id AND l.returned_on IS NULL
