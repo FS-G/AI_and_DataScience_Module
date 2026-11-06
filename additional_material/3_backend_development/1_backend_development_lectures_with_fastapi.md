@@ -23,6 +23,8 @@ Visual: Client → Internet → Web Server (Uvicorn/Gunicorn) → App (FastAPI) 
   - When to use: Low-latency, loss-tolerant scenarios (live audio/video, gaming telemetry, DNS). Not for typical APIs.
 - **HTTP/HTTPS**: Application protocol of the web; resources, methods, headers.
   - When to use: Standard request/response APIs, browser interactions, public endpoints; use HTTPS in production, always.
+**How they differ:** TCP and UDP are transport protocols: they move data between applications. TCP provides a reliable, ordered byte stream; UDP sends independent datagrams without guaranteeing delivery or order. HTTP is an application protocol: it defines the meaning and format of requests and responses, such as methods, headers, and status codes. HTTPS is HTTP protected by TLS, which encrypts traffic and authenticates the server. HTTP/1.1 and HTTP/2 normally use TCP; HTTP/3 uses QUIC over UDP, with QUIC providing reliability and encryption.
+
 - **WebSockets**: Full-duplex, persistent connection for realtime apps.
   - When to use: Real-time updates and bidirectional messaging (chat, live dashboards, notifications) where server can push instantly.
 - **gRPC**: High-performance RPC over HTTP/2 with protobuf schemas.
