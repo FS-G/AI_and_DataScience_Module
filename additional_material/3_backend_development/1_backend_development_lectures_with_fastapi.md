@@ -702,23 +702,31 @@ frontend/
 └─ app.js
 ```
 
-#### Serve the frontend from FastAPI
+#### Run the frontend on a separate server
 
-Add these imports to `main.py`:
+The frontend runs at `http://127.0.0.1:5500` and calls FastAPI at `http://127.0.0.1:8000`. These are different origins, so configure CORS in `main.py`.
 
-```python
-from pathlib import Path
-from fastapi.staticfiles import StaticFiles
-```
-
-Append this mount **after** the existing API routes and health endpoint:
+Add this import:
 
 ```python
-FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
-app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
+from fastapi.middleware.cors import CORSMiddleware
 ```
 
-Keep the existing router registrations. The mount comes last so `/products`, `/employees`, `/health`, and `/docs` keep working. Requests from the page use the same origin as the API, so this setup needs no CORS configuration. Create all three frontend files before starting the server; do not open `index.html` directly with `file://`.
+Immediately after creating `app = FastAPI(...)`, add:
+
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:5500",
+        "http://localhost:5500",
+    ],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type"],
+)
+```
+
+Keep the existing API router registrations and health endpoint. If you added the earlier `StaticFiles` setup, remove its imports, `FRONTEND_DIR`, and `app.mount("/", ...)` line; the separate frontend server will serve these files instead. If you use another frontend port, add its exact origin to `allow_origins`. Do not open `index.html` directly with `file://`.
 
 #### 1. HTML — `frontend/index.html`
 
@@ -744,7 +752,7 @@ Keep the existing router registrations. The mount comes last so `/products`, `/e
       <button class="nav-item" data-view="employees" aria-pressed="false">◎ <span>Employees</span></button>
     </nav>
     <div class="sidebar-note"><span class="small-dot"></span> Your local workspace<p>Small details.<br>Better operations.</p></div>
-    <a class="docs-link" href="/docs" target="_blank" rel="noopener">Explore API docs ↗</a>
+    <a class="docs-link" href="http://127.0.0.1:8000/docs" target="_blank" rel="noopener">Explore API docs ↗</a>
   </aside>
 
   <main>
@@ -879,6 +887,8 @@ dialog::backdrop { background: #152c2677; backdrop-filter: blur(4px); }
 The API returns decimal prices as strings or numbers; `Number()` handles both for display. All record text is inserted with `textContent`, so names and emails are treated as text. The form sends every required field on `PUT`, matching the routers above.
 
 ```javascript
+// The frontend server is on port 5500; API requests go to port 8000.
+const API_BASE_URL = "http://127.0.0.1:8000";
 const $ = (selector) => document.querySelector(selector);
 const state = { view: "products", products: [], employees: [], ready: false, busy: false, editing: null };
 const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
@@ -890,7 +900,7 @@ const labels = {
 async function api(path, options = {}) {
   let response;
   try {
-    response = await fetch(path, options);
+    response = await fetch(`${API_BASE_URL}${path}`, options);
   } catch {
     throw new Error("Cannot reach the API. Check that Uvicorn is running, then refresh.");
   }
@@ -1116,7 +1126,23 @@ refresh();
 
 #### Run and try the dashboard
 
-Restart `uvicorn main:app --reload` if needed, then open **http://127.0.0.1:8000/**. Keep the API and PostgreSQL container running.
+Keep PostgreSQL running. Open two terminals from the inventory project directory.
+
+In the first terminal, start FastAPI:
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+In the second terminal, serve the `frontend` folder:
+
+```bash
+python -m http.server 5500 --bind 127.0.0.1 --directory frontend
+```
+
+Open **http://127.0.0.1:5500/** for the dashboard. The API docs remain at **http://127.0.0.1:8000/docs**. Keep both servers running. VS Code Live Server also works if it serves the `frontend` folder on port 5500; its origin must match one of the allowed origins above.
+
+In the browser's developer tools, open Network and press Refresh in the dashboard. The requests should target `http://127.0.0.1:8000/products` and `http://127.0.0.1:8000/employees`, even though the page is served on port 5500. If the browser reports a CORS error, check the page's exact origin against `allow_origins` and restart FastAPI after changing its configuration.
 
 1. Add a product such as Notebook, price `3.99`, quantity `25`. The catalog and summary cards should update after saving.
 2. Edit its quantity to `3` to see the low-stock badge and count change. Search for it by name.
@@ -1165,4 +1191,4 @@ web: uvicorn main:app --host 0.0.0.0 --port $PORT
 
 ### Optional: Vercel for a frontend
 
-The frontend above is served directly by FastAPI, so Vercel is not needed to run it. If you later deploy the frontend separately to Vercel, replace the relative API paths in `app.js` with your deployed API base URL and configure the frontend to call that API. Allow the exact frontend origin in the API's CORS settings, use HTTPS, and configure the API URL as a frontend environment variable. Follow Vercel's current deployment instructions for your frontend framework.
+The frontend above runs on a separate local server; Vercel is optional. If you deploy the frontend to Vercel, change `API_BASE_URL` in `app.js` to your deployed API URL and update the API docs link in `index.html`. The localhost API URL is only for local development. Allow the exact frontend origin in the API's CORS settings, use HTTPS, and configure the API URL as a frontend environment variable. Follow Vercel's current deployment instructions for your frontend framework.
