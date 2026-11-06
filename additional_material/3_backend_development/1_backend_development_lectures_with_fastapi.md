@@ -7,7 +7,7 @@
 
 
 
-## 1. The Foundations of Web Communication & Cloud Setup
+## 1. The Foundations of Web Communication & Local Setup
 
 ### 1) Client–Server Model (What actually happens?)
 - **Client**: A browser/mobile app/another server makes a request.
@@ -81,20 +81,7 @@ GET should not change server state. PUT replaces the represented fields; PATCH c
 - **Uniform interface**: Predictable URLs, methods, and status codes
 - **Representation**: JSON by default; use schemas for validation
 
-### 5) Setting Up Your Cloud-Native Environment (Railway)
-Prereqs: A GitHub account.
-
-- Create an account on Railway (`https://railway.app`).
-- Create a new project.
-- Add a **PostgreSQL** service.
-- Note the connection string (will be provided as `DATABASE_URL`).
-- Install Railway CLI:
-```bash
-npm i -g @railway/cli
-railway login
-```
-
-### 6) Local Development Environment
+### 5) Local Development Environment
 Install Python 3.10+ and Git.
 
 ```bash
@@ -111,15 +98,14 @@ Recommended files to start with:
 @('__pycache__/', '.venv/', '.env') | Set-Content .gitignore
 ```
 
-### 7) Version Control & Initial Deployment Prep
+### 6) Version Control
 ```bash
 git init
 git add .
 git commit -m "chore: initial setup"
-gh repo create yourname/fastapi-starter --public --source=. --remote=origin --push
 ```
 
-Link to Railway and set env later after we have an app. Railway supports push-to-deploy from GitHub.
+You can connect a remote repository later if you choose to deploy.
 
 ---
 
@@ -203,7 +189,7 @@ Try `/items/abc` and observe FastAPI's 422 response; try `/items/1?q=pen` and co
 
 **Checkpoint:** explain why a missing record and an invalid integer produce different responses. Avoid returning stack traces or secrets to clients.
 
-## 3. Cloud Database Integration with PostgreSQL
+## 3. Database Integration with PostgreSQL
 
 ### 1) RDBMS Fundamentals (PostgreSQL)
 - **Schemas, Tables, Columns, Rows**
@@ -211,11 +197,11 @@ Try `/items/abc` and observe FastAPI's 422 response; try `/items/1?q=pen` and co
 - **Relationships**: one-to-many, many-to-many
 
 ### 2) Load DATABASE_URL securely with Pydantic Settings
-Create `.env` locally (do not commit) and set on Railway as an environment variable.
+Install and start PostgreSQL locally, create a development database (for example, `createdb inventory_db`), and create `.env` locally; do not commit it. Use your local PostgreSQL username and password. If `createdb` is unavailable, create the database using pgAdmin or `psql`.
 
 ```
 # .env
-DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST:PORT/DBNAME
+DATABASE_URL=postgresql+psycopg://USER:PASSWORD@localhost:5432/inventory_db
 ```
 
 ```python
@@ -420,18 +406,6 @@ Create and apply migrations:
 alembic revision --autogenerate -m "create products table"
 alembic upgrade head
 ```
-
-### 6) Deploy with Railway (DB + App)
-- Set `DATABASE_URL` in Railway service settings (copy from the Railway Postgres plugin).
-- Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-- Run Alembic migrations in a Railway shell or via a deploy hook.
-
-Optional `Procfile`:
-```bash
-web: uvicorn main:app --host 0.0.0.0 --port $PORT
-```
-
----
 
 ## Project 1: Mini E‑Commerce Inventory API (FastAPI + PostgreSQL)
 
@@ -644,30 +618,56 @@ def health():
     return {"ok": True}
 ```
 
-### Migrations and Deployment
-1) Initialize Alembic and generate migrations after defining models
+### Local migrations and startup
+Initialize Alembic and generate migrations after defining models. If you already initialized Alembic above, reuse that configuration rather than initializing it again.
 ```bash
 alembic init alembic
 alembic revision --autogenerate -m "init products and employees"
 alembic upgrade head
 ```
 
-2) Railway Deployment
-- Add your repo as a Railway service.
-- Set env var `DATABASE_URL` from the Railway PostgreSQL plugin.
-- Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT` (via service settings or `Procfile`).
-- Run Alembic migrations in a Railway shell.
-
-### Quick Test Commands
+Start the API locally from the project directory:
 ```bash
-# Products
-curl -X POST $URL/products -H "Content-Type: application/json" -d '{"name":"Notebook","price":"3.99","quantity":25}'
-curl $URL/products
+uvicorn main:app --reload
+```
+Open `http://127.0.0.1:8000/docs` to try the endpoints. Keep the server running while testing.
 
-# Employees
-curl -X POST $URL/employees -H "Content-Type: application/json" -d '{"full_name":"Jane Doe","email":"jane@example.com"}'
-curl $URL/employees
+### Quick local tests
+
+Using the interactive docs, create a product with `{"name":"Notebook","price":"3.99","quantity":25}` and an employee with `{"full_name":"Jane Doe","email":"jane@example.com"}`. List each resource, then try reading, updating, and deleting a record. Check the missing-record and invalid-input cases too. The API runs at `http://127.0.0.1:8000`.
+
+At this point the local application is complete. The following deployment steps are optional.
+
+## Optional: Cloud deployment
+
+### Optional: Set up Railway
+Prereqs: A GitHub account.
+
+- Create an account on Railway (`https://railway.app`).
+- Create a new project.
+- Add a **PostgreSQL** service.
+- Note the connection string (will be provided as `DATABASE_URL`).
+- Install Railway CLI:
+```bash
+npm i -g @railway/cli
+railway login
 ```
 
-That’s it—by the end of Module 3 and this capstone, you will have a real, cloud-deployed FastAPI + PostgreSQL application with migrations, clean routing, and production-ready structure.
 
+Push your project to a GitHub repository if you want Railway to deploy it from GitHub. Keep `.env` and credentials out of the repository. Railway's interface and configuration can change, so check its current documentation when deploying.
+
+### Optional: Deploy the API and database on Railway
+- Set `DATABASE_URL` in Railway service settings (copy from the Railway Postgres plugin).
+- Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- Run Alembic migrations in a Railway shell or via a deploy hook.
+
+Optional `Procfile`:
+```bash
+web: uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+---
+
+### Optional: Vercel for a frontend
+
+This project builds an API and does not include a frontend, so Vercel is not needed to run it. If you later build a separate frontend, you can deploy that frontend to Vercel and configure it to call the deployed API. Allow the exact frontend origin in the API's CORS settings, use HTTPS, and configure the API URL as a frontend environment variable. Follow Vercel's current deployment instructions for your frontend framework.
