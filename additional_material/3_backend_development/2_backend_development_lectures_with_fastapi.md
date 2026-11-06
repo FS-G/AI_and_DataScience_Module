@@ -1,10 +1,10 @@
-### Backend Development Lectures – Modules 4–6
+### Backend Development Lectures
 
 ## From foundations to production concerns
 
 Prerequisite: complete lecture 1's CRUD and transactions. In this lecture, first understand identity and async execution, then run the Notes example, test it, and finally plan a deployable capstone. The examples are teaching starting points, not production security implementations. The hospital project in lecture 3 applies these ideas end to end.
 
-## Module 4: Crafting Robust, Secure, and Async APIs (Complete Minimal App)
+## 4. Crafting Robust, Secure, and Async APIs (Complete Minimal App)
 
 In this module we build a minimal, production-style, fully async FastAPI app that includes:
 - Input validation with Pydantic
@@ -475,7 +475,7 @@ Use this single HTML file to sign up, log in, create notes, and list notes. Upda
 
 ---
 
-## Module 5: Quality, Testing, and Advanced Topics
+## 5. Quality, Testing, and Advanced Topics
 
 ### 1) Software Architecture & Project Structure
 Refactor into layers: `routers/`, `schemas/`, `models/`, `services/`, `core/`.
@@ -591,7 +591,7 @@ Use an isolated test database, dependency overrides and fixtures that clean up; 
 
 For WebSockets, authenticate and authorize the connection, validate each message, handle disconnects and bound message sizes. In-memory connection lists only reach one process; multiple workers need a shared message broker. Background tasks in a web process are suitable for small best-effort work; durable jobs need a queue, retry policy and idempotent handlers. Add caching only after measuring, with a clear invalidation strategy. Use timeouts and bounded retries with backoff for external calls, and avoid retrying unsafe writes without idempotency.
 
-## Module 6: Final Capstone Project & Continuous Deployment on Railway
+## 6. Final Project & Continuous Deployment on Railway
 
 ### 1) Project Scoping and Design
 Build a simple blogging platform with users, posts, and comments.

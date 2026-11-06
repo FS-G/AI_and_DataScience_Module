@@ -1,4 +1,4 @@
-### Backend Development Lectures with FastAPI (Modules 1–3 + Capstone 1)
+### Backend Development Lectures with FastAPI
 
 This curriculum is hands-on and cloud-first. Each module includes short theory, practical steps, and copy-pasteable code you can run locally and deploy to the cloud (Railway + PostgreSQL).
 
@@ -10,7 +10,7 @@ Work through this lecture in order: HTTP and tooling → a small FastAPI server 
 
 **Outcomes:** explain a request and response, validate input, build CRUD with a relational database, and describe how migrations and deployment work. After each module, run the example and complete its checkpoint before moving on.
 
-## Module 1: The Foundations of Web Communication & Cloud Setup
+## 1. The Foundations of Web Communication & Cloud Setup
 
 ### 1) Client–Server Model (What actually happens?)
 - **Client**: A browser/mobile app/another server makes a request.
@@ -111,7 +111,7 @@ Link to Railway and set env later after we have an app. Railway supports push-to
 
 ---
 
-## Module 2: Building Your First Web Server
+## 2. Building Your First Web Server
 
 ### 1) Web Server vs Web Framework
 - **Web server** (Uvicorn/Gunicorn): Listens on a port, speaks HTTP protocol.
@@ -191,7 +191,7 @@ Try `/items/abc` and observe FastAPI's 422 response; try `/items/1?q=pen` and co
 
 **Checkpoint:** explain why a missing record and an invalid integer produce different responses. Avoid returning stack traces or secrets to clients.
 
-## Module 3: Cloud Database Integration with PostgreSQL
+## 3. Cloud Database Integration with PostgreSQL
 
 ### 1) RDBMS Fundamentals (PostgreSQL)
 - **Schemas, Tables, Columns, Rows**
@@ -421,11 +421,11 @@ web: uvicorn main:app --host 0.0.0.0 --port $PORT
 
 ---
 
-## Capstone Project 1: Mini E‑Commerce Inventory API (FastAPI + PostgreSQL)
+## Project 1: Mini E‑Commerce Inventory API (FastAPI + PostgreSQL)
 
 Goal: Build a small, production-like API with proper DB models and CRUD. The app tracks products and employees and allows simple inventory operations.
 
-### Capstone acceptance criteria and stretch cases
+### Project acceptance criteria and stretch cases
 
 Build each resource first, then connect it to the database and test it. Demonstrate valid CRUD, missing IDs, duplicate email/name, invalid stock and an empty database. Add database constraints for nonnegative quantity and price; document whether deletion is hard or soft. A stock adjustment should be a transaction, and concurrent decrements need an atomic conditional update or locking to avoid overselling. Document setup, example requests, migrations, and how to run tests. Stretch: add pagination, an audit trail, and role-based access before deployment.
 
