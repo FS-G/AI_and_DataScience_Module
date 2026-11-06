@@ -1,8 +1,6 @@
 ### Backend Development Lectures
 
-## From foundations to production concerns
 
-Prerequisite: complete lecture 1's CRUD and transactions. In this lecture, first understand identity and async execution, then run the Notes example, test it, and finally plan a deployable capstone. The examples are teaching starting points, not production security implementations. The hospital project in lecture 3 applies these ideas end to end.
 
 ## 4. Crafting Robust, Secure, and Async APIs (Complete Minimal App)
 

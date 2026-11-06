@@ -1,14 +1,11 @@
 ### Backend Development Lectures with FastAPI
 
-This curriculum is hands-on and cloud-first. Each module includes short theory, practical steps, and copy-pasteable code you can run locally and deploy to the cloud (Railway + PostgreSQL).
 
 ---
 
-## Learning path and prerequisites
 
-Work through this lecture in order: HTTP and tooling → a small FastAPI server → persistent CRUD → the inventory capstone. Lecture 2 builds on this with authentication, async code, and testing; lecture 3 combines the ideas in a full-stack project. You should know Python functions, classes, type hints, virtual environments, and basic SQL. A cloud account is optional for local practice; never commit credentials or real customer data.
 
-**Outcomes:** explain a request and response, validate input, build CRUD with a relational database, and describe how migrations and deployment work. After each module, run the example and complete its checkpoint before moving on.
+
 
 ## 1. The Foundations of Web Communication & Cloud Setup
 

@@ -2,11 +2,7 @@
 
 This tutorial demonstrates building a complete full-stack application: a minimal hospital management system with FastAPI backend and a HTML/CSS/JavaScript frontend.
 
-## How to use this capstone
 
-Complete lectures 1 and 2 first. Build in the existing order: model the data, implement the API, connect the browser, then test and deploy. Use synthetic data only. This is a teaching prototype: its authentication, authorization, input handling and browser rendering need substantial work before any real patient data or production use.
-
-**Outcomes:** trace a user action through UI, HTTP, validation, database transaction and response; explain relationships and authorization; diagnose failures at each boundary; propose safe production improvements.
 
 ## System Overview
 
