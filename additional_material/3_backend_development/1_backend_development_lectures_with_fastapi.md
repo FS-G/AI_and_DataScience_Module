@@ -14,23 +14,36 @@
 - **Server**: Your FastAPI app receives the request, runs code, and returns a response.
 - **Stateless**: Each request is independent; servers don’t remember previous requests unless you store state (DB, cache, JWTs, etc.).
 
+For example, a browser requests a product, FastAPI looks it up in a database, and the server returns the result. The database is optional: some requests can be answered without one. A stateless request carries the information needed to process it, such as an authentication token; the application can still store persistent data in a database.
+
 Visual: Client → Internet → Web Server (Uvicorn/Gunicorn) → App (FastAPI) → DB (PostgreSQL) → App → Client.
 
 ### 2) Communication Protocols Overview
-- **TCP**: Reliable, ordered, connection-oriented. Used under HTTP/HTTPS.
-  - When to use: Most web apps and APIs; anything that must not lose messages (e.g., REST APIs, database connections).
-- **UDP**: Fast, unreliable, used for real-time streaming/gaming.
-  - When to use: Low-latency, loss-tolerant scenarios (live audio/video, gaming telemetry, DNS). Not for typical APIs.
-- **HTTP/HTTPS**: Application protocol of the web; resources, methods, headers.
-  - When to use: Standard request/response APIs, browser interactions, public endpoints; use HTTPS in production, always.
-**How they differ:** TCP and UDP are transport protocols: they move data between applications. TCP provides a reliable, ordered byte stream; UDP sends independent datagrams without guaranteeing delivery or order. HTTP is an application protocol: it defines the meaning and format of requests and responses, such as methods, headers, and status codes. HTTPS is HTTP protected by TLS, which encrypts traffic and authenticates the server. HTTP/1.1 and HTTP/2 normally use TCP; HTTP/3 uses QUIC over UDP, with QUIC providing reliability and encryption.
 
-- **WebSockets**: Full-duplex, persistent connection for realtime apps.
-  - When to use: Real-time updates and bidirectional messaging (chat, live dashboards, notifications) where server can push instantly.
-- **gRPC**: High-performance RPC over HTTP/2 with protobuf schemas.
-  - When to use: Service-to-service communication, strongly typed contracts, streaming RPCs, and high throughput microservices.
+Protocols are rules for communication. Different layers handle different jobs: transport moves data, while application protocols define how applications exchange and interpret messages.
+
+- **TCP** is a connection-oriented transport protocol that delivers an ordered byte stream and retransmits lost data. It is used by HTTP/1.1 and HTTP/2, as well as many database connections.
+- **UDP** is a transport protocol that sends independent datagrams without guaranteeing delivery or order. It is useful for latency-sensitive applications such as live audio and gaming; DNS also commonly uses it. Applications can add reliability when needed.
+- **HTTP** is an application protocol: it defines requests and responses, including methods, headers, and status codes. **HTTPS** protects HTTP with TLS, which encrypts traffic, protects its integrity, and authenticates the server.
+- **WebSockets** provide a persistent, bidirectional connection for cases such as chat and live dashboards.
+- **gRPC** is an RPC framework commonly used for typed service-to-service communication and streaming, typically over HTTP/2 with Protocol Buffers.
+
+Think of HTTP as the language of a conversation, TLS as a sealed envelope, and TCP or QUIC as the delivery service. HTTP/1.1 and HTTP/2 normally use TCP. HTTP/3 uses QUIC over UDP; QUIC adds reliability and TLS-based security. Use HTTPS for production APIs regardless of HTTP version.
 
 ### 3) Deep Dive into HTTP/HTTPS
+
+An HTTP request contains a method and path, optional headers, and sometimes a body. The server answers with a status code, headers, and optionally a body. HTTPS describes the security of this exchange; it is separate from the HTTP version:
+
+| Version | How it communicates |
+| --- | --- |
+| HTTP/1.1 | Usually uses TCP; browsers may open several connections for concurrent requests. |
+| HTTP/2 | Usually uses TCP and multiplexes multiple requests over one connection; it also compresses headers. |
+| HTTP/3 | Uses QUIC over UDP, allowing independent streams to avoid TCP's connection-wide blocking when packets are lost. |
+
+These versions retain the same core HTTP concepts. A browser and server negotiate a mutually supported version; a newer version is not guaranteed for every connection. HTTP/3 includes encryption, while HTTPS can also be used with HTTP/1.1 or HTTP/2.
+
+In a React + FastAPI app, React's `fetch` or Axios call does not choose the HTTP version. The browser and the server or proxy it contacts determine it. Locally, a browser connecting directly to Uvicorn normally uses HTTP/1.1. In production, a configured reverse proxy may accept HTTP/2 or HTTP/3 from the browser and forward HTTP/1.1 to Uvicorn. Inspect the **Protocol** column in the browser's Network tools to see the version used for a request.
+
 - **Methods**: GET (read), POST (create), PUT/PATCH (update), DELETE (remove)
 - **Status Codes**: 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 422 Unprocessable Entity, 500 Internal Server Error
 - **Headers**: `Content-Type`, `Authorization`, `Accept`, `Cache-Control`
