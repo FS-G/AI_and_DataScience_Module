@@ -1,26 +1,40 @@
+## Support Vector Machines (SVM)
+
 Definition: Support Vector Machine (SVM) is a supervised learning algorithm that finds the hyperplane which best separates the data into different classes.
 It can both be used for classification or regression.
 Objective: To maximize the margin between the data points of different classes.
+
+### SVM Terminology
 
 Terminology:
 Hyperplane: A decision boundary that separates data points of one class from another.
 Margin: The distance between the hyperplane and the closest data points from each class.
 Support Vectors: Data points that lie closest to the hyperplane and influence its position and orientation.
 
+### Margins in SVM
+
 ![Slide 5 image](8_svm_and_knn_assets/image1.png)
+
+### Linear SVM
 
 When the data is linearly separable, SVM finds a linear hyperplane that maximizes the margin.
 
 ![Slide 6 image](8_svm_and_knn_assets/image1.png)
 
+### Non-linear Data
+
 However in real world scenario, the data is not often linearly separable.
 
 ![Slide 7 image](8_svm_and_knn_assets/image2.png)
+
+### Handling Non-linear Data
 
 Non-linear data refers to data with intricate, non-linear relationships between features and classes.
 The kernel trick is a technique to address non-linearity, often used with SVM, transforming data into higher-dimensional spaces.
 Linear classifiers, like SVM, struggle with non-linear data.
 This technique enhances SVM's versatility by allowing it to establish non-linear decision boundaries for complex data distributions in classification tasks.
+
+### Kernel Trick
 
 To make the non linear data separable, kernel trick is used.
 This means that converting the original features to higher dimensions.
@@ -29,10 +43,14 @@ This means that converting the original features to higher dimensions.
 
 ![Slide 10 image](8_svm_and_knn_assets/image4.gif)
 
+### Kernel Functions
+
 Kernel functions are mathematical functions used in SVM to transform input data into a higher-dimensional feature space.
 Polynomial kernels capture polynomial relationships, allowing SVM to model curved decision boundaries.
 Radial basis function (RBF) kernels create flexible, non-linear decision boundaries, suitable for complex data distributions.
 Kernels enable SVM to work effectively in high-dimensional spaces, simplifying classification by projecting data into spaces where classes are more separable.
+
+### Soft Margin Classifier
 
 Apart from kernel trick, another common way to handle non linear data is the soft margin classifier.
 Until now, we have the concept of maximum margin classifier which is also know as hard margin classifier.
@@ -51,6 +69,8 @@ This makes the model more flexible in handling real-world data.
 
 ![Slide 14 image](8_svm_and_knn_assets/image6.png)
 
+### Margin and Soft Margin
+
 Margin: The distance between the hyperplane (decision boundary) and the nearest data points from each class. For a perfect hard margin classifier, these points are strictly outside the margin and classified correctly.
 Soft Margin: In the soft margin classifier, the model allows some data points to be within or even on the wrong side of the margin. This is done to handle cases where the data is not linearly separable or has noise.
 Criteria:
@@ -58,9 +78,13 @@ Points outside the margin - Correctly classified and at least one margin distanc
 Points within the margin - Correctly classified but closer to the hyperplane, within the margin region.
 Points on the wrong side of the hyperplane - Misclassified, with slack variables reflecting their violation of the margin constraints.
 
+### Bias and Variance Trade-off
+
 The bias-variance trade-off is a fundamental concept in machine learning, describing the balance between:
 Bias: Error due to overly simplistic assumptions in the model (e.g., assuming a linear boundary when the data is not linearly separable).
 Variance: Error due to excessive complexity in the model, leading to overfitting on the training data.
+
+### Regularization Parameter C
 
 C is a regularization parameter that controls the trade-off between maximizing the margin and minimizing the slack variables.
 High C:
@@ -73,9 +97,15 @@ Low C:
 - Impact on Variance: Lower variance since the model is less sensitive to the specific training data, making it more generalizable.
 Cross validation must be used to determine the appropriate value of C.
 
+### Hyperplanes in Different Dimensions
+
 In case of 1D data, the hyperplane is a point.
 In case of 2D data, the hyperplane is a line.
 In case of 3D data, the hyperplane is a plane.
+
+## Parametric and Non-parametric Models
+
+### Parametric Models
 
 Parametric models are a class of statistical models that assume a specific form or structure for the underlying data distribution, characterized by a fixed number of parameters. 
 These models rely on predefined assumptions about the functional form of the relationship between variables, such as linear relationships in linear regression. 
@@ -83,9 +113,13 @@ By having a fixed number of parameters, parametric models are often simpler and 
 However, their rigidity can limit their ability to capture complex relationships in the data. 
 Examples include linear regression and logistic regression.
 
+### Non-parametric Models
+
 Non-parametric models are a class of statistical models that do not assume a fixed form or a predetermined number of parameters for the underlying data distribution. 
 Instead, these models are flexible and adapt their complexity based on the data itself, making them suitable for capturing intricate patterns without assuming a specific functional form. 
 Examples include K-Nearest Neighbors (KNN) and decision trees.
+
+### Comparison
 
 | Parametric Models | Non-Parametric Models |
 | --- | --- |
@@ -94,6 +128,8 @@ Examples include K-Nearest Neighbors (KNN) and decision trees.
 | Assumes Data Distribution: Based on assumptions about the data distribution. | Data-Driven: Adapts directly to the data without making strong assumptions about distribution. |
 | Simpler and Faster: Often easier to compute and interpret. | More Complex: Can be computationally intensive and harder to interpret but more flexible. |
 | Less Flexible: May struggle with complex patterns in the data. | More Flexible: Better at capturing intricate patterns and relationships in the data. |
+
+### Examples
 
 - Random Forest (RF): Non-parametric – Uses an ensemble of decision trees and does not assume a specific functional form.
 - Decision Tree (DT): Non-parametric – Makes decisions based on splitting data at various levels, with no fixed form or number of parameters.
@@ -104,6 +140,8 @@ Examples include K-Nearest Neighbors (KNN) and decision trees.
 - K-Nearest Neighbors (KNN): Non-parametric – Makes predictions based on the local proximity of data points without assuming a specific form.
 - Naive Bayes: Parametric – Assumes a specific probabilistic model based on feature independence with a fixed number of parameters.
 
+## K-Nearest Neighbors (KNN)
+
 K-Nearest Neighbors (KNN) is a simple yet powerful supervised learning algorithm used for both classification and regression tasks. 
 It operates on the principle that similar data points are likely to be close to each other in feature space. 
 What is K-Nearest Neighbors?
@@ -112,10 +150,14 @@ Instance-Based Learning: The model does not explicitly learn a function from the
 
 ![Slide 27 image](8_svm_and_knn_assets/image7.png)
 
+### KNN Terminology
+
 Key Terminology:
 K: The number of nearest neighbors to consider when making a prediction. It is a user-defined parameter.
 Distance Metric: The method used to calculate the distance between data points. Common distance metrics include Euclidean distance, Manhattan distance, and Minkowski distance.
 Neighbors: The K data points in the training set that are closest to a given test data point.
+
+### How KNN Works
 
 How KNN Works:
 - Training Phase: Store all training examples in memory. There is no explicit training phase as KNN is a lazy learner.
@@ -127,7 +169,7 @@ How KNN Works:
     - Find the K nearest neighbors to the test point.
     - Predict the value as the average (or weighted average) of the values of these K neighbors.
 
-KNN Algorithm Steps
+### KNN Algorithm Steps
 
 - Select the Number of Neighbors (k): Choose the value of k, the number of nearest neighbors to consider.
 - Calculate Distances: Compute the distance between the data point to classify and all other data points.
@@ -135,7 +177,7 @@ KNN Algorithm Steps
 - Majority Voting (Classification): In classification, predict the class based on the majority class of the nearest neighbors.
 - Average (Regression): In regression, predict the target value by averaging the values of the nearest neighbors.
 
-Distance Metrics
+### Distance Metrics
 
 - Measure Similarity: Quantify the dissimilarity between data points.
 - Euclidean Distance: Straight-line distance in space.
@@ -143,7 +185,7 @@ Distance Metrics
 - Minkowski Distance: Generalized metric based on parameter p.
 Distance metrics gauge data similarity and are essential for clustering and classification algorithms.
 
-Selecting the Value of K
+### Selecting the Value of K
 
 The number of nearest neighbors (K) is crucial.
 Small K:
