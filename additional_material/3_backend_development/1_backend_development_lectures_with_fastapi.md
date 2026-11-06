@@ -664,10 +664,18 @@ def delete_employee(employee_id: int, db: Session = Depends(get_db)):
 ### Code: App Entrypoint
 ```python
 # main.py
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from database import Base, engine
+import models  # Register Product and Employee before creating tables.
 from routers import products, employees
 
-app = FastAPI(title="Mini E‑Commerce Inventory API")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    Base.metadata.create_all(bind=engine)
+    yield
+
+app = FastAPI(title="Mini E-Commerce Inventory API", lifespan=lifespan)
 
 app.include_router(products.router)
 app.include_router(employees.router)
@@ -677,19 +685,19 @@ def health():
     return {"ok": True}
 ```
 
-### Local migrations and startup
-Initialize Alembic in the new project directory after defining both models. Configure `alembic/env.py` as shown above, importing the new project’s `models` and using its `.env`. Keep this migration history separate from the earlier example. Review the generated revision before applying it. The project entrypoint does not call `create_all`; migrations create the tables.
-```bash
-alembic init alembic
-alembic revision --autogenerate -m "init products and employees"
-alembic upgrade head
-```
+### Local table creation and startup
+
+For this local example, `main.py` creates missing tables automatically during startup using `Base.metadata.create_all(bind=engine)`. Make sure PostgreSQL is running and the project's `.env` points to the separate `inventory_project_db` database created above. You do not need to initialize or run Alembic for a fresh database in this version.
+
+**Existing databases:** `create_all` does not add missing columns to tables that already exist. If you see `column products.quantity does not exist`, the existing products table has an older schema. Use the separate empty project database described above, or apply a reviewed Alembic migration to update the existing schema while preserving its data. Adding `create_all` alone will not fix that missing column.
 
 Start the API locally from the project directory:
 ```bash
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000
 ```
 Open `http://127.0.0.1:8000/docs` to try the endpoints. Keep the server running while testing.
+
+For a later migration-managed version, remove the `create_all` startup call and follow the Alembic workflow above, importing this project's models and using the same database connection as the app. Keep its migration history separate from the earlier example. Review generated revisions before applying them; an existing database requires a carefully reviewed baseline.
 
 ### Build the frontend: Inventory Studio
 
