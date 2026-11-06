@@ -4,6 +4,12 @@ This curriculum is hands-on and cloud-first. Each module includes short theory, 
 
 ---
 
+## Learning path and prerequisites
+
+Work through this lecture in order: HTTP and tooling → a small FastAPI server → persistent CRUD → the inventory capstone. Lecture 2 builds on this with authentication, async code, and testing; lecture 3 combines the ideas in a full-stack project. You should know Python functions, classes, type hints, virtual environments, and basic SQL. A cloud account is optional for local practice; never commit credentials or real customer data.
+
+**Outcomes:** explain a request and response, validate input, build CRUD with a relational database, and describe how migrations and deployment work. After each module, run the example and complete its checkpoint before moving on.
+
 ## Module 1: The Foundations of Web Communication & Cloud Setup
 
 ### 1) Client–Server Model (What actually happens?)
@@ -39,6 +45,24 @@ curl -i -X POST https://httpbin.org/post \
   -d '{"message":"hello"}'
 ```
 
+### HTTP in practice: follow one request
+
+For `GET https://shop.example.com/products/12?currency=USD`, DNS resolves the host, the client establishes a connection and TLS for HTTPS, then sends a request with a method, path, query and headers. The server responds with a status, headers and possibly a body. TLS protects data in transit; it does not decide which user may access a resource.
+
+| Situation | Typical response | Why |
+| --- | --- | --- |
+| Created a resource | 201, optionally a `Location` header | A new resource exists |
+| Invalid input | 422 in FastAPI | Request shape or values failed validation |
+| Missing/invalid credentials | 401 | Authenticate first |
+| Authenticated but forbidden | 403 | Identity lacks permission |
+| Missing resource | 404 | No matching accessible resource |
+| Unique constraint conflict | 409 | Request conflicts with existing state |
+| Unexpected server failure | 500 | Log details privately; return a safe message |
+
+GET should not change server state. PUT replaces the represented fields; PATCH changes selected fields. GET, PUT and DELETE are intended to be idempotent: repeating the same request has the same intended effect, although responses can differ. POST is not generally idempotent; payment and order APIs often use an idempotency key to make retries safe. Network timeouts are ambiguous: the server might have completed the operation even if the client never received the response.
+
+**Checkpoint:** identify the method, path, query, request body and response status for creating a product; explain why a timeout should not always trigger a blind POST retry.
+
 ### 4) APIs & REST (Principles)
 - **Resource-oriented**: `/products`, `/orders`, `/employees`
 - **Stateless**: Server doesn’t store client session state between requests
@@ -66,13 +90,13 @@ Install Python 3.10+ and Git.
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
-pip install fastapi uvicorn[standard] sqlalchemy psycopg[binary] pydantic pydantic-settings alembic python-dotenv
+pip install fastapi "uvicorn[standard]" sqlalchemy "psycopg[binary]" pydantic pydantic-settings alembic python-dotenv email-validator
 ```
 
 Recommended files to start with:
 ```bash
-echo "fastapi\nuvicorn[standard]\nsqlalchemy\npsycopg[binary]\npydantic\npydantic-settings\nalembic\npython-dotenv" > requirements.txt
-echo "__pycache__/\n.venv/\n.env" > .gitignore
+@('fastapi', 'uvicorn[standard]', 'sqlalchemy', 'psycopg[binary]', 'pydantic', 'pydantic-settings', 'alembic', 'python-dotenv', 'email-validator') | Set-Content requirements.txt
+@('__pycache__/', '.venv/', '.env') | Set-Content .gitignore
 ```
 
 ### 7) Version Control & Initial Deployment Prep
@@ -160,6 +184,12 @@ def health():
 
 
 ---
+
+### Practice: validation and errors
+
+Try `/items/abc` and observe FastAPI's 422 response; try `/items/1?q=pen` and compare path and query values. Add a `GET /items/{item_id}` branch that raises `HTTPException(status_code=404, detail="Item not found")` for unknown IDs. Add a Pydantic `Field(gt=0)` for price and try zero, a negative value, a missing field and malformed JSON. Inspect the generated schema at `/docs`. Response models are an output boundary: define public fields explicitly so internal fields do not leak.
+
+**Checkpoint:** explain why a missing record and an invalid integer produce different responses. Avoid returning stack traces or secrets to clients.
 
 ## Module 3: Cloud Database Integration with PostgreSQL
 
@@ -320,6 +350,14 @@ curl http://localhost:8000/products
 
 
 
+### Database reasoning and edge cases
+
+A primary key identifies a row; a foreign key enforces a reference; a unique constraint protects an invariant even under concurrent requests. An index can speed reads but costs space and write time. Use `Decimal` with `Numeric` for money, and validate nonnegative prices and stock. A transaction groups changes: commit all successful changes or roll back on failure. After a failed flush or commit, call `rollback()` before reusing the session. A preliminary duplicate check is helpful feedback but is not concurrency-safe: retain the database unique constraint and catch the relevant `IntegrityError`, roll back, and return a safe 409. Do not label every integrity error as a duplicate without checking its cause.
+
+A list endpoint should eventually support a bounded `limit`, `offset` or cursor, stable ordering, filtering and documented defaults. For PATCH use a separate model with optional fields and `model_dump(exclude_unset=True)` so omitted fields differ from explicit nulls; validate nullability before applying updates. Use parameterized SQL or ORM expressions, never string interpolation of user input.
+
+**Practice:** test create, list, get, replace and delete; then test nonexistent IDs, duplicate names, invalid prices and an empty list. Explain what happens if two clients create the same name at once. Add pagination and a partial update as extensions.
+
 ### 5) Database Migrations with Alembic
 Initialize Alembic and configure it to use your SQLAlchemy `Base` metadata.
 
@@ -363,6 +401,8 @@ run_migrations_online()
 
 ```
 
+Import `models` in `alembic/env.py` before using `Base.metadata` so Alembic sees the tables. The excerpt above shows online migrations only; retain Alembic's generated offline/online dispatch if both modes are required. For an existing database, `create_all` does not update columns and can make a first autogenerated migration empty. Choose migrations as the schema source of truth: remove `create_all` for the migration workflow and start with a fresh development database, or carefully establish a reviewed baseline for an existing one. Review generated revisions before applying them.
+
 Create and apply migrations:
 ```bash
 alembic revision --autogenerate -m "create products table"
@@ -384,6 +424,10 @@ web: uvicorn main:app --host 0.0.0.0 --port $PORT
 ## Capstone Project 1: Mini E‑Commerce Inventory API (FastAPI + PostgreSQL)
 
 Goal: Build a small, production-like API with proper DB models and CRUD. The app tracks products and employees and allows simple inventory operations.
+
+### Capstone acceptance criteria and stretch cases
+
+Build each resource first, then connect it to the database and test it. Demonstrate valid CRUD, missing IDs, duplicate email/name, invalid stock and an empty database. Add database constraints for nonnegative quantity and price; document whether deletion is hard or soft. A stock adjustment should be a transaction, and concurrent decrements need an atomic conditional update or locking to avoid overselling. Document setup, example requests, migrations, and how to run tests. Stretch: add pagination, an audit trail, and role-based access before deployment.
 
 ### Features
 - Manage products: create/list/get/update/delete

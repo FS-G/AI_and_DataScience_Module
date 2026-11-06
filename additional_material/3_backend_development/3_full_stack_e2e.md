@@ -2,6 +2,12 @@
 
 This tutorial demonstrates building a complete full-stack application: a minimal hospital management system with FastAPI backend and a HTML/CSS/JavaScript frontend.
 
+## How to use this capstone
+
+Complete lectures 1 and 2 first. Build in the existing order: model the data, implement the API, connect the browser, then test and deploy. Use synthetic data only. This is a teaching prototype: its authentication, authorization, input handling and browser rendering need substantial work before any real patient data or production use.
+
+**Outcomes:** trace a user action through UI, HTTP, validation, database transaction and response; explain relationships and authorization; diagnose failures at each boundary; propose safe production improvements.
+
 ## System Overview
 
 The application manages:
@@ -121,6 +127,12 @@ erDiagram
 
 ---
 
+### Design decisions and invariants
+
+An assignment is a join entity with its own dates; history is retained instead of overwriting the doctor on the patient. Clarify with stakeholders whether a patient can have multiple active doctors, whether a doctor has a capacity, and what discharge means. Enforce chosen rules in both application logic and database constraints/transactions: two simultaneous assignment requests can otherwise both pass a preliminary check. Decide how deletion affects history, whether discharged patients can be readmitted, and whether treatments may be added after discharge. Use timezone-aware timestamps and define who can view or change each record.
+
+**Exercise:** trace one patient from admission to assignment, treatment and discharge. Identify primary keys, foreign keys, optional fields, the current state and historical records. Add the missing doctor-to-treatment relationship to the diagram.
+
 ## Part 2: FastAPI Backend Implementation
 
 ### Project Structure
@@ -153,6 +165,7 @@ pydantic-settings==2.1.0
 alembic==1.12.1
 python-dotenv==1.0.0
 python-multipart==0.0.6
+email-validator
 bcrypt==4.0.1
 PyJWT==2.8.0
 ```
@@ -353,6 +366,10 @@ class PatientDetails(BaseModel):
     assigned_doctor: Optional[DoctorRead] = None
     treatments: List[TreatmentRead]
 ```
+
+### Security note before the auth example
+
+The following router is intentionally minimal. It uses a fallback signing secret, issues tokens without expiration, does not enforce active users, and needs authorization checks for each patient record. The frontend also inserts untrusted values into `innerHTML`, creating an XSS risk. Use only synthetic data locally. Before deploying, require a strong environment secret; use short-lived tokens with verified required claims, validate the active user and role on every protected operation, escape output or use DOM `textContent`, restrict origins, and add rate limits and audit logs. A signed token is not encrypted. An authenticated user should not automatically have access to every patient.
 
 ### Step 6: Auth Router (`routers/auth.py`)
 
@@ -1409,6 +1426,12 @@ JWT_SECRET=supersecret
 
 ---
 
+### Trace and troubleshoot the browser-to-API flow
+
+Submitting a form collects input, sends JSON via `fetch`, and receives a status and response. Check the browser Network tab for the URL, request method, status and safe response body; check server logs and database state next. A CORS error is a browser policy failure, not proof the API is down. A 422 means the payload does not match the schema; 401 indicates missing or invalid credentials; 404 can indicate a wrong URL or missing record; 500 requires server-side investigation. Do not log credentials or patient details.
+
+The sample renders user-controlled data with `innerHTML`. As an exercise, replace dynamic markup with `document.createElement` and `textContent`, including errors and patient cards. Never put untrusted values in inline event handlers. `fetch` does not reject on HTTP errors, so inspect `response.ok`; do not call `response.json()` blindly on a 204 response. Browser storage is accessible to injected scripts, so choose a session design deliberately and address XSS and, for cookies, CSRF.
+
 ## Part 4: Setup and Deployment Instructions
 
 ### Local Setup
@@ -1473,6 +1496,12 @@ Then visit `http://localhost:8080`
    - Click "Discharge Patient" button on an admitted patient
    - Patient status changes to "Discharged"
 
+### Test cases and next steps
+
+Use a fresh test database and synthetic records. Test a complete happy path, then missing and invalid inputs, duplicate accounts, invalid foreign keys, unknown IDs, an unavailable doctor, a second active assignment, repeat discharge, and invalid or expired credentials. Check that one user cannot access another user's unauthorized records. Run concurrent assignment requests to verify the chosen invariant and transaction behavior. Test browser rendering with text containing HTML characters, empty lists, network failures and 204 responses. Compare API results with committed database state after each failure.
+
+The migration commands require `alembic init alembic` and configuration of `env.py` with the database URL and imported model metadata. `create_all` is convenient for a fresh local demo but does not migrate existing tables; for a real deployment, use reviewed migrations and run them once before starting workers. Verify backups and restoration, least-privilege access, audit logging, monitoring and rollback procedures before considering any sensitive-data deployment.
+
 ### Switching Environments
 
 To switch from localhost to production:
@@ -1494,7 +1523,7 @@ This tutorial demonstrated:
 - ✅ **Frontend**: Single HTML file with embedded CSS/JS
 - ✅ **Full Functionality**: Patient registration, doctor assignment, discharge
 - ✅ **Clean Architecture**: Separated routers, models, schemas
-- ✅ **Production Ready**: CORS enabled, proper error handling
+- ✅ **Next steps**: harden security, authorization, testing, migrations, and operations before deployment
 
-The application is minimal yet comprehensive, demonstrating real-world patterns for building full-stack applications with FastAPI and vanilla JavaScript.
+The application demonstrates full-stack concepts with FastAPI and vanilla JavaScript. It is a learning prototype and requires the security and operational improvements above before real-world use.
 

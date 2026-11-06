@@ -1,5 +1,9 @@
 ### Backend Development Lectures – Modules 4–6
 
+## From foundations to production concerns
+
+Prerequisite: complete lecture 1's CRUD and transactions. In this lecture, first understand identity and async execution, then run the Notes example, test it, and finally plan a deployable capstone. The examples are teaching starting points, not production security implementations. The hospital project in lecture 3 applies these ideas end to end.
+
 ## Module 4: Crafting Robust, Secure, and Async APIs (Complete Minimal App)
 
 In this module we build a minimal, production-style, fully async FastAPI app that includes:
@@ -12,9 +16,17 @@ In this module we build a minimal, production-style, fully async FastAPI app tha
 
 We’ll implement a “Notes” API: users can register/login and manage their own notes.
 
+### Concepts before code: identity, permissions and async
+
+Authentication answers who is making a request; authorization checks what that identity may do. Hash passwords with a slow password-hashing algorithm and unique salts; never store plaintext or log credentials. A signed JWT is readable by its holder, not encrypted. Verify its signature, allowed algorithm, expiration and required subject; check the account still exists and is active. Tokens need an expiry, rotation/revocation strategy and HTTPS. A token alone does not confer permission to read another user's records.
+
+`async def` is useful for concurrent I/O only when the called library yields control. CPU-heavy work and synchronous password hashing block the event loop; run blocking work in a thread pool or use a synchronous endpoint. Async does not make a single database query inherently faster. Use one session per request/task; do not share an `AsyncSession` across concurrent tasks.
+
+**Security scope:** the password flow below is a simplified first-party teaching example, not a recommended design for third-party OAuth clients. Use a maintained identity provider and current OAuth/OIDC guidance for real deployments. Configure a strong random secret in the environment, never the example value, and never deploy this app with sensitive data as written.
+
 ### 1) Dependencies
 ```bash
-pip install fastapi "uvicorn[standard]" "sqlalchemy>=2.0" asyncpg pydantic pydantic-settings bcrypt PyJWT python-multipart
+pip install fastapi "uvicorn[standard]" "sqlalchemy>=2.0" asyncpg pydantic pydantic-settings bcrypt PyJWT python-multipart email-validator
 ```
 
 ### 2) Settings and Config
@@ -259,6 +271,12 @@ uvicorn main_async:app --reload
 ```
 
 This complete minimal app demonstrates validation, secrets management, JWT auth, error handling, and async DB access — all in a compact, real-world structure.
+
+### Walkthrough and hardening exercises
+
+Register with JSON, log in with form fields `username` and `password`, then send `Authorization: Bearer <token>` to `/notes`. Verify two users see only their own notes. Try missing, malformed, expired and tampered tokens, a duplicate email, and a user deleted after a token is issued. The current `scalar_one()` can produce a server error for a deleted user; replace it with `scalar_one_or_none()` and return 401 for missing or inactive accounts. Validate that the JWT subject is a nonempty string, require `exp` and `sub` when decoding, use timezone-aware UTC, and catch JWT validation errors rather than every exception. Add limits for title, content, and password input (bcrypt has an input-length limit); handle unique-constraint races with rollback.
+
+The sample's wildcard CORS and browser token storage are for local demonstration. Configure explicit origins, methods and headers in deployment; CORS is a browser policy, not authentication. Tokens in `localStorage` are accessible to injected scripts; use an appropriate session design, output escaping and CSRF protections when using cookies. Registration, login and password reset need rate limits and account-enumeration considerations. Replace startup `create_all` with reviewed migrations and run them once as a deployment step.
 
 ### Minimal Frontend (index.html) for the Async Notes App
 
@@ -559,6 +577,20 @@ ws.onopen = () => ws.send("hello");
 
 ---
 
+### Practical test matrix and advanced cases
+
+| Layer | Example assertion |
+| --- | --- |
+| Unit | A price rule rejects negative values without accessing a database |
+| API integration | A valid request persists a row and returns the documented status and public fields |
+| Authorization | User B cannot read, change or delete user A's note, even by guessing its ID |
+| Database | Duplicate keys and transaction failures leave no partial changes |
+| End to end | A browser logs in, submits a form, and renders a response |
+
+Use an isolated test database, dependency overrides and fixtures that clean up; never point destructive tests at production. Include missing/invalid credentials, validation boundaries, empty results, pagination, concurrent writes and failure recovery. Mock external services at boundaries, but exercise real database constraints in integration tests. Run tests in CI on each change. The products test above is illustrative and requires the matching products app, fixtures and seeded data; it is not a standalone test for the Notes app.
+
+For WebSockets, authenticate and authorize the connection, validate each message, handle disconnects and bound message sizes. In-memory connection lists only reach one process; multiple workers need a shared message broker. Background tasks in a web process are suitable for small best-effort work; durable jobs need a queue, retry policy and idempotent handlers. Add caching only after measuring, with a clear invalidation strategy. Use timeouts and bounded retries with backoff for external calls, and avoid retrying unsafe writes without idempotency.
+
 ## Module 6: Final Capstone Project & Continuous Deployment on Railway
 
 ### 1) Project Scoping and Design
@@ -605,3 +637,11 @@ This final capstone consolidates all modules into a continuously deployed, monit
 
 
 ---
+
+### Release and operations checklist
+
+Define a small vertical slice and its acceptance tests before adding features. Set environment-specific secrets, use HTTPS, restrict CORS, and run reviewed migrations once before new workers serve traffic. Keep development, test and production databases separate. Add structured logs without tokens, passwords or personal data, plus request IDs, latency and error-rate metrics. Distinguish liveness (process running) from readiness (able to serve traffic); alert on meaningful failures. Back up and regularly test restoration, define rollback steps, and verify both API and browser flows after deployment. Scale only after measuring bottlenecks; each worker uses memory and database connections.
+
+**Final exercise:** draw a request from browser through authentication, service logic and a transaction to the response. Explain the effect of a timeout after commit, a database outage, an expired token and two simultaneous updates.
+
+References: [FastAPI security tutorial](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/), [SQLAlchemy sessions](https://docs.sqlalchemy.org/en/20/orm/session_basics.html), [FastAPI deployment concepts](https://fastapi.tiangolo.com/deployment/concepts/).
