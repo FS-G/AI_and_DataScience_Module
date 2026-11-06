@@ -1,14 +1,14 @@
 ## Support Vector Machines (SVM)
 
-Definition: Support Vector Machine (SVM) is a supervised learning algorithm that finds the hyperplane which best separates the data into different classes.
-It can both be used for classification or regression.
+Definition: Support Vector Machine (SVM) is a supervised learning algorithm that finds the hyperplane which best separates the data into different classes.  
+It can both be used for classification or regression.  
 Objective: To maximize the margin between the data points of different classes.
 
 ### SVM Terminology
 
-Terminology:
-Hyperplane: A decision boundary that separates data points of one class from another.
-Margin: The distance between the hyperplane and the closest data points from each class.
+Terminology:  
+Hyperplane: A decision boundary that separates data points of one class from another.  
+Margin: The distance between the hyperplane and the closest data points from each class.  
 Support Vectors: Data points that lie closest to the hyperplane and influence its position and orientation.
 
 ### Margins in SVM
@@ -29,14 +29,14 @@ However in real world scenario, the data is not often linearly separable.
 
 ### Handling Non-linear Data
 
-Non-linear data refers to data with intricate, non-linear relationships between features and classes.
-The kernel trick is a technique to address non-linearity, often used with SVM, transforming data into higher-dimensional spaces.
-Linear classifiers, like SVM, struggle with non-linear data.
+Non-linear data refers to data with intricate, non-linear relationships between features and classes.  
+The kernel trick is a technique to address non-linearity, often used with SVM, transforming data into higher-dimensional spaces.  
+Linear classifiers, like SVM, struggle with non-linear data.  
 This technique enhances SVM's versatility by allowing it to establish non-linear decision boundaries for complex data distributions in classification tasks.
 
 ### Kernel Trick
 
-To make the non linear data separable, kernel trick is used.
+To make the non linear data separable, kernel trick is used.  
 This means that converting the original features to higher dimensions.
 
 ![Slide 9 image](8_svm_and_knn_assets/image3.png)
@@ -45,48 +45,48 @@ This means that converting the original features to higher dimensions.
 
 ### Kernel Functions
 
-Kernel functions are mathematical functions used in SVM to transform input data into a higher-dimensional feature space.
-Polynomial kernels capture polynomial relationships, allowing SVM to model curved decision boundaries.
-Radial basis function (RBF) kernels create flexible, non-linear decision boundaries, suitable for complex data distributions.
+Kernel functions are mathematical functions used in SVM to transform input data into a higher-dimensional feature space.  
+Polynomial kernels capture polynomial relationships, allowing SVM to model curved decision boundaries.  
+Radial basis function (RBF) kernels create flexible, non-linear decision boundaries, suitable for complex data distributions.  
 Kernels enable SVM to work effectively in high-dimensional spaces, simplifying classification by projecting data into spaces where classes are more separable.
 
 ### Soft Margin Classifier
 
-Apart from kernel trick, another common way to handle non linear data is the soft margin classifier.
+Apart from kernel trick, another common way to handle non linear data is the soft margin classifier.  
 Until now, we have the concept of maximum margin classifier which is also know as hard margin classifier.
 
 ![Slide 12 image](8_svm_and_knn_assets/image5.png)
 
-The soft margin classifier is an extension of the Support Vector Machine (SVM) that helps deal with cases where data is not perfectly linearly separable. 
-It introduces a way to allow some misclassifications while still finding a good decision boundary. 
-What is a Soft Margin Classifier?
-In a traditional (hard margin) SVM, the goal is to find a hyperplane that perfectly separates the data into different classes with the largest possible margin. 
-However, this can be too strict, especially when:
-Data is noisy: Some noise is present in the data.
-Data is not perfectly separable: Classes might overlap or be close to each other.
-The soft margin classifier relaxes the strict requirement of perfect separation and allows some data points to be on the wrong side of the hyperplane. 
+The soft margin classifier is an extension of the Support Vector Machine (SVM) that helps deal with cases where data is not perfectly linearly separable.  
+It introduces a way to allow some misclassifications while still finding a good decision boundary.  
+What is a Soft Margin Classifier?  
+In a traditional (hard margin) SVM, the goal is to find a hyperplane that perfectly separates the data into different classes with the largest possible margin.  
+However, this can be too strict, especially when:  
+Data is noisy: Some noise is present in the data.  
+Data is not perfectly separable: Classes might overlap or be close to each other.  
+The soft margin classifier relaxes the strict requirement of perfect separation and allows some data points to be on the wrong side of the hyperplane.  
 This makes the model more flexible in handling real-world data.
 
 ![Slide 14 image](8_svm_and_knn_assets/image6.png)
 
 ### Margin and Soft Margin
 
-Margin: The distance between the hyperplane (decision boundary) and the nearest data points from each class. For a perfect hard margin classifier, these points are strictly outside the margin and classified correctly.
-Soft Margin: In the soft margin classifier, the model allows some data points to be within or even on the wrong side of the margin. This is done to handle cases where the data is not linearly separable or has noise.
-Criteria:
-Points outside the margin - Correctly classified and at least one margin distance away from the hyperplane.
-Points within the margin - Correctly classified but closer to the hyperplane, within the margin region.
+Margin: The distance between the hyperplane (decision boundary) and the nearest data points from each class. For a perfect hard margin classifier, these points are strictly outside the margin and classified correctly.  
+Soft Margin: In the soft margin classifier, the model allows some data points to be within or even on the wrong side of the margin. This is done to handle cases where the data is not linearly separable or has noise.  
+Criteria:  
+Points outside the margin - Correctly classified and at least one margin distance away from the hyperplane.  
+Points within the margin - Correctly classified but closer to the hyperplane, within the margin region.  
 Points on the wrong side of the hyperplane - Misclassified, with slack variables reflecting their violation of the margin constraints.
 
 ### Bias and Variance Trade-off
 
-The bias-variance trade-off is a fundamental concept in machine learning, describing the balance between:
-Bias: Error due to overly simplistic assumptions in the model (e.g., assuming a linear boundary when the data is not linearly separable).
+The bias-variance trade-off is a fundamental concept in machine learning, describing the balance between:  
+Bias: Error due to overly simplistic assumptions in the model (e.g., assuming a linear boundary when the data is not linearly separable).  
 Variance: Error due to excessive complexity in the model, leading to overfitting on the training data.
 
 ### Regularization Parameter C
 
-C is a regularization parameter that controls the trade-off between maximizing the margin and minimizing the slack variables.
+C is a regularization parameter that controls the trade-off between maximizing the margin and minimizing the slack variables.  
 High C:
 - Effect: The model places more emphasis on minimizing misclassifications, leading to a smaller margin and allowing more slack variables.
 - Impact on Bias: Lower bias since the model fits the training data more closely.
@@ -99,24 +99,24 @@ Cross validation must be used to determine the appropriate value of C.
 
 ### Hyperplanes in Different Dimensions
 
-In case of 1D data, the hyperplane is a point.
-In case of 2D data, the hyperplane is a line.
+In case of 1D data, the hyperplane is a point.  
+In case of 2D data, the hyperplane is a line.  
 In case of 3D data, the hyperplane is a plane.
 
 ## Parametric and Non-parametric Models
 
 ### Parametric Models
 
-Parametric models are a class of statistical models that assume a specific form or structure for the underlying data distribution, characterized by a fixed number of parameters. 
-These models rely on predefined assumptions about the functional form of the relationship between variables, such as linear relationships in linear regression. 
-By having a fixed number of parameters, parametric models are often simpler and faster to compute and interpret, making them efficient for well-understood data patterns. 
-However, their rigidity can limit their ability to capture complex relationships in the data. 
+Parametric models are a class of statistical models that assume a specific form or structure for the underlying data distribution, characterized by a fixed number of parameters.  
+These models rely on predefined assumptions about the functional form of the relationship between variables, such as linear relationships in linear regression.  
+By having a fixed number of parameters, parametric models are often simpler and faster to compute and interpret, making them efficient for well-understood data patterns.  
+However, their rigidity can limit their ability to capture complex relationships in the data.  
 Examples include linear regression and logistic regression.
 
 ### Non-parametric Models
 
-Non-parametric models are a class of statistical models that do not assume a fixed form or a predetermined number of parameters for the underlying data distribution. 
-Instead, these models are flexible and adapt their complexity based on the data itself, making them suitable for capturing intricate patterns without assuming a specific functional form. 
+Non-parametric models are a class of statistical models that do not assume a fixed form or a predetermined number of parameters for the underlying data distribution.  
+Instead, these models are flexible and adapt their complexity based on the data itself, making them suitable for capturing intricate patterns without assuming a specific functional form.  
 Examples include K-Nearest Neighbors (KNN) and decision trees.
 
 ### Comparison
@@ -142,19 +142,19 @@ Examples include K-Nearest Neighbors (KNN) and decision trees.
 
 ## K-Nearest Neighbors (KNN)
 
-K-Nearest Neighbors (KNN) is a simple yet powerful supervised learning algorithm used for both classification and regression tasks. 
-It operates on the principle that similar data points are likely to be close to each other in feature space. 
-What is K-Nearest Neighbors?
-Definition: KNN is a non-parametric, instance-based learning algorithm that classifies or predicts the value of a data point based on the values of its nearest neighbors in the feature space.
+K-Nearest Neighbors (KNN) is a simple yet powerful supervised learning algorithm used for both classification and regression tasks.  
+It operates on the principle that similar data points are likely to be close to each other in feature space.  
+What is K-Nearest Neighbors?  
+Definition: KNN is a non-parametric, instance-based learning algorithm that classifies or predicts the value of a data point based on the values of its nearest neighbors in the feature space.  
 Instance-Based Learning: The model does not explicitly learn a function from the training data but makes predictions based on the stored training examples.
 
 ![Slide 27 image](8_svm_and_knn_assets/image7.png)
 
 ### KNN Terminology
 
-Key Terminology:
-K: The number of nearest neighbors to consider when making a prediction. It is a user-defined parameter.
-Distance Metric: The method used to calculate the distance between data points. Common distance metrics include Euclidean distance, Manhattan distance, and Minkowski distance.
+Key Terminology:  
+K: The number of nearest neighbors to consider when making a prediction. It is a user-defined parameter.  
+Distance Metric: The method used to calculate the distance between data points. Common distance metrics include Euclidean distance, Manhattan distance, and Minkowski distance.  
 Neighbors: The K data points in the training set that are closest to a given test data point.
 
 ### How KNN Works
@@ -187,13 +187,13 @@ Distance metrics gauge data similarity and are essential for clustering and clas
 
 ### Selecting the Value of K
 
-The number of nearest neighbors (K) is crucial.
+The number of nearest neighbors (K) is crucial.  
 Small K:
     - Low bias, high variance.
     - Prone to overfitting.
 Large K:
     - High bias, low variance.
     - Smoother but may underfit.
-Optimal K: Found through cross-validation.
-Impact: K affects bias and variance.
+Optimal K: Found through cross-validation.  
+Impact: K affects bias and variance.  
 Trade-offs: Balance is needed for a well-generalized model.
