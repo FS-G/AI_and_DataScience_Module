@@ -476,7 +476,7 @@ The earlier CRUD example has a different `products` table from this project. Kee
 docker compose exec db createdb -U inventory_user inventory_project_db
 ```
 
-For the inventory project, use a new project directory with its own `.env`, `models.py`, `schemas.py`, `main.py`, and Alembic directory. Copy `config.py` and `database.py` from the earlier example and set the new project's `.env` to:
+For the inventory project, use a new project directory and create the files shown below. Set the new project's `.env` to:
 
 ```text
 DATABASE_URL=postgresql+psycopg://inventory_user:local_dev_password@localhost:5432/inventory_project_db
@@ -493,13 +493,68 @@ If you changed the host port to 5433, use that port here too. Continue running C
 ├─ models.py
 ├─ schemas.py
 ├─ routers/
+│  ├─ __init__.py
 │  ├─ products.py
 │  └─ employees.py
-├─ alembic/
+├─ alembic/            # optional, for later migrations
 ├─ requirements.txt
 ├─ .env                 # local only; do not commit
 └─ .gitignore
 ```
+
+### Install dependencies and configure the database
+
+Create `requirements.txt`:
+
+```text
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg[binary]
+pydantic-settings
+email-validator
+```
+
+Create and activate a virtual environment in the project directory, then install the dependencies:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+Create `.gitignore` with `.venv/`, `__pycache__/`, and `.env` on separate lines. Create the `routers` directory and an empty `routers/__init__.py` file.
+
+```python
+# config.py
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+class Settings(BaseSettings):
+    database_url: str
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+
+settings = Settings()
+```
+
+```python
+# database.py
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+from config import settings
+
+engine = create_engine(settings.database_url, pool_pre_ping=True)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+```
+
+Run commands from the project directory so that `.env` can be found. If PowerShell blocks environment activation, run `.venv\Scripts\python -m pip install -r requirements.txt` and use `.venv\Scripts\python -m uvicorn main:app --reload --port 8000` instead.
 
 ### Code: Models and Schemas
 ```python
@@ -666,6 +721,7 @@ def delete_employee(employee_id: int, db: Session = Depends(get_db)):
 # main.py
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from database import Base, engine
 import models  # Register Product and Employee before creating tables.
 from routers import products, employees
@@ -676,6 +732,12 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(title="Mini E-Commerce Inventory API", lifespan=lifespan)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["Content-Type"],
+)
 
 app.include_router(products.router)
 app.include_router(employees.router)
@@ -712,29 +774,7 @@ frontend/
 
 #### Run the frontend on a separate server
 
-The frontend runs at `http://127.0.0.1:5500` and calls FastAPI at `http://127.0.0.1:8000`. These are different origins, so configure CORS in `main.py`.
-
-Add this import:
-
-```python
-from fastapi.middleware.cors import CORSMiddleware
-```
-
-Immediately after creating `app = FastAPI(...)`, add:
-
-```python
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-    ],
-    allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["Content-Type"],
-)
-```
-
-Keep the existing API router registrations and health endpoint. If you added the earlier `StaticFiles` setup, remove its imports, `FRONTEND_DIR`, and `app.mount("/", ...)` line; the separate frontend server will serve these files instead. If you use another frontend port, add its exact origin to `allow_origins`. Do not open `index.html` directly with `file://`.
+The frontend runs at `http://127.0.0.1:5500` and calls FastAPI at `http://127.0.0.1:8000`. The complete `main.py` above already configures CORS for these origins. If you use another frontend port, add its exact origin to `allow_origins`. Do not open `index.html` directly with `file://`.
 
 #### 1. HTML — `frontend/index.html`
 
